@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 2</title>
+    <title>Lab 2 — Multivariate Visualization</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 2</h1>
+    <h1>Lab 2: Multivariate Visualization with D3</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,90 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
-    <p>
-        Lab 2 will be added here.
+    <!-- ===================== Assignment ===================== -->
+
+    <h2>Assignment — Four Dimensions of Twelve Cities</h2>
+
+    <p class="description">
+        Twelve cities, each carrying four variables of a different measurement
+        type. Rather than a scatterplot, the cities are split into one small
+        panel per region, so every city keeps its own labelled row. Hover any
+        bar for the exact values.
     </p>
 
-    <a class="back-link" href="../">&larr; Back to home</a>
+    <div id="cities-chart"></div>
+
+    <h3>Design Justification</h3>
+
+    <div id="justification">
+        <p>
+            I mapped <strong>population</strong> (ratio) to bar length. Length is
+            the channel people compare most accurately, and because it starts at
+            a true zero it supports the ratio statements population allows —
+            Ivydale really is about six times Dover. <strong>Region</strong>
+            (nominal) became the panels rather than a colour, since nominal
+            categories have no order and separating them spatially avoids
+            spending a colour scale on labels that carry no magnitude. That also
+            keeps region comparisons honest: within a panel the reader compares
+            cities, and across panels they compare regions.
+            <strong>Temperature</strong> (interval) is the single-hue blue fill,
+            light to dark. One hue with increasing darkness reads as ordered
+            magnitude without implying a meaningful zero, which suits interval
+            data. <strong>Development level</strong> (ordinal) is the row of one
+            to three pips beside each city, because a small repeated count reads
+            as ranked steps — Low, Medium, High — without pretending the gaps
+            between levels are equal sizes.
+        </p>
+        <p>
+            What I hope a viewer notices is the cool, larger, more developed
+            north and west against the warm, small, less developed south. The
+            inverse relationship between temperature and population becomes
+            visible as the darkest bars sitting consistently among the shortest.
+        </p>
+    </div>
+
+    <!-- ===================== Task walkthrough ===================== -->
+
+    <h2>Tasks 1 and 2 — Multivariate data</h2>
+
+    <p>
+        A dataset is multivariate when each observation carries several
+        variables. In <code>data/students_multivariate.csv</code> every row is a
+        student, and each student has a name, study hours, a score, a major and
+        a year. The scatterplot below encodes four of them at once:
+    </p>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Variable</th><th>Visual channel</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>study_hours</td><td>x-position</td></tr>
+            <tr><td>score</td><td>y-position</td></tr>
+            <tr><td>major</td><td>colour</td></tr>
+            <tr><td>year</td><td>size</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Tasks 4 to 12 — Scales, axes, colour, size, legend and tooltip</h2>
+
+    <p>
+        The chart below is the walkthrough scatterplot. It uses
+        <code>d3.scaleLinear</code> for the two positions,
+        <code>d3.scaleOrdinal</code> for colour and size,
+        <code>d3.axisBottom</code> and <code>d3.axisLeft</code> for the axes, and
+        a hover tooltip for the per-student detail.
+    </p>
+
+    <div id="chart"></div>
+
+    <a class="back-link" href="../">← Back to home</a>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="lab2.js"></script>
+    <script src="cities.js"></script>
 
 </body>
 
