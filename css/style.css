@@ -113,6 +113,14 @@ p {
     margin-top: 4px;
 }
 
+.link-list {
+    line-height: 1.9;
+}
+
+.link-list a {
+    color: steelblue;
+}
+
 .site-note {
     margin-top: 40px;
     color: #888;
