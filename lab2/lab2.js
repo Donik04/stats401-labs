@@ -71,7 +71,7 @@ d3.csv("../data/students_multivariate.csv", d => ({
         .nice()
         .range([height - margin.bottom, margin.top]);
 
-    // --- Task 8: colour encodes major -----------------------------------
+    // --- Task 8: color encodes major -----------------------------------
 
     const majors = Array.from(new Set(data.map(d => d.major)));
 
