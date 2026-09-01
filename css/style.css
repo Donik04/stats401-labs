@@ -80,6 +80,25 @@ p {
     fill: #222;
 }
 
+/* Data tables */
+
+.data-table {
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    min-width: 240px;
+}
+
+.data-table th,
+.data-table td {
+    border: 1px solid #ddd;
+    padding: 6px 16px;
+    text-align: left;
+}
+
+.data-table th {
+    background: #f1f1f1;
+}
+
 .back-link {
     display: inline-block;
     margin-top: 30px;

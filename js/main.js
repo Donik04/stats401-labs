@@ -85,6 +85,30 @@ circleSvg.selectAll("circle")
 
 // --- Task 5: loading CSV and JSON ---------------------------------------
 
+// Render an array of {name, score} objects as a table, built with D3 binding.
+function renderTable(selector, rows) {
+
+    const table = d3.select(selector)
+        .append("table")
+        .attr("class", "data-table");
+
+    table.append("thead")
+        .append("tr")
+        .selectAll("th")
+        .data(["name", "score"])
+        .join("th")
+        .text(d => d);
+
+    table.append("tbody")
+        .selectAll("tr")
+        .data(rows)
+        .join("tr")
+        .selectAll("td")
+        .data(d => [d.name, d.score])
+        .join("td")
+        .text(d => d);
+}
+
 async function loadData() {
 
     // 5.4 row conversion: scores become numbers while loading
@@ -96,9 +120,13 @@ async function loadData() {
     console.log("CSV data:", csvData);
     console.log("typeof score:", typeof csvData[0].score);
 
+    renderTable("#csv-table", csvData);
+
     // 5.5 JSON preserves numeric types
     const jsonData = await d3.json("data/students.json");
     console.log("JSON data:", jsonData);
+
+    renderTable("#json-table", jsonData);
 }
 
 loadData();
