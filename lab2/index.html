@@ -72,33 +72,23 @@
 
     <!-- ===================== Task walkthrough ===================== -->
 
-    <h2>Tasks 1 and 2 — Multivariate data</h2>
+    <h2>Task 2 — The multivariate dataset</h2>
 
     <p>
-        A dataset is multivariate when each observation carries several
-        variables. In <code>data/students_multivariate.csv</code> every row is a
-        student, and each student has a name, study hours, a score, a major and
-        a year. The scatterplot below encodes four of them at once:
+        <code>data/students_multivariate.csv</code>, loaded with
+        <code>d3.csv</code>. Every row is one student carrying five columns,
+        four of which the scatterplot below encodes at once.
     </p>
 
-    <table class="data-table">
-        <thead>
-            <tr><th>Variable</th><th>Visual channel</th></tr>
-        </thead>
-        <tbody>
-            <tr><td>study_hours</td><td>x-position</td></tr>
-            <tr><td>score</td><td>y-position</td></tr>
-            <tr><td>major</td><td>colour</td></tr>
-            <tr><td>year</td><td>size</td></tr>
-        </tbody>
-    </table>
+    <div id="students-table"></div>
 
     <h2>Tasks 4 to 12 — Scales, axes, colour, size, legend and tooltip</h2>
 
     <p>
-        The chart below is the walkthrough scatterplot. It uses
-        <code>d3.scaleLinear</code> for the two positions,
-        <code>d3.scaleOrdinal</code> for colour and size,
+        The walkthrough scatterplot maps <code>study_hours</code> to x-position,
+        <code>score</code> to y-position, <code>major</code> to colour and
+        <code>year</code> to size. It uses <code>d3.scaleLinear</code> for the
+        positions, <code>d3.scaleOrdinal</code> for colour and size,
         <code>d3.axisBottom</code> and <code>d3.axisLeft</code> for the axes, and
         a hover tooltip for the per-student detail.
     </p>

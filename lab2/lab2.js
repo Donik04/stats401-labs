@@ -29,6 +29,30 @@ d3.csv("../data/students_multivariate.csv", d => ({
 
     console.log("students_multivariate:", data);
 
+    // --- Task 2: show the dataset itself ---------------------------------
+
+    const columns = ["name", "study_hours", "score", "major", "year"];
+
+    const dataTable = d3.select("#students-table")
+        .append("table")
+        .attr("class", "data-table");
+
+    dataTable.append("thead")
+        .append("tr")
+        .selectAll("th")
+        .data(columns)
+        .join("th")
+        .text(d => d);
+
+    dataTable.append("tbody")
+        .selectAll("tr")
+        .data(data)
+        .join("tr")
+        .selectAll("td")
+        .data(row => columns.map(c => row[c]))
+        .join("td")
+        .text(d => d);
+
     const svg = d3.select("#chart")
         .append("svg")
         .attr("width", width)
