@@ -270,6 +270,107 @@ p {
     max-width: 68ch;
 }
 
+/* ---------- Lab 3: dataset facts and the sortable table ---------- */
+
+.dataset-facts {
+    margin: 20px 0 30px;
+    padding: 16px 20px;
+    background: #f9f9f7;
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+    line-height: 1.6;
+}
+
+.dataset-facts dt {
+    font-weight: bold;
+    color: #0b0b0b;
+    margin-top: 10px;
+}
+
+.dataset-facts dt:first-child {
+    margin-top: 0;
+}
+
+.dataset-facts dd {
+    margin: 2px 0 0;
+    color: #52514e;
+}
+
+.link-list {
+    line-height: 1.9;
+}
+
+.link-list a,
+.dataset-facts a {
+    color: steelblue;
+}
+
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin: 16px 0 10px;
+}
+
+#search {
+    padding: 7px 10px;
+    border: 1px solid #c3c2b7;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 240px;
+}
+
+.row-status {
+    font-size: 13px;
+    color: #52514e;
+}
+
+.table-scroll {
+    max-height: 560px;
+    overflow: auto;
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+}
+
+.sortable {
+    width: 100%;
+    margin: 0;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.sortable thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background: #f1f1f1;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+}
+
+.sortable thead th:hover,
+.sortable thead th:focus {
+    background: #e4e4e2;
+}
+
+.sortable thead th.sorted {
+    color: #184f95;
+}
+
+.sortable td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.sortable tbody tr:nth-child(even) {
+    background: #fafaf8;
+}
+
+.sortable tbody tr:hover {
+    background: #eef4fb;
+}
+
 .site-note {
     margin-top: 40px;
     color: #888;

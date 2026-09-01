@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 3</title>
+    <title>Lab 3 — Web Data Acquisition</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 3</h1>
+    <h1>Lab 3: Web Data Acquisition with Python</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,75 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
+    <h2>Assignment — 1,000 Book Records</h2>
+
+    <dl class="dataset-facts">
+        <dt>Dataset</dt>
+        <dd>Every book in the Books to Scrape catalogue, with its price,
+            star rating, stock status and catalogue page.</dd>
+
+        <dt>Source</dt>
+        <dd><a href="https://books.toscrape.com/">books.toscrape.com</a> —
+            a sandbox site published specifically for scraping practice.
+            It serves no <code>robots.txt</code>, so no automated access is
+            disallowed; the script checks this before it starts.</dd>
+
+        <dt>Method</dt>
+        <dd>HTML scraping with <code>requests</code> +
+            <code>BeautifulSoup</code>, paginating over 50 catalogue pages
+            with a one-second delay between requests.</dd>
+
+        <dt>Records collected</dt>
+        <dd><strong id="record-count">…</strong> records ×
+            <strong id="column-count">…</strong> columns</dd>
+
+        <dt>Script</dt>
+        <dd><a href="acquire_books.py">acquire_books.py</a></dd>
+    </dl>
+
+    <h3>The data</h3>
+
     <p>
-        Lab 3 will be added here.
+        Click any column heading to sort — once for ascending, again for
+        descending. Numeric columns sort by value, not as text.
     </p>
 
-    <a class="back-link" href="../">&larr; Back to home</a>
+    <div class="table-controls">
+        <input id="search" type="search" placeholder="Filter by title…"
+               aria-label="Filter books by title">
+        <span id="row-status" class="row-status"></span>
+    </div>
+
+    <div class="table-scroll">
+        <table id="data-table" class="data-table sortable">
+            <thead></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <h2>Walkthrough scripts</h2>
+
+    <p>
+        The two teaching scripts from the lab tasks are in the repository
+        alongside the assignment script:
+    </p>
+
+    <ul class="link-list">
+        <li>
+            <a href="scrape_example.py">scrape_example.py</a> — Tasks 2 to 10:
+            requests, status codes, BeautifulSoup, CSS selectors, pagination,
+            rate limiting and error handling.
+        </li>
+        <li>
+            <a href="api_example.py">api_example.py</a> — Tasks 11 to 13:
+            reading JSON from a REST API and selecting fields.
+        </li>
+    </ul>
+
+    <a class="back-link" href="../">← Back to home</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="lab3.js"></script>
 
 </body>
 
