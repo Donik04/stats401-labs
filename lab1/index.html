@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 1 — Student Scores</title>
+    <title>Lab 1 — Getting Started with D3.js</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 1: My First D3 Visualization</h1>
+    <h1>Lab 1: Getting Started with D3.js</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,18 +28,86 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
+    <!-- ===================== Assignment ===================== -->
+
+    <h2>Assignment — Student Score Bar Chart</h2>
+
     <p class="description">
-        A bar chart of eight student scores. The data is loaded from
-        <code>data/students.csv</code> with <code>d3.csv</code> and the bars are
-        created by D3 data binding — the height of each bar encodes the score.
+        Each bar is one student, and the height of the bar encodes their score.
+        The data is loaded at runtime from <code>data/students.csv</code> with
+        <code>d3.csv</code>, and the bars are created with D3 data binding — no
+        rectangle is written by hand.
     </p>
 
     <div id="chart"></div>
+
+    <!-- ===================== Task walkthrough ===================== -->
+
+    <h2>Task 2 — Set up D3</h2>
+
+    <p id="message">Original message</p>
+
+    <p>
+        D3 is loaded from a CDN before this page's own scripts. Its version
+        number is logged to the browser console.
+    </p>
+
+    <h2>Task 3 — Understanding the DOM</h2>
+
+    <h3 id="title">3.3 and 3.4 — Selecting and styling</h3>
+
+    <p>
+        The heading directly above was restyled with <code>d3.select</code> and
+        chained <code>.style()</code> calls.
+    </p>
+
+    <h3>3.5 — Adding elements</h3>
+    <div id="content"></div>
+
+    <h3>3.6 — Data binding</h3>
+    <div id="numbers"></div>
+
+    <h2>Task 4 — SVG</h2>
+
+    <h3>4.1 to 4.3 — SVG written by hand</h3>
+    <svg width="600" height="200">
+        <circle cx="100" cy="100" r="40" fill="steelblue"></circle>
+        <rect x="200" y="60" width="120" height="80" fill="orange"></rect>
+    </svg>
+
+    <h3>4.4 — The same shapes built with D3</h3>
+    <div id="svg-demo"></div>
+
+    <h3>4.5 — Several circles from data</h3>
+    <div id="svg-circles"></div>
+
+    <h2>Task 5 — Loading CSV and JSON</h2>
+
+    <p>
+        Both tables below are loaded at runtime from the <code>data/</code>
+        folder with <code>d3.csv</code> and <code>d3.json</code> — nothing here
+        is typed into the HTML. They are also logged to the console.
+    </p>
+
+    <h3>data/students.csv</h3>
+    <div id="csv-table"></div>
+
+    <h3>data/students.json</h3>
+    <div id="json-table"></div>
+
+    <h2>Tasks 6 and 7 — Navigation and publishing</h2>
+
+    <p>
+        Task 6 is the navigation bar at the top of this page, which links all
+        ten labs. Task 7 is this site itself, published with GitHub Pages from
+        the <code>main</code> branch.
+    </p>
 
     <a class="back-link" href="../">← Back to home</a>
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="chart.js"></script>
+    <script src="tasks.js"></script>
 
 </body>
 

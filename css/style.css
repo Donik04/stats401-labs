@@ -80,6 +80,45 @@ p {
     fill: #222;
 }
 
+/* Lab list on the home page */
+
+.lab-list {
+    list-style: none;
+    padding: 0;
+}
+
+.lab-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.lab-list li.pending {
+    color: #888;
+}
+
+.lab-list a {
+    color: steelblue;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.lab-list a:hover {
+    text-decoration: underline;
+}
+
+.lab-list span {
+    display: block;
+    color: #555;
+    font-size: 14px;
+    margin-top: 4px;
+}
+
+.site-note {
+    margin-top: 40px;
+    color: #888;
+    font-size: 13px;
+}
+
 /* Data tables */
 
 .data-table {

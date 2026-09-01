@@ -27,46 +27,33 @@
         <a href="lab10/">Lab 10</a>
     </nav>
 
-    <h2 id="title">Lab 1: Getting Started with D3.js</h2>
-
-    <p id="message">Original message</p>
-
     <p class="description">
-        This is my first webpage for STATS 401. The sections below walk through
-        the DOM, SVG, and data-loading exercises from Lab 1.
+        This site collects my lab work for STATS 401. Each lab has its own page,
+        linked from the navigation above.
     </p>
 
-    <h2>Task 3 — DOM manipulation</h2>
-    <div id="content"></div>
+    <h2>Labs</h2>
 
-    <h2>Task 3.6 — Data binding</h2>
-    <div id="numbers"></div>
+    <ul class="lab-list">
+        <li>
+            <a href="lab1/">Lab 1 — Getting Started with D3.js</a>
+            <span>
+                HTML, CSS and JavaScript, the DOM, SVG, loading CSV and JSON,
+                and a student score bar chart.
+            </span>
+        </li>
+        <li class="pending">Lab 2 — coming soon</li>
+        <li class="pending">Lab 3 — coming soon</li>
+        <li class="pending">Lab 4 — coming soon</li>
+        <li class="pending">Lab 5 — coming soon</li>
+        <li class="pending">Lab 6 — coming soon</li>
+        <li class="pending">Lab 7 — coming soon</li>
+        <li class="pending">Lab 8 — coming soon</li>
+        <li class="pending">Lab 9 — coming soon</li>
+        <li class="pending">Lab 10 — coming soon</li>
+    </ul>
 
-    <h2>Task 4 — SVG written by hand</h2>
-    <svg width="600" height="200">
-        <circle cx="100" cy="100" r="40" fill="steelblue"></circle>
-        <rect x="200" y="60" width="120" height="80" fill="orange"></rect>
-    </svg>
-
-    <h2>Task 4.4 — SVG built with D3</h2>
-    <div id="svg-demo"></div>
-
-    <h2>Task 4.5 — Circles from data</h2>
-    <div id="svg-circles"></div>
-
-    <h2>Task 5 — Loading CSV and JSON</h2>
-
-    <p>
-        Both datasets below are loaded at runtime from the <code>data/</code>
-        folder with <code>d3.csv</code> and <code>d3.json</code> — nothing here
-        is typed into the HTML. They are also logged to the browser console.
-    </p>
-
-    <h3>data/students.csv</h3>
-    <div id="csv-table"></div>
-
-    <h3>data/students.json</h3>
-    <div id="json-table"></div>
+    <p id="site-note" class="site-note"></p>
 
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="js/main.js"></script>
