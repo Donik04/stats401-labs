@@ -31,18 +31,27 @@
     <h2>Assignment — 1,000 Book Records</h2>
 
     <dl class="dataset-facts">
-        <dt>Dataset description</dt>
-        <dd>Every book provided for scraping, with its price, star rating,
-            stock status and catalogue page.</dd>
+        <dt>Dataset</dt>
+        <dd>Every book provided for scraping includes the information about its price,
+            star rating, stock status and catalogue page.</dd>
 
-        <dt>Data source</dt>
+        <dt>Source</dt>
         <dd><a href="https://books.toscrape.com/">books.toscrape.com</a> —
-            a website designed for scraping practice, scraped with
-            <a href="acquire_books.py">acquire_books.py</a>.</dd>
+            a website designed for scraping practice.
+            It serves no <code>robots.txt</code>, so no automated access is
+            disallowed.</dd>
 
-        <dt>Number of records</dt>
+        <dt>Method</dt>
+        <dd>HTML scraping with <code>requests</code> +
+            <code>BeautifulSoup</code>, paginating over 50 book catalogue pages
+            with a one-second delay between requests to not to send requests as fast as computer generates them.</dd>
+
+        <dt>Records collected</dt>
         <dd><strong id="record-count">…</strong> records ×
             <strong id="column-count">…</strong> columns</dd>
+
+        <dt>Script</dt>
+        <dd><a href="acquire_books.py">acquire_books.py</a></dd>
     </dl>
 
     <h3>The data</h3>
