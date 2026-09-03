@@ -3,11 +3,10 @@
 Source : https://books.toscrape.com/  (a sandbox site published for scraping
          practice; it serves 1,000 books across 50 catalogue pages)
 Method : HTML scraping with requests + BeautifulSoup
-Output : ../data/lab3_data.csv
 
 The script is polite by construction: it checks robots.txt before starting,
 identifies itself with a real User-Agent, sleeps between requests, and retries
-a failed page a limited number of times instead of hammering the server.
+a failed page.
 """
 
 import time
