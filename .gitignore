@@ -1,0 +1,8 @@
+# Cached copy of the full upstream tweet dataset (~69 MB).
+# lab4/fetch_tweets.py re-downloads it on demand; the repository keeps only
+# the sampled data/lab4_raw_tweets.csv.
+lab4/.cache/
+
+__pycache__/
+*.pyc
+.DS_Store

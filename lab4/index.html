@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 4</title>
+    <title>Lab 4 &mdash; Cleaning Web Data for Visualization</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 4</h1>
+    <h1>Lab 4: Cleaning Web Data for Visualization</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,246 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
+    <dl class="dataset-facts">
+        <dt>Dataset description</dt>
+        <dd>Tweets carrying the <code>#covid19</code> hashtag, collected daily
+            between 24 July and 30 August 2020, with the raw tweet text and the
+            posting account's metadata. No sentiment labels ship with the data
+            &mdash; sentiment here is computed, not read off the file.</dd>
+
+        <dt>Data source</dt>
+        <dd>Gabriel Preda,
+            <a href="https://github.com/gabrielpreda/covid-19-tweets">COVID19
+            Tweets</a> (179,108 tweets). Downloaded and sampled by
+            <a href="fetch_tweets.py">fetch_tweets.py</a>, then cleaned and
+            scored by <a href="clean_tweets.py">clean_tweets.py</a>.</dd>
+
+        <dt>Records</dt>
+        <dd><strong id="raw-count">1,040</strong> tweets sampled from the
+            source, <strong id="clean-count">1,035</strong> surviving cleaning,
+            each carrying a sentiment estimate.</dd>
+
+        <dt>Sentiment</dt>
+        <dd>Estimated with
+            <a href="https://huggingface.co/cardiffnlp/twitter-roberta-base-sentiment-latest"><code>cardiffnlp/twitter-roberta-base-sentiment-latest</code></a>,
+            a RoBERTa Transformer fine-tuned on social-media text. These are
+            <strong>model estimates, not ground-truth labels</strong>.</dd>
+    </dl>
+
+    <h2>Does it matter who is doing the typing?</h2>
+
     <p>
-        Lab 4 will be added here.
+        Every tweet records the client it was posted from. Most come from a
+        phone or from the Twitter website &mdash; someone sat down and wrote
+        them. A smaller share arrives through newsroom and marketing tooling:
+        TweetDeck, or scheduling suites like Hootsuite and Buffer, where a
+        tweet is drafted, approved and queued rather than fired off. If an
+        organisation's tweets go through a different process than a person's,
+        that process might show up in what the tweets sound like.
     </p>
 
+    <div class="viz-root">
+
+        <ul class="key">
+            <li><span class="swatch negative"></span> Negative</li>
+            <li><span class="swatch neutral"></span> Neutral</li>
+            <li><span class="swatch positive"></span> Positive</li>
+        </ul>
+
+        <figure class="viz-figure">
+            <div id="chart-routes" class="loading">Loading the data&hellip;</div>
+        </figure>
+
+        <p class="viz-caption">
+            Each bar is one posting route, split into the share of its tweets
+            the model calls negative, neutral and positive. Negative shares run
+            left of the centre line and positive shares run right, so the
+            further a bar leans, the more one-sided that route is; neutral
+            straddles the centre. Routes are ordered by mean sentiment score,
+            most negative at the top. Three further routes &mdash; bots and
+            auto-feeds, cross-posts from other platforms, and one-off custom
+            apps &mdash; are left out of the chart because 1,035 tweets leave
+            each of them with fewer than 25, too few for a percentage to mean
+            anything. They are in the table below, with their counts.
+        </p>
+
+        <details class="table-view">
+            <summary>Show these numbers as a table</summary>
+            <div class="table-scroll">
+                <table id="routes-table" class="data-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </details>
+
+    </div>
+
+    <h3>Analysis</h3>
+
+    <div id="analysis">
+        <p>
+            The data is 1,040 tweets carrying <code>#covid19</code>, sampled 40
+            per day across the 26 collection days of a 179,108-tweet archive
+            gathered in July and August 2020. Cleaning cost 5 rows: 4
+            near-duplicate campaign templates reposted with fresh tracking
+            links, and 1 non-English tweet, leaving 1,035 scored tweets. The
+            larger job was <code>source</code>, where 71 client strings &mdash;
+            one spelled with a Greek omicron, others with trailing spaces
+            &mdash; collapse onto seven posting routes;
+            <code>is_retweet</code> was constant and dropped. No sentiment
+            ships with the data, so every tweet was scored with RoBERTa, and
+            the chart plots the resulting shares diverging from a common
+            centre.
+        </p>
+
+        <p>
+            The negative share falls steadily as the route gets more
+            institutional: 39% of tweets typed on a phone, 32% from the Twitter
+            website, 21% from TweetDeck, 14% from a scheduling suite. Mean
+            score follows it from &minus;0.20 to +0.01. The other end of the
+            bar barely moves &mdash; positive runs 9&ndash;14% on all four
+            routes. Organisational tweets are not cheerier than personal ones;
+            they trade anger for neutrality, which is what drafted-and-queued
+            copy sounds like. With 53
+            tweets behind TweetDeck against 445 behind phones, though, only the
+            two ends of that ordering are firm.
+        </p>
+    </div>
+
+    <h2>Optional extension &mdash; where the model is unsure</h2>
+
+    <p>
+        The model returns a probability for each of the three classes, and the
+        label is simply the largest of the three. That number is worth looking
+        at on its own. A tweet called <em>negative</em> at 0.99 and one called
+        <em>negative</em> at 0.41 &mdash; the two ends of the range here
+        &mdash; are not the same claim, but they arrive in the dataset looking
+        identical.
+    </p>
+
+    <div class="viz-root">
+
+        <figure class="viz-figure">
+            <div id="chart-confidence" class="loading">Loading&hellip;</div>
+        </figure>
+
+        <p class="viz-caption">
+            How sure the model was of the label it picked, across every scored
+            tweet. The lowest possible value is about 0.33, where all three
+            classes are tied; anything under 0.50 means the winning class did
+            not even carry half the probability.
+        </p>
+
+    </div>
+
+    <h3>The tweets it found hardest</h3>
+
+    <p>
+        These are the tweets where the top two classes came closest to a tie
+        &mdash; where the label is near enough to a coin flip that it should
+        not be trusted on its own. Reading them shows what the model struggles
+        with.
+    </p>
+
+    <ul class="uncertain-list" id="uncertain-list">
+        <li class="loading">Loading&hellip;</li>
+    </ul>
+
+    <h2>Characteristic terms</h2>
+
+    <p>
+        From the other branch of the pipeline. The tweets were normalised,
+        tokenised, stripped of stop words and lemmatised into a pruned
+        document-term matrix, then weighted by TF-IDF. Averaging a term's
+        TF-IDF within a sentiment class gives the terms most characteristic of
+        that class: frequent inside it, rare across the corpus as a whole.
+    </p>
+
+    <div class="term-grid" id="term-grid">
+        <p class="loading">Loading&hellip;</p>
+    </div>
+
+    <details class="method">
+        <summary>How the data was cleaned</summary>
+
+        <p>
+            <a href="fetch_tweets.py">fetch_tweets.py</a> downloads the full
+            69&nbsp;MB source file and writes 40 tweets from each of the 26
+            collection days to
+            <a href="../data/lab4_raw_tweets.csv">lab4_raw_tweets.csv</a>,
+            completely unmodified. Sampling by day rather than at random keeps
+            the whole five-week window visible instead of letting one busy week
+            crowd out the rest, and 1,040 rows leaves a margin over the 1,000
+            the assignment asks for once cleaning has taken its cut.
+        </p>
+
+        <p>
+            <a href="clean_tweets.py">clean_tweets.py</a> then does the work,
+            printing a report of every decision as it goes. Tweets with no text
+            are dropped, because they cannot be scored. Missing locations and
+            hashtags are <em>left</em> missing rather than filled with zeros:
+            "this account stated no location" is a fact about the account, and
+            replacing it would invent one. Exact duplicates turn out to be rare
+            in this sample, but the same campaign text is posted repeatedly
+            with a different tracking link on the end, so tweets are also
+            compared with links, case and punctuation stripped out. That catches
+            the near-copies which would otherwise let a single petition
+            template dominate a sentiment total. <code>is_retweet</code> is
+            <code>False</code> on every row, so it separates nothing and is
+            dropped.
+        </p>
+
+        <p>
+            The <code>source</code> column is the interesting one. It holds
+            71 distinct client strings, including one written with a Greek
+            omicron in place of a Latin <em>O</em>, several carrying trailing
+            spaces or stray full stops, and a long tail of one-off corporate
+            apps. Lookalike letters are folded onto their Latin equivalents,
+            whitespace and punctuation are normalised, and the result is
+            collapsed onto seven posting routes &mdash; exact
+            matching for the official clients, keyword rules for everything
+            else. <code>user_location</code> is free text with thousands of
+            spellings; a keyword pass recovers a country where it can and
+            leaves the rest missing rather than guessing.
+        </p>
+
+        <p>
+            The sentiment branch deliberately preserves what the term branch
+            throws away. TF-IDF wants lemmatised content words, so URLs,
+            mentions, numbers, stop words and punctuation all go. RoBERTa wants
+            the sentence, so capitalisation, emoji, punctuation and negation
+            stay, and only usernames and links are replaced with the
+            placeholders the model was trained on.
+        </p>
+
+        <p>
+            On provenance. The upstream repository publishes the collection
+            openly but states no licence, and Twitter's own terms restrict
+            redistributing tweet content, so nothing here should be treated as
+            cleared for reuse. The sampled raw file is kept in this repository
+            because the assignment asks for the input as well as the output,
+            and because a cleaning script cannot be checked against data nobody
+            can see. Anyone who would rather not rely on that copy can rebuild
+            it exactly: <a href="fetch_tweets.py">fetch_tweets.py</a> fetches
+            the original file and re-derives the same sample from a fixed seed.
+        </p>
+
+        <p>
+            One caveat the data forces. The collector capped itself at roughly
+            7,500 tweets a day and missed several days entirely, so the number
+            of tweets on a given day reflects the collection process rather
+            than how much the world was tweeting. Daily <em>counts</em> are
+            therefore not interpretable here, though daily <em>mean
+            sentiment</em> still is &mdash; which is why the chart above
+            compares shares rather than volumes.
+        </p>
+    </details>
+
     <a class="back-link" href="../">&larr; Back to home</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="lab4.js"></script>
 
 </body>
 

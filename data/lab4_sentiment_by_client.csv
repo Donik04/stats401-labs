@@ -1,0 +1,22 @@
+posted_via,sentiment,count,total,mean_score,mean_confidence,share
+Bot or auto-feed,Negative,6,21,-0.2289,0.7772,0.2857
+Bot or auto-feed,Neutral,13,21,-0.2289,0.7772,0.619
+Bot or auto-feed,Positive,2,21,-0.2289,0.7772,0.0952
+Cross-posted,Negative,2,15,0.1018,0.7562,0.1333
+Cross-posted,Neutral,10,15,0.1018,0.7562,0.6667
+Cross-posted,Positive,3,15,0.1018,0.7562,0.2
+Other or custom app,Negative,10,22,-0.3032,0.7616,0.4545
+Other or custom app,Neutral,12,22,-0.3032,0.7616,0.5455
+Phone or tablet app,Negative,173,445,-0.2038,0.7483,0.3888
+Phone or tablet app,Neutral,214,445,-0.2038,0.7483,0.4809
+Phone or tablet app,Positive,58,445,-0.2038,0.7483,0.1303
+Scheduling tool,Negative,19,132,0.0134,0.7572,0.1439
+Scheduling tool,Neutral,96,132,0.0134,0.7572,0.7273
+Scheduling tool,Positive,17,132,0.0134,0.7572,0.1288
+TweetDeck,Negative,11,53,-0.1351,0.7456,0.2075
+TweetDeck,Neutral,37,53,-0.1351,0.7456,0.6981
+TweetDeck,Positive,5,53,-0.1351,0.7456,0.0943
+Twitter website,Negative,112,345,-0.1382,0.7576,0.3246
+Twitter website,Neutral,186,345,-0.1382,0.7576,0.5391
+Twitter website,Positive,47,345,-0.1382,0.7576,0.1362
+Unknown,Neutral,2,2,-0.0059,0.8522,1.0
