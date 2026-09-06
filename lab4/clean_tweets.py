@@ -1,6 +1,9 @@
 """Lab 4 step 2 -- clean the raw tweets, then derive term and sentiment data.
 
-Input  : data/lab4_raw_tweets.csv   (written by fetch_tweets.py, untouched)
+Input  : data/lab4_raw_tweets.csv   (raw and untouched: 40 tweets from each of
+         the 26 collection days of Gabriel Preda's "COVID19 Tweets",
+         https://github.com/gabrielpreda/covid-19-tweets, every original
+         column kept and nothing cleaned)
 Outputs: data/lab4_clean_tweets.csv     one tidy row per surviving tweet
          data/lab4_viz_tweets.csv       the slim per-tweet file the page loads
          data/lab4_sentiment_by_client.csv
@@ -737,7 +740,8 @@ def report_confidence(df):
 
 def main():
     if not RAW_IN.exists():
-        sys.exit(f"{RAW_IN} is missing -- run lab4/fetch_tweets.py first.")
+        sys.exit(f"{RAW_IN} is missing -- see the module docstring above for "
+                 f"where the raw data comes from.")
 
     df = pd.read_csv(RAW_IN)
 

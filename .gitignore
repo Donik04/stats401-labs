@@ -1,7 +1,11 @@
-# Cached copy of the full upstream tweet dataset (~69 MB).
-# lab4/fetch_tweets.py re-downloads it on demand; the repository keeps only
-# the sampled data/lab4_raw_tweets.csv.
+# Cached copy of the full upstream tweet dataset (~69 MB). The repository
+# keeps only the sampled data/lab4_raw_tweets.csv.
 lab4/.cache/
+
+# Local-only helper that rebuilds data/lab4_raw_tweets.csv from that upstream
+# file. Kept out of the repository: clean_tweets.py runs from the sampled CSV
+# and does not need it.
+lab4/fetch_tweets.py
 
 __pycache__/
 *.pyc
