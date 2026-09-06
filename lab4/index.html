@@ -58,12 +58,9 @@
 
     <p>
         Every tweet records the client it was posted from. Most come from a
-        phone or from the Twitter website &mdash; someone sat down and wrote
-        them. A smaller share arrives through newsroom and marketing tooling:
+        phone or from the Twitter website. A smaller share arrived through newsroom and marketing toolings:
         TweetDeck, or scheduling suites like Hootsuite and Buffer, where a
-        tweet is drafted, approved and queued rather than fired off. If an
-        organisation's tweets go through a different process than a person's,
-        that process might show up in what the tweets sound like.
+        tweet is drafted, approved and queued before being posted.
     </p>
 
     <div class="viz-root">
@@ -82,13 +79,9 @@
             Each bar is one posting route, split into the share of its tweets
             the model calls negative, neutral and positive. Negative shares run
             left of the centre line and positive shares run right, so the
-            further a bar leans, the more one-sided that route is; neutral
-            straddles the centre. Routes are ordered by mean sentiment score,
-            most negative at the top. Three further routes &mdash; bots and
-            auto-feeds, cross-posts from other platforms, and one-off custom
-            apps &mdash; are left out of the chart because 1,035 tweets leave
-            each of them with fewer than 25, too few for a percentage to mean
-            anything. They are in the table below, with their counts.
+            further a bar leans, the more one-sided that route is. 
+            Routes are ordered by mean sentiment score,
+            with most negative at the top. Overall, the tweet sources are shown in the table below, with their corresponding counts.
         </p>
 
         <details class="table-view">
@@ -111,11 +104,7 @@
             per day across the 26 collection days of a 179,108-tweet archive
             gathered in July and August 2020. Cleaning cost 5 rows: 4
             near-duplicate campaign templates reposted with fresh tracking
-            links, and 1 non-English tweet, leaving 1,035 scored tweets. The
-            larger job was <code>source</code>, where 71 client strings &mdash;
-            one spelled with a Greek omicron, others with trailing spaces
-            &mdash; collapse onto seven posting routes;
-            <code>is_retweet</code> was constant and dropped. No sentiment
+            links, and 1 non-English tweet, leaving 1,035 scored tweets. No sentiment
             ships with the data, so every tweet was scored with RoBERTa, and
             the chart plots the resulting shares diverging from a common
             centre.
@@ -129,9 +118,7 @@
             bar barely moves &mdash; positive runs 9&ndash;14% on all four
             routes. Organisational tweets are not cheerier than personal ones;
             they trade anger for neutrality, which is what drafted-and-queued
-            copy sounds like. With 53
-            tweets behind TweetDeck against 445 behind phones, though, only the
-            two ends of that ordering are firm.
+            copy sounds like.
         </p>
     </div>
 
@@ -141,9 +128,7 @@
         The model returns a probability for each of the three classes, and the
         label is simply the largest of the three. That number is worth looking
         at on its own. A tweet called <em>negative</em> at 0.99 and one called
-        <em>negative</em> at 0.41 &mdash; the two ends of the range here
-        &mdash; are not the same claim, but they arrive in the dataset looking
-        identical.
+        <em>negative</em> at 0.41 with the two ends of the range differing, but arriving at dataset while being identical.
     </p>
 
     <div class="viz-root">
@@ -174,45 +159,19 @@
         <li class="loading">Loading&hellip;</li>
     </ul>
 
-    <h2>Characteristic terms</h2>
-
-    <p>
-        From the other branch of the pipeline. The tweets were normalised,
-        tokenised, stripped of stop words and lemmatised into a pruned
-        document-term matrix, then weighted by TF-IDF. Averaging a term's
-        TF-IDF within a sentiment class gives the terms most characteristic of
-        that class: frequent inside it, rare across the corpus as a whole.
-    </p>
-
-    <div class="term-grid" id="term-grid">
-        <p class="loading">Loading&hellip;</p>
-    </div>
-
+    
     <details class="method">
         <summary>How the data was cleaned</summary>
 
-        <p>
-            The source file is 69&nbsp;MB, far more than belongs in a course
-            repository, so
-            <a href="../data/lab4_raw_tweets.csv">lab4_raw_tweets.csv</a> holds
-            a sample of it: 40 tweets from each of the 26 collection days,
-            drawn with a fixed seed and stored completely unmodified, every
-            original column intact. Sampling by day rather than at random keeps
-            the whole five-week window visible instead of letting one busy week
-            crowd out the rest, and 1,040 rows leaves a margin over the 1,000
-            the assignment asks for once cleaning has taken its cut.
-        </p>
 
         <p>
             <a href="clean_tweets.py">clean_tweets.py</a> then does the work,
             printing a report of every decision as it goes. Tweets with no text
             are dropped, because they cannot be scored. Missing locations and
-            hashtags are <em>left</em> missing rather than filled with zeros:
-            "this account stated no location" is a fact about the account, and
-            replacing it would invent one. Exact duplicates turn out to be rare
-            in this sample, but the same campaign text is posted repeatedly
-            with a different tracking link on the end, so tweets are also
-            compared with links, case and punctuation stripped out. That catches
+            hashtags are <em>left</em> missing rather than filled with zeros.
+            In this dataset, duplicate instances were rare, but the same campaign text was posted repeatedly
+            with a different tracking link on the end, so tweets were also
+            compared with links. That caught
             the near-copies which would otherwise let a single petition
             template dominate a sentiment total. <code>is_retweet</code> is
             <code>False</code> on every row, so it separates nothing and is
@@ -233,35 +192,12 @@
             leaves the rest missing rather than guessing.
         </p>
 
-        <p>
-            The sentiment branch deliberately preserves what the term branch
-            throws away. TF-IDF wants lemmatised content words, so URLs,
-            mentions, numbers, stop words and punctuation all go. RoBERTa wants
-            the sentence, so capitalisation, emoji, punctuation and negation
-            stay, and only usernames and links are replaced with the
-            placeholders the model was trained on.
-        </p>
-
-        <p>
-            On provenance. The upstream repository publishes the collection
-            openly but states no licence, and Twitter's own terms restrict
-            redistributing tweet content, so nothing here should be treated as
-            cleared for reuse. The sampled raw file is kept in this repository
-            because the assignment asks for the input as well as the output,
-            and because a cleaning script cannot be checked against data nobody
-            can see. Anyone who would rather not rely on that copy can take the
-            full collection from the source repository linked above, which is
-            where every row here came from.
-        </p>
 
         <p>
             One caveat the data forces. The collector capped itself at roughly
             7,500 tweets a day and missed several days entirely, so the number
             of tweets on a given day reflects the collection process rather
-            than how much the world was tweeting. Daily <em>counts</em> are
-            therefore not interpretable here, though daily <em>mean
-            sentiment</em> still is &mdash; which is why the chart above
-            compares shares rather than volumes.
+            than how much the world was tweeting.
         </p>
     </details>
 
