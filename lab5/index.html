@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 5</title>
+    <title>Lab 5 &mdash; Interactive Network Visualization</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 5</h1>
+    <h1>Lab 5: Interactive Network Visualization</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,222 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
-    <p>
-        Lab 5 will be added here.
+    <h2>1. Dataset description</h2>
+
+    <dl class="dataset-facts">
+        <dt>What the network is</dt>
+        <dd>A synthetic urban transit system for a medium-sized city:
+            <strong>50 stations</strong> joined by <strong>50 direct
+            connections</strong>. A link means a passenger can ride between
+            those two stations without changing service. The network is treated
+            as <strong>undirected</strong>, so <code>source</code> and
+            <code>target</code> only record the pair.</dd>
+
+        <dt>Station table &mdash; <a href="../data/lab5_assignment_stations.csv">lab5_assignment_stations.csv</a></dt>
+        <dd><code>id</code>, <code>station_name</code>, and the three node
+            variables: <code>district</code> (Central, North, South, East and
+            West, 10 stations each), <code>daily_passengers</code>
+            (1,373&ndash;9,850) and <code>station_type</code> (Terminal 17,
+            Transfer 17, Local 16).</dd>
+
+        <dt>Route table &mdash; <a href="../data/lab5_assignment_routes.csv">lab5_assignment_routes.csv</a></dt>
+        <dd><code>source</code>, <code>target</code>, and the two link
+            variables: <code>travel_time_min</code> (2&ndash;16 minutes) and
+            <code>route_type</code> (Express 17, Shuttle 17, Metro 16).</dd>
+
+        <dt>Provenance</dt>
+        <dd>Supplied with the assignment and synthetic by construction. It is
+            built for visualization practice rather than transport analysis,
+            and the findings below say plainly where that construction shows
+            through.</dd>
+    </dl>
+
+    <p class="viz-caption">
+        Both views on this page are built from these two files with D3 data
+        binding, so they always show the same 50 stations and the same 50
+        connections.
     </p>
 
+    <h2>2. Node-link visualization</h2>
+
+    <div class="viz-root net-root">
+
+        <div class="viz-controls">
+            <span class="control-label">Layout</span>
+            <div class="button-set" id="layout-toggle" role="group" aria-label="Layout">
+                <button type="button" data-layout="free" class="active">Free force</button>
+                <button type="button" data-layout="district">Grouped by district</button>
+            </div>
+            <button type="button" id="net-reset" class="ghost-button">Clear highlighting</button>
+        </div>
+
+        <div class="viz-legend" id="net-legend"></div>
+
+        <figure class="viz-figure">
+            <div id="network" class="loading">Loading the network&hellip;</div>
+        </figure>
+
+        <p class="viz-caption">
+            Every station is one symbol and every direct connection one line.
+            <strong>Drag</strong> a station to pull it out of the tangle and the
+            simulation re-settles around it. <strong>Hover</strong> a station to
+            fade everything it does not touch, or hover a line for its travel
+            time. <strong>Click</strong> a legend entry to isolate one district
+            or one route type. Under <em>Grouped by district</em> the same
+            simulation adds a pull toward five compass anchors, so district
+            membership is carried by position as well as by colour.
+        </p>
+
+    </div>
+
+    <h2>3. Node-link design description</h2>
+
+    <div class="prose">
+
+        <p>
+            The three station variables go onto three channels so that none has
+            to share. <strong>District is colour</strong>, the channel that lets
+            a reader pick one category out of a layout it is scattered across.
+            <strong>Daily passengers is symbol area</strong> on a square-root
+            scale, since it is the only real quantity and size reads as
+            magnitude unaided. <strong>Station type is symbol shape</strong>
+            &mdash; triangle Terminal, square Transfer, circle Local &mdash;
+            keeping a station's function separate from where it sits.
+        </p>
+
+        <p>
+            District spends the colour budget, so <strong>route type is line
+            pattern</strong> (solid Metro, dashed Express, dotted Shuttle) and
+            links stay grey and recessive. <strong>Travel time is line width and
+            the simulation's link distance</strong>: more minutes, more ink and
+            more space. Drawing fast links heavier would make width and length
+            disagree.
+        </p>
+
+        <p>
+            Interaction covers what a static layout cannot: dragging pulls
+            overlapping symbols apart, hover fades everything a station does not
+            touch &mdash; the only reliable way to trace one neighbourhood among
+            50 crossing lines &mdash; and tooltips carry exact values. The
+            legend doubles as a filter, and the layout toggle trades topology
+            for geography.
+        </p>
+
+    </div>
+
+    <h2>4. Adjacency matrix</h2>
+
+    <div class="viz-root matrix-root">
+
+        <div class="viz-controls">
+            <span class="control-label">Order rows and columns by</span>
+            <div class="button-set" id="order-toggle" role="group" aria-label="Matrix ordering">
+                <button type="button" data-order="district" class="active">District</button>
+                <button type="button" data-order="type">Station type</button>
+                <button type="button" data-order="network">Network position</button>
+                <button type="button" data-order="volume">Passenger volume</button>
+            </div>
+        </div>
+
+        <div class="viz-legend" id="matrix-legend"></div>
+
+        <figure class="viz-figure">
+            <div id="matrix" class="loading">Building the matrix&hellip;</div>
+        </figure>
+
+        <p class="viz-caption">
+            The same 50 stations on both axes. A filled square means those two
+            stations are directly connected; the matrix is symmetric, so every
+            connection appears twice, once on each side of the grey diagonal.
+            <strong>Hover</strong> anywhere in the grid for a crosshair and the
+            pair's details, including empty cells, which report that no direct
+            connection exists. Changing the ordering re-sorts both axes together
+            and is the main way this view is made to reveal structure.
+        </p>
+
+        <details class="table-view">
+            <summary>Show all 50 connections as a table</summary>
+            <div class="table-scroll">
+                <table id="links-table" class="data-table">
+                    <thead></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </details>
+
+    </div>
+
+    <h2>5. Matrix design description</h2>
+
+    <div class="prose">
+
+        <p>
+            Rows and columns are both stations; a filled cell means they are
+            directly connected. With no layout to read, the real design decision
+            is <strong>ordering</strong>. The default sorts by district, then
+            station type, then passengers, turning district membership into five
+            labelled blocks, so whether two districts connect becomes whether
+            the block where their rows and columns cross has anything in it.
+            Three further orderings are offered because each exposes something
+            different; <em>Network position</em> walks outward from one end and
+            collapses the connections onto a diagonal stripe.
+        </p>
+
+        <p>
+            Inside the grid, <strong>cell colour is route type</strong> and
+            <strong>cell size is travel time</strong>, so both link variables
+            survive and travel time keeps its direction from the node-link view.
+            Colour is free for route type because district has moved onto
+            position, which keeps the matrix to one colour scale. The margins
+            carry what ordering cannot: each row's <strong>station-type
+            glyph</strong>, in the same three shapes, and a grey
+            <strong>passenger bar</strong>. District keeps its colour only in
+            the block labels, tying the two figures together.
+        </p>
+
+    </div>
+
+    <h2>6. Network questions and findings</h2>
+
+    <p class="prose-lead">
+        Six questions, each answered from the views above rather than from the
+        CSV. For each one: how well the design answers it, which view does the
+        work, the encoding or interaction that carries the answer, and what I
+        actually see.
+    </p>
+
+    <div class="findings" id="findings"></div>
+
+    <h3>What the design does not support</h3>
+
+    <div class="prose">
+        <p>
+            Two things stayed hard. <strong>Exact passenger volumes</strong> are
+            not readable from either view: symbol area and a 30-pixel margin bar
+            both give a ranking rather than a number, which is why the tooltip
+            carries the figure and the table view is there as a fallback. And
+            <strong>path length</strong> &mdash; how many hops separate two
+            stations &mdash; is not encoded anywhere. The node-link view hints at
+            it through layout distance, but a force layout's geometry is not a
+            metric, and the matrix cannot show it. Answering that properly would
+            need a third view.
+        </p>
+        <p>
+            It is also worth being clear that this dataset is synthetic in a way
+            the visualizations expose rather than hide. Passenger volume rises in
+            an exact arithmetic step from Station 1 to Station 50, district
+            cycles every fifth station and station type every third, and 40 of
+            the 50 links simply join consecutively numbered stations. Several of
+            the patterns reported above are therefore properties of how the file
+            was generated rather than facts about a city, and saying so is part
+            of reading the picture honestly.
+        </p>
+    </div>
+
     <a class="back-link" href="../">&larr; Back to home</a>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="lab5.js"></script>
 
 </body>
 
