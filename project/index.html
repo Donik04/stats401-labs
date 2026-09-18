@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Final Project — Tashkent Transit Access</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+
+<body>
+
+    <h1>Final Project: Who Can Walk to the Metro in Tashkent?</h1>
+
+    <nav class="lab-nav">
+        <a href="../">Home</a>
+        <a href="../lab1/">Lab 1</a>
+        <a href="../lab2/">Lab 2</a>
+        <a href="../lab3/">Lab 3</a>
+        <a href="../lab4/">Lab 4</a>
+        <a href="../lab5/">Lab 5</a>
+        <a href="../lab6/">Lab 6</a>
+        <a href="../lab7/">Lab 7</a>
+        <a href="../lab8/">Lab 8</a>
+        <a href="../lab9/">Lab 9</a>
+        <a href="../lab10/">Lab 10</a>
+        <a href="../project/" class="active">Project</a>
+    </nav>
+
+    <p class="description">
+        Measuring how much of Tashkent the metro actually reaches on foot,
+        which districts are left to the bus, and whether the bus-dependent
+        parts of the city also get the thinnest bus service. Built from
+        OpenStreetMap and a gridded population raster, with walking times
+        computed along the real street network.
+    </p>
+
+    <h2>1. Topic, Goals, and Questions</h2>
+
+    <h3>The topic</h3>
+
+    <p>
+        Tashkent runs two transit systems that behave nothing alike. The metro
+        is fast, punctual and unaffected by traffic, but it exists at only
+        <strong>49 stations</strong>. The bus network reaches almost everywhere
+        — on the order of two thousand stops — but is slow, crowded and
+        hostage to the same congestion as private cars. Whether a household has
+        a metro station within walking distance is therefore not a small
+        difference in convenience. It decides whether the whole city is
+        available to them on a weekday evening, or only their own end of it.
+    </p>
+
+    <p>
+        That divide has been moving. The metro spent three decades as two and a
+        half lines through the Soviet-era core; since 2020 it has grown by an
+        above-ground ring and a southern extension, and the stations added in
+        that push serve a very different kind of neighbourhood than the ones
+        opened in 1977. Nobody has published a map of what that expansion
+        actually bought, counted in residents rather than in kilometres of
+        track.
+    </p>
+
+    <p>
+        This project builds that map. For every populated 100-metre cell in the
+        city it computes the walking time — along real streets and footpaths,
+        not straight lines — to the nearest metro entrance, the nearest bus
+        stop, and the nearest bazaar. It then classifies each cell as
+        metro-served, bus-only, or beyond walking distance of either, and
+        aggregates those classifications into population-weighted statistics
+        per district.
+    </p>
+
+    <h3>Why the bazaar is in this project</h3>
+
+    <p>
+        A conventional "15-minute city" study measures the walk to a
+        supermarket. In Tashkent that is the wrong destination: daily food
+        shopping happens at the bazaar, and the large bazaars — Chorsu, Alay,
+        Farhod, Kuyluk — are also the transfer nodes where the bus network is
+        densest. Including bazaars as a third destination class makes the
+        analysis mean something locally, and it supplies an independent check:
+        if a district's residents can walk to a bazaar but not to transit, that
+        says something real about the shape of the city rather than about how
+        the metro happens to be drawn.
+    </p>
+
+    <h3>Visualization goals</h3>
+
+    <ul>
+        <li>Show <strong>where</strong> metro walking access ends, at a finer
+            grain than any district average can express — a station catchment
+            boundary falls in the middle of neighbourhoods, not along
+            administrative lines.</li>
+        <li>Reduce the divide to one defensible headline number: the share of
+            residents within a ten-minute walk of a station.</li>
+        <li>Make <strong>bus dependency</strong> a visible geography in its own
+            right, rather than the leftover space on a metro map.</li>
+        <li>Test whether bus-dependent areas are compensated with denser bus
+            service or penalised twice.</li>
+        <li>Let a reader find their own neighbourhood and read its numbers
+            directly.</li>
+        <li>Keep the uncertainty visible — walking-time assumptions and OSM
+            completeness are shown, not smoothed away.</li>
+    </ul>
+
+    <h3>Intended audience</h3>
+
+    <p>
+        Three groups, in order of how much the design owes them.
+        <strong>Tashkent residents</strong> comparing neighbourhoods, who need
+        to find one place on a map and read one number.
+        <strong>Transport planners</strong> weighing where a further metro
+        extension or a bus-priority corridor would serve the most people, who
+        need the per-station and per-district comparisons.
+        <strong>Researchers and NGOs</strong> working on urban service
+        provision in Central Asia, who need the method and its caveats stated
+        plainly enough to reuse. The finished site should be readable in Uzbek
+        and Russian, not only English.
+    </p>
+
+    <h3>Research questions</h3>
+
+    <ol class="question-list">
+        <li><strong>Coverage.</strong> What share of Tashkent's population
+            lives within a 5-, 10- and 15-minute walk of a metro entrance?</li>
+        <li><strong>Bus dependency.</strong> Which districts are effectively
+            bus-only — what share of each district's residents can walk to a
+            bus stop but not to any metro station?</li>
+        <li><strong>Double disadvantage.</strong> Do bus-dependent areas get
+            denser bus service to compensate, or do they also have the fewest
+            routes per stop? This is the question most likely to produce a
+            finding that is not already obvious from looking at a metro
+            map.</li>
+        <li><strong>What the expansion bought.</strong> How much population did
+            the post-2020 ring and southern extension bring within walking
+            distance, and which individual stations serve the most walk-up
+            residents — and the fewest?</li>
+        <li><strong>Transit versus daily life.</strong> Does walking access to
+            a bazaar coincide with walking access to transit, or are they two
+            different maps of the same city?</li>
+        <li><strong>Method sensitivity.</strong> How much do the headline
+            shares change when a straight-line buffer is replaced by a true
+            network isochrone? Railways, canals and the arterial ring roads
+            should make that gap large in specific, nameable places.</li>
+    </ol>
+
+    <h2>2. Datasets</h2>
+
+    <dl class="dataset-facts">
+        <dt>OpenStreetMap — transit stops, destinations, city structure</dt>
+        <dd>
+            <strong>Source:</strong>
+            <a href="https://overpass-api.de/">Overpass API</a>, ODbL licence.<br>
+            <strong>Acquisition:</strong> Python <code>requests</code>, one
+            query per feature class over the bounding box
+            41.16, 69.11, 41.40, 69.42; every response cached to disk so the
+            pipeline reruns without hitting the API again.<br>
+            <strong>Processing:</strong> pair bus stops that represent opposite
+            sides of one road, attach metro entrances to their parent station,
+            extract per-stop route counts from route relations, reproject to
+            EPSG:32642.<br>
+            <strong>Key attributes:</strong> <code>name</code>,
+            <code>name:ru</code>, <code>name:uz</code>, <code>railway</code>,
+            <code>station</code>, <code>public_transport</code>,
+            <code>highway=bus_stop</code>, <code>amenity=marketplace</code>,
+            route relation membership.<br>
+            <strong>Size:</strong> roughly 2,200 transit stop features, about
+            100 bazaars, 11–12 district polygons, and the full walkable street
+            network.
+        </dd>
+
+        <dt>WorldPop — gridded population</dt>
+        <dd>
+            <strong>Source:</strong>
+            <a href="https://www.worldpop.org/">WorldPop</a>, CC BY 4.0.<br>
+            <strong>Acquisition:</strong> direct download of
+            <code>uzb_ppp_2020_UNadj_constrained.tif</code> — 11.8 MB, no API
+            key required.<br>
+            <strong>Processing:</strong> window to the Tashkent bounding box,
+            sample non-empty cells to points, join each point to its district
+            polygon.<br>
+            <strong>Attributes:</strong> cell centroid, estimated residents,
+            district.<br>
+            <strong>Size:</strong> roughly 30,000 populated 100-metre cells.
+            This is the analysis unit — every headline number in the project is
+            a population-weighted statistic over it.
+        </dd>
+
+        <dt>Geofabrik extract — walking network for isochrones</dt>
+        <dd>
+            <strong>Source:</strong>
+            <a href="https://download.geofabrik.de/asia/uzbekistan.html">Geofabrik</a>,
+            ODbL, rebuilt daily.<br>
+            <strong>Acquisition:</strong>
+            <code>uzbekistan-latest.osm.pbf</code>, 118 MB, fed to a local
+            <a href="http://project-osrm.org/">OSRM</a> instance running the
+            <code>foot</code> profile in Docker.<br>
+            <strong>Processing:</strong> the <code>/table</code> endpoint
+            returns many-to-many walking durations from population cells to
+            candidate stops in batches. Walking speed is fixed at 4.8 km/h and
+            stated explicitly wherever a figure in minutes appears.
+        </dd>
+
+        <dt>Official district population — validation only</dt>
+        <dd>
+            <strong>Source:</strong>
+            <a href="https://data.gov.uz/en">Open Data Portal of Uzbekistan</a>
+            and the State Committee on Statistics.<br>
+            <strong>Use:</strong> WorldPop is a model. Official district totals
+            are used to check that the raster sums to a believable city, and
+            the ratio is reported rather than hidden. Results are not rescaled
+            unless the discrepancy proves large, in which case the rescaling is
+            documented.<br>
+            <strong>Size:</strong> twelve rows, two variables. Small, and worth
+            it.
+        </dd>
+
+        <dt>Wikidata — metro station opening years <em>(stretch)</em></dt>
+        <dd>
+            <strong>Source:</strong> Wikidata SPARQL endpoint,
+            <code>P1619</code> (date of official opening) for stations of the
+            Tashkent metro.<br>
+            <strong>Use:</strong> research question 4 only. If coverage turns
+            out to be patchy, the fallback is a hand-checked table of the four
+            construction eras (1977–91, 2001, the 2020 ring, the southern
+            extension) — a dozen rows, verifiable by hand.<br>
+            <strong>Risk:</strong> this is the one dataset the project can lose
+            without losing a question outright. Question 4 degrades from a
+            year-by-year curve to a four-way comparison.
+        </dd>
+    </dl>
+
+    <h3>Verified feature counts</h3>
+
+    <p>
+        Counts cover nodes, ways <em>and</em> relations over the Tashkent
+        bounding box. The metro station count was re-queried against the live
+        Overpass API on 6 September 2026 and returned 49 nodes, 0 ways, 0
+        relations. The remaining rows come from the earlier scoping run; the
+        endpoint rate-limited further queries, so re-verifying them is the
+        first task of week 2 rather than a claim made here.
+    </p>
+
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Layer</th>
+                <th class="num">Count</th>
+                <th>Note</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>Metro stations</td><td class="num">49</td><td><code>railway=station</code> + <code>station=subway</code>; re-verified 6 Sep 2026</td></tr>
+            <tr><td>Bus stops</td><td class="num">~2,040</td><td><code>highway=bus_stop</code>; inflated by opposite-side pairs</td></tr>
+            <tr><td>Bazaars</td><td class="num">~96</td><td><code>amenity=marketplace</code></td></tr>
+            <tr><td>Metro entrances</td><td class="num">to confirm</td><td><code>railway=subway_entrance</code>; decides whether we walk to entrances or to station centroids</td></tr>
+            <tr><td>Bus route relations</td><td class="num">to confirm</td><td><code>route=bus</code>; the basis of the service-level metric</td></tr>
+            <tr><td>District boundaries</td><td class="num">11 or 12</td><td><code>admin_level=6</code>; see the caveat below</td></tr>
+        </tbody>
+    </table>
+
+    <p class="caveat">
+        <strong>Three data problems, stated up front.</strong>
+        <br><br>
+        <strong>Bus stops are double-counted.</strong> A single kerbside
+        location is usually mapped twice, once per direction of travel, and
+        sometimes a third time as a <code>public_transport=platform</code>.
+        This rules out count-based metrics such as "stops per square
+        kilometre". It barely affects <em>distance to the nearest stop</em>,
+        which is why the project is built on distance rather than counts — the
+        same reasoning that makes the metric robust also makes pairing the
+        stops an improvement rather than a precondition.
+        <br><br>
+        <strong>Tashkent has twelve districts, and OpenStreetMap may still show
+        eleven.</strong> Yangihayot was split from Sergeli in 2020. If the
+        boundary relation is absent we either digitise the split or report the
+        two together and say so. Silently publishing a stale eleven-district
+        geography would be the worse error, particularly since Yangihayot is
+        exactly the kind of peripheral district this study is about.
+        <br><br>
+        <strong>Bus route relations are incomplete.</strong> Route counts per
+        stop are a lower bound, not a census. Research question 3 rests
+        entirely on this layer, so week 3 includes an explicit completeness
+        audit; if coverage is too thin to support a service-level claim, the
+        question is dropped rather than answered badly.
+    </p>
+
+    <h2>3. Analysis and Visualization Methods</h2>
+
+    <h3>Tools</h3>
+
+    <ul>
+        <li><strong>Python</strong> — <code>requests</code> for Overpass,
+            <code>geopandas</code> and <code>shapely</code> for geometry,
+            <code>rasterio</code> for the population raster,
+            <code>scipy.spatial.cKDTree</code> for the straight-line baseline
+            and for candidate pre-filtering, <code>pandas</code> for
+            aggregation.</li>
+        <li><strong>OSRM</strong> in Docker, <code>foot</code> profile, for
+            network walking times via the <code>/table</code> endpoint.</li>
+        <li><strong>D3.js v7</strong> with <code>d3-geo</code>,
+            <code>topojson-client</code> and <code>d3-scale-chromatic</code> on
+            a static page — the same stack as the labs, no build step.</li>
+        <li><strong>TopoJSON</strong> for boundary delivery; the grid ships
+            quantised so the page stays under a couple of megabytes.</li>
+    </ul>
+
+    <h3>Processing and analysis</h3>
+
+    <ol>
+        <li><strong>Resolve stops to walkable access points.</strong> For the
+            metro this means entrances, not station centroids: a Tashkent
+            station spans a wide intersection and its entrances can sit 150
+            metres apart, so walking to the centroid systematically misstates
+            access for the households in between. Where entrances are not
+            mapped, the station node is used and the substitution is flagged in
+            the data rather than absorbed silently.</li>
+        <li><strong>Pair bus stops</strong> representing one location on two
+            sides of a road, by clustering within 30 metres and requiring names
+            to match, then keeping one access point per pair.</li>
+        <li><strong>Reproject everything to EPSG:32642</strong> (UTM 42N) so
+            distances come out in metres. Computing distance in unprojected
+            degrees is the single most likely way to produce numbers that are
+            wrong but plausible.</li>
+        <li><strong>Sample the population raster</strong> to points, drop empty
+            cells, join to districts.</li>
+        <li><strong>Straight-line baseline.</strong> KD-tree nearest-neighbour
+            distance from every populated cell to each destination class. It
+            runs in seconds and gives a working end-to-end pipeline in week 3,
+            before any routing infrastructure exists.</li>
+        <li><strong>Network isochrones.</strong> For each cell, take the eight
+            nearest candidates by straight line, ask OSRM for walking durations
+            to all eight, keep the minimum. Pre-filtering is what makes
+            30,000 × 2,000 tractable; taking eight rather than one guards
+            against the case where the nearest stop is on the far side of a
+            railway.</li>
+        <li><strong>Classify every cell</strong> at each threshold:
+            metro-served, bus-only, or neither. This three-way classification
+            is the project's core derived variable and feeds four of the six
+            views.</li>
+        <li><strong>Aggregate</strong> into population-weighted district
+            statistics and city-wide cumulative access curves.</li>
+        <li><strong>Service level per stop</strong> — count distinct route
+            relations serving each stop, then take a population-weighted median
+            route count for the bus-only population of each district. Question
+            3 is answered by plotting that against bus-only share.</li>
+        <li><strong>Sensitivity.</strong> Report every headline figure both
+            ways, straight-line and network, and name the places where the two
+            diverge most. The divergence is a result, not an error term.</li>
+    </ol>
+
+    <h3>User tasks supported</h3>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Task</th><th>Supported by</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Locate and explore</td><td>Pan and zoom on the access surface; find your own neighbourhood and read its walk time</td></tr>
+            <tr><td>Compare</td><td>District composition bars; metro versus bus versus bazaar mode toggle</td></tr>
+            <tr><td>Quantify</td><td>Cumulative access curve read at whatever threshold the user chooses</td></tr>
+            <tr><td>Discover relationships</td><td>Bus-only share against bus service level</td></tr>
+            <tr><td>Detect outliers</td><td>Stations with unusually low walk-up population; districts off the service trend line</td></tr>
+            <tr><td>Filter</td><td>Mode toggle and threshold slider propagating to every linked view</td></tr>
+            <tr><td>Trace change</td><td>Metro schematic coloured by opening era, showing what the expansion added</td></tr>
+        </tbody>
+    </table>
+
+    <h2>4. Visualization Sketches</h2>
+
+    <p>
+        Six views, each a different design idiom, sharing one selection state.
+        They are ordered as an argument — where access ends, who is left on the
+        bus, how many people that is, which districts, which stations, and
+        whether service compensates — rather than as a gallery.
+    </p>
+
+    <div class="sketch-grid">
+
+        <figure class="sketch">
+            <svg viewBox="0 0 260 150" role="img" aria-labelledby="s1t">
+                <title id="s1t">Sketch of a walking-time access surface map with a mode toggle</title>
+                <rect x="0" y="0" width="260" height="150" fill="#fdfdfc"/>
+                <g>
+                    <rect x="28" y="26" width="38" height="28" fill="#eff3ff"/>
+                    <rect x="66" y="26" width="38" height="28" fill="#c6dbef"/>
+                    <rect x="104" y="26" width="38" height="28" fill="#9ecae1"/>
+                    <rect x="142" y="26" width="38" height="28" fill="#c6dbef"/>
+                    <rect x="28" y="54" width="38" height="28" fill="#c6dbef"/>
+                    <rect x="66" y="54" width="38" height="28" fill="#4292c6"/>
+                    <rect x="104" y="54" width="38" height="28" fill="#2171b5"/>
+                    <rect x="142" y="54" width="38" height="28" fill="#6baed6"/>
+                    <rect x="28" y="82" width="38" height="28" fill="#eff3ff"/>
+                    <rect x="66" y="82" width="38" height="28" fill="#9ecae1"/>
+                    <rect x="104" y="82" width="38" height="28" fill="#6baed6"/>
+                    <rect x="142" y="82" width="38" height="28" fill="#eff3ff"/>
+                </g>
+                <g stroke="#1f4e79" stroke-width="1.6" fill="none">
+                    <path d="M40,100 L92,68 L150,52"/>
+                    <path d="M52,30 L96,72 L164,96"/>
+                </g>
+                <g fill="#1f4e79">
+                    <circle cx="92" cy="68" r="2.6"/><circle cx="150" cy="52" r="2.6"/>
+                    <circle cx="52" cy="30" r="2.6"/><circle cx="164" cy="96" r="2.6"/>
+                </g>
+                <rect x="28" y="26" width="152" height="84" fill="none" stroke="#c3c2b7"/>
+                <g>
+                    <rect x="196" y="26" width="11" height="15" fill="#2171b5"/>
+                    <rect x="196" y="41" width="11" height="15" fill="#9ecae1"/>
+                    <rect x="196" y="56" width="11" height="15" fill="#eff3ff"/>
+                    <text x="211" y="36" font-size="7" fill="#52514e">&lt;5 min</text>
+                    <text x="211" y="51" font-size="7" fill="#52514e">10</text>
+                    <text x="211" y="66" font-size="7" fill="#52514e">15+</text>
+                </g>
+                <g font-size="7">
+                    <rect x="196" y="82" width="30" height="11" fill="#1f4e79"/>
+                    <text x="199" y="90" fill="#fdfdfc">metro</text>
+                    <rect x="196" y="94" width="30" height="11" fill="none" stroke="#c3c2b7"/>
+                    <text x="200" y="102" fill="#52514e">bus</text>
+                </g>
+                <text x="28" y="128" font-size="9" fill="#52514e">100 m grid, network walk time to nearest entrance</text>
+            </svg>
+            <figcaption>
+                <strong>Access surface</strong>
+                <span class="idiom">Choropleth of a continuous field, with mode toggle</span>
+                The primary view for question 1 — it shows where metro walking
+                access ends, and the toggle turns the metro-versus-bus contrast
+                into one click instead of two separate figures.
+            </figcaption>
+        </figure>
+
+        <figure class="sketch">
+            <svg viewBox="0 0 260 150" role="img" aria-labelledby="s2t">
+                <title id="s2t">Sketch of a bivariate choropleth of metro access against bus access</title>
+                <rect x="0" y="0" width="260" height="150" fill="#fdfdfc"/>
+                <g>
+                    <path d="M28,26 L96,22 L112,58 L60,74 Z" fill="#c8b8d8"/>
+                    <path d="M96,22 L166,30 L150,66 L112,58 Z" fill="#5b4a8a"/>
+                    <path d="M28,74 L60,74 L74,112 L30,108 Z" fill="#e8d9c0"/>
+                    <path d="M60,74 L112,58 L150,66 L134,112 L74,112 Z" fill="#c88a3a"/>
+                    <path d="M150,66 L182,60 L176,108 L134,112 Z" fill="#e8d9c0"/>
+                </g>
+                <path d="M28,26 L96,22 L166,30 L182,60 L176,108 L30,108 Z" fill="none" stroke="#8c8b81" stroke-width="0.6"/>
+                <g>
+                    <rect x="200" y="30" width="11" height="11" fill="#e8d9c0"/>
+                    <rect x="211" y="30" width="11" height="11" fill="#c8b8d8"/>
+                    <rect x="222" y="30" width="11" height="11" fill="#5b4a8a"/>
+                    <rect x="200" y="41" width="11" height="11" fill="#e2c99a"/>
+                    <rect x="211" y="41" width="11" height="11" fill="#b9a2bd"/>
+                    <rect x="222" y="41" width="11" height="11" fill="#7a5f92"/>
+                    <rect x="200" y="52" width="11" height="11" fill="#c88a3a"/>
+                    <rect x="211" y="52" width="11" height="11" fill="#c08a63"/>
+                    <rect x="222" y="52" width="11" height="11" fill="#8a6a80"/>
+                    <text x="200" y="70" font-size="6.5" fill="#52514e">metro →</text>
+                    <text x="200" y="79" font-size="6.5" fill="#9e6b2f">bus-only</text>
+                </g>
+                <text x="28" y="128" font-size="9" fill="#52514e">orange = bus-only; purple = metro within 10 min</text>
+            </svg>
+            <figcaption>
+                <strong>Bus dependency map</strong>
+                <span class="idiom">Bivariate choropleth</span>
+                Answers question 2 in a single image: the orange corner of the
+                legend <em>is</em> the bus-dependent city, which two separate
+                single-variable maps would leave the reader to intersect by
+                eye.
+            </figcaption>
+        </figure>
+
+        <figure class="sketch">
+            <svg viewBox="0 0 260 150" role="img" aria-labelledby="s3t">
+                <title id="s3t">Sketch of cumulative population access curves for three modes</title>
+                <rect x="0" y="0" width="260" height="150" fill="#fdfdfc"/>
+                <line x1="42" y1="112" x2="234" y2="112" stroke="#c3c2b7"/>
+                <line x1="42" y1="22" x2="42" y2="112" stroke="#c3c2b7"/>
+                <path d="M42,112 C70,44 110,30 234,26" fill="none" stroke="#9e6b2f" stroke-width="2.5"/>
+                <path d="M42,112 C86,84 130,58 234,40" fill="none" stroke="#2a78d6" stroke-width="2.5"/>
+                <path d="M42,112 C104,104 150,88 234,66" fill="none" stroke="#1f4e79" stroke-width="2.5" stroke-dasharray="4 3"/>
+                <line x1="112" y1="22" x2="112" y2="112" stroke="#8c8b81" stroke-dasharray="2 3"/>
+                <circle cx="112" cy="76" r="3" fill="#1f4e79"/>
+                <text x="117" y="73" font-size="7.5" fill="#1f4e79">? %</text>
+                <text x="98" y="124" font-size="7.5" fill="#52514e">10 min</text>
+                <text x="46" y="18" font-size="7.5" fill="#52514e">% of residents within reach</text>
+                <text x="146" y="136" font-size="7.5" fill="#52514e">walking minutes →</text>
+                <text x="188" y="22" font-size="7" fill="#9e6b2f">bus stop</text>
+                <text x="188" y="36" font-size="7" fill="#2a78d6">bazaar</text>
+                <text x="188" y="62" font-size="7" fill="#1f4e79">metro</text>
+            </svg>
+            <figcaption>
+                <strong>Cumulative access curves</strong>
+                <span class="idiom">Cumulative distribution function</span>
+                Turns the maps into the headline number at whatever threshold
+                the reader picks, and puts all three modes on one axis so the
+                size of the metro–bus gap is read directly rather than
+                inferred.
+            </figcaption>
+        </figure>
+
+        <figure class="sketch">
+            <svg viewBox="0 0 260 150" role="img" aria-labelledby="s4t">
+                <title id="s4t">Sketch of ranked stacked bars of district population by access class</title>
+                <rect x="0" y="0" width="260" height="150" fill="#fdfdfc"/>
+                <g font-size="7.5" fill="#52514e">
+                    <text x="6" y="31">Mirobod</text>
+                    <text x="6" y="50">Chilonzor</text>
+                    <text x="6" y="69">Yunusobod</text>
+                    <text x="6" y="88">Sergeli</text>
+                    <text x="6" y="107">Yangihayot</text>
+                </g>
+                <g>
+                    <rect x="60" y="22" width="112" height="12" fill="#1f4e79"/>
+                    <rect x="172" y="22" width="46" height="12" fill="#d8a556"/>
+                    <rect x="60" y="41" width="86" height="12" fill="#1f4e79"/>
+                    <rect x="146" y="41" width="66" height="12" fill="#d8a556"/>
+                    <rect x="212" y="41" width="10" height="12" fill="#e1e0d9"/>
+                    <rect x="60" y="60" width="60" height="12" fill="#1f4e79"/>
+                    <rect x="120" y="60" width="92" height="12" fill="#d8a556"/>
+                    <rect x="212" y="60" width="14" height="12" fill="#e1e0d9"/>
+                    <rect x="60" y="79" width="26" height="12" fill="#1f4e79"/>
+                    <rect x="86" y="79" width="118" height="12" fill="#d8a556"/>
+                    <rect x="204" y="79" width="24" height="12" fill="#e1e0d9"/>
+                    <rect x="60" y="98" width="6" height="12" fill="#1f4e79"/>
+                    <rect x="66" y="98" width="130" height="12" fill="#d8a556"/>
+                    <rect x="196" y="98" width="34" height="12" fill="#e1e0d9"/>
+                </g>
+                <g font-size="6.5">
+                    <rect x="60" y="122" width="8" height="8" fill="#1f4e79"/>
+                    <text x="71" y="129" fill="#52514e">metro</text>
+                    <rect x="104" y="122" width="8" height="8" fill="#d8a556"/>
+                    <text x="115" y="129" fill="#52514e">bus only</text>
+                    <rect x="158" y="122" width="8" height="8" fill="#e1e0d9"/>
+                    <text x="169" y="129" fill="#52514e">neither</text>
+                </g>
+            </svg>
+            <figcaption>
+                <strong>District composition, ranked</strong>
+                <span class="idiom">Ranked stacked bar / part-to-whole</span>
+                The direct answer to question 2 for a planner: districts sorted
+                by metro share, with bus-only and unserved populations shown as
+                counts of people rather than as percentages of a percentage.
+            </figcaption>
+        </figure>
+
+        <figure class="sketch">
+            <svg viewBox="0 0 260 150" role="img" aria-labelledby="s5t">
+                <title id="s5t">Sketch of a metro line schematic with stations sized by walk-up population</title>
+                <rect x="0" y="0" width="260" height="150" fill="#fdfdfc"/>
+                <path d="M30,44 L120,44 L170,68" fill="none" stroke="#c0392b" stroke-width="2.5"/>
+                <path d="M42,96 L120,96 L188,66" fill="none" stroke="#1f6f4a" stroke-width="2.5"/>
+                <path d="M120,44 L120,96" fill="none" stroke="#2a78d6" stroke-width="2.5"/>
+                <path d="M170,68 C210,60 214,104 176,112 C142,120 128,104 120,96" fill="none" stroke="#8a6a2f" stroke-width="2.5" stroke-dasharray="5 3"/>
+                <g fill="#fdfdfc" stroke="#3f3e3b">
+                    <circle cx="30" cy="44" r="4"/><circle cx="66" cy="44" r="6.5"/>
+                    <circle cx="120" cy="44" r="8.5"/><circle cx="170" cy="68" r="5"/>
+                    <circle cx="42" cy="96" r="4.5"/><circle cx="120" cy="96" r="9"/>
+                    <circle cx="188" cy="66" r="3"/><circle cx="200" cy="98" r="2.5"/>
+                    <circle cx="176" cy="112" r="2.5"/>
+                </g>
+                <text x="146" y="130" font-size="7" fill="#8a6a2f">dashed = opened since 2020</text>
+                <text x="26" y="130" font-size="7" fill="#52514e">circle area = residents</text>
+                <text x="26" y="140" font-size="7" fill="#52514e">within a 10-minute walk</text>
+                <text x="196" y="86" font-size="6.5" fill="#9e3f26">low walk-up</text>
+            </svg>
+            <figcaption>
+                <strong>Metro schematic by walk-up population</strong>
+                <span class="idiom">Node-link network diagram</span>
+                Reframes the network from track geometry to people served,
+                answering question 4 and exposing the outliers a planner
+                actually needs: new stations with almost nobody within walking
+                distance.
+            </figcaption>
+        </figure>
+
+        <figure class="sketch">
+            <svg viewBox="0 0 260 150" role="img" aria-labelledby="s6t">
+                <title id="s6t">Sketch of a scatterplot of bus-only share against bus service level</title>
+                <rect x="0" y="0" width="260" height="150" fill="#fdfdfc"/>
+                <line x1="46" y1="112" x2="236" y2="112" stroke="#c3c2b7"/>
+                <line x1="46" y1="22" x2="46" y2="112" stroke="#c3c2b7"/>
+                <line x1="62" y1="40" x2="220" y2="98" stroke="#8c8b81" stroke-dasharray="4 3"/>
+                <g fill="#d8a556" fill-opacity="0.85" stroke="#8a6a2f" stroke-width="0.5">
+                    <circle cx="72" cy="46" r="7"/><circle cx="98" cy="56" r="10"/>
+                    <circle cx="126" cy="62" r="8"/><circle cx="150" cy="78" r="12"/>
+                    <circle cx="178" cy="86" r="7"/><circle cx="208" cy="98" r="9"/>
+                </g>
+                <circle cx="196" cy="44" r="6" fill="#9e3f26"/>
+                <text x="140" y="38" font-size="6.5" fill="#9e3f26">compensated outlier</text>
+                <text x="50" y="18" font-size="7.5" fill="#52514e">routes per stop ↑</text>
+                <text x="110" y="128" font-size="7.5" fill="#52514e">share of residents bus-only →</text>
+                <text x="110" y="140" font-size="7" fill="#8c8b81">circle area = district population</text>
+            </svg>
+            <figcaption>
+                <strong>Double disadvantage</strong>
+                <span class="idiom">Scatterplot with trend line</span>
+                Tests question 3. A downward slope means bus-dependent
+                districts are penalised twice; the residuals name the districts
+                that break the pattern in either direction.
+            </figcaption>
+        </figure>
+
+    </div>
+
+    <p class="caveat">
+        <strong>What links them.</strong> One selected district and one walking
+        threshold are shared global state. Hovering a district in the stacked
+        bars highlights it in both maps and in the scatter; dragging the
+        threshold slider moves the access surface, the classification, the
+        stacked bars and the marker on the cumulative curve together. Without
+        that linkage these are six charts about transit. With it they are one
+        instrument.
+    </p>
+
+    <h2>5. Group Roles and Responsibilities</h2>
+
+    <p class="caveat">
+        <strong>To be completed.</strong> Replace the placeholder names below
+        before submission. The split assumes three members; if the group is a
+        different size, routing and D3 are where an extra person helps most,
+        since those are the two longest critical paths.
+    </p>
+
+    <table class="data-table">
+        <thead>
+            <tr><th>Member</th><th>Primary responsibility</th><th>Also contributes to</th></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>[Member 1]</td>
+                <td><strong>Data acquisition and cleaning</strong> — Overpass
+                    queries for every layer, bus-stop pairing, entrance-to-station
+                    linkage, route-relation extraction, completeness audit</td>
+                <td>Methodology documentation, interim slides</td>
+            </tr>
+            <tr>
+                <td>[Member 2]</td>
+                <td><strong>Spatial analysis</strong> — raster sampling,
+                    KD-tree baseline, OSRM setup and network isochrones, the
+                    three-way access classification, district aggregation</td>
+                <td>D3 implementation of the two map views; sensitivity
+                    analysis</td>
+            </tr>
+            <tr>
+                <td>[Member 3]</td>
+                <td><strong>Visualization design and front end</strong> — the
+                    four chart views, linked selection and threshold slider,
+                    colour scales, page layout, Uzbek and Russian labels</td>
+                <td>Exploratory analysis, testing, presentation</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p>
+        Shared by everyone: all three review the full pipeline and can explain
+        any part of it under questioning. Encodings, colour scales and the
+        narrative order of the six views are decided together, because those
+        carry the analytical argument rather than merely displaying it. Each
+        member writes the section of the final documentation covering their own
+        work.
+    </p>
+
+    <h2>6. Interim Presentation Deliverables</h2>
+
+    <p>By the interim presentation we expect to demonstrate:</p>
+
+    <ul>
+        <li>A <strong>reproducible acquisition pipeline</strong> — one script
+            rebuilds every layer from the public APIs, with responses cached so
+            the demo does not depend on Overpass being reachable in the
+            room.</li>
+        <li>A <strong>cleaned stop dataset</strong>: raw versus paired bus stop
+            counts, metro entrances linked to stations, and the raw-to-distinct
+            collapse ratio reported as a result in its own right.</li>
+        <li><strong>Initial exploration</strong> — the distribution of walking
+            distances by mode, per-district summaries, and the OSM completeness
+            audit that decides whether research question 3 survives.</li>
+        <li>At least <strong>two working D3 views</strong> reading committed
+            real data, not mock values: the access surface map and the ranked
+            district composition bars.</li>
+        <li><strong>One headline number, said out loud</strong> — the share of
+            Tashkent's residents within a ten-minute walk of a metro entrance,
+            with straight-line and network estimates side by side if routing is
+            running by then, and the straight-line figure alone if it is
+            not.</li>
+        <li><strong>Refined questions</strong>, with anything the data turned
+            out not to support explicitly dropped rather than quietly
+            downgraded.</li>
+    </ul>
+
+    <p>
+        The bus-stop pairing problem will be presented as a solved
+        methodological challenge rather than hidden. It is the clearest example
+        of why the analysis is built on distance rather than counts, and
+        explaining it is the fastest way to show that the numbers on the slides
+        mean what they claim to mean.
+    </p>
+
+    <h2>7. Timeline and Milestones</h2>
+
+    <table class="data-table timeline">
+        <thead>
+            <tr>
+                <th>Week</th>
+                <th>Milestone</th>
+                <th>Tasks and owners</th>
+                <th>Deliverable</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="num">2</td>
+                <td>Acquisition</td>
+                <td>Overpass fetch and caching for all six layers, including
+                    the counts left "to confirm" above [M1]; WorldPop download,
+                    clip and district join [M2]; repository scaffold, licence,
+                    README, and a decision on whether Yangihayot exists in OSM
+                    [M3]</td>
+                <td>Raw data committed; fetch script reruns cleanly from
+                    scratch; the count table on this page filled in</td>
+            </tr>
+            <tr>
+                <td class="num">3</td>
+                <td>Processing, and the first real number</td>
+                <td>Bus-stop pairing and entrance linkage [M1]; reprojection
+                    and straight-line KD-tree access grid [M2]; exploratory
+                    plots, route-relation completeness audit, decision on
+                    question 3 [M3]</td>
+                <td>Clean stop dataset, three-way access classification, EDA
+                    notebook, and the first straight-line coverage
+                    percentage</td>
+            </tr>
+            <tr>
+                <td class="num">4</td>
+                <td>Design and first D3</td>
+                <td>Settle all six encodings and the narrative order [all];
+                    build the access surface map and district composition bars
+                    against real data [M2, M3]; OSRM container running locally
+                    [M2]; interim slides [M1]</td>
+                <td>Two working linked charts and a complete design set</td>
+            </tr>
+            <tr>
+                <td class="num">5</td>
+                <td>Interim presentation</td>
+                <td>End-to-end pipeline demonstration and rehearsal [all];
+                    first network isochrone run and comparison against the
+                    baseline [M2]</td>
+                <td>Presentation, two live visualizations, one headline
+                    number</td>
+            </tr>
+            <tr>
+                <td class="num">6</td>
+                <td>Full build and interaction</td>
+                <td>Remaining four views [M3 leading, M2 on the schematic];
+                    shared selection and threshold slider [M3]; network
+                    isochrones over the full grid and the sensitivity table
+                    [M2]; Wikidata opening years or the four-era fallback
+                    [M1]</td>
+                <td>All six views interactive and linked; straight-line versus
+                    network comparison reported</td>
+            </tr>
+            <tr>
+                <td class="num">7</td>
+                <td>Polish and ship</td>
+                <td>Colourblind-safe check on the bivariate scheme, mobile
+                    layout, TopoJSON and grid size optimisation [M2, M3];
+                    methodology README and limitations write-up [M1]; final
+                    rehearsal [all]</td>
+                <td>Published site, documented public repository, final
+                    presentation</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <p class="caveat">
+        <strong>Scheduling risk, and the hedge against it.</strong> The data is
+        static — OpenStreetMap and WorldPop will look the same in week 6 as in
+        week 2 — so nothing external forces early progress. Two rules guard
+        against that. The <strong>week 3 straight-line number</strong> is a
+        hard internal deadline: it produces a complete, presentable pipeline
+        with no routing infrastructure at all, so the project always has
+        something true to show. The network isochrones in weeks 5 and 6 are
+        then an upgrade to a working system rather than the thing everything
+        waits on. OSRM is the only component that could fail outright, and it
+        can fail without taking a research question with it — question 6 simply
+        becomes a limitation instead of a finding.
+    </p>
+
+    <h2>Limitations</h2>
+
+    <ul>
+        <li><strong>Walking time is modelled, not measured.</strong> A fixed
+            4.8 km/h ignores summer heat, the lack of shade along the new
+            ring's above-ground sections, crossings of eight-lane arterials,
+            and how much harder all of it is with a pushchair. The isochrones
+            are an optimistic upper bound on access and are labelled as
+            such.</li>
+        <li><strong>Proximity is not service.</strong> We found no public GTFS
+            feed for Tashkent in the open feed catalogues, so there is no
+            headway or frequency data: a stop served twice an hour and one
+            served every four minutes look identical here. Route count per stop
+            is a proxy for service level, and a weak one. Every claim resting
+            on it is stated as such.</li>
+        <li><strong>OpenStreetMap completeness is uneven.</strong> Metro
+            stations are reliably mapped, bus stops less so, bus route
+            relations least of all. If mapping density tracks district wealth,
+            the bias runs in exactly the wrong direction for a study of
+            disadvantage. This is audited in week 3 and reported alongside the
+            results, not in a footnote.</li>
+        <li><strong>WorldPop is a model, not a census.</strong> Sub-district
+            population is an estimate; nothing is reported to more than two
+            significant figures, and district totals are checked against the
+            official statistics.</li>
+        <li><strong>This is an access study, not an equity study.</strong> No
+            reliable district-level income data exists for Tashkent, so the
+            project reports the access disparity the data does show and leaves
+            causal claims about who lives where to the discussion.</li>
+    </ul>
+
+    <h2>Data sources</h2>
+
+    <p class="link-list">
+        <a href="https://overpass-api.de/">Overpass API</a> — OpenStreetMap query endpoint<br>
+        <a href="https://www.worldpop.org/">WorldPop</a> — gridded population estimates<br>
+        <a href="https://download.geofabrik.de/asia/uzbekistan.html">Geofabrik</a> — Uzbekistan OSM extract<br>
+        <a href="http://project-osrm.org/">OSRM</a> — open source routing engine<br>
+        <a href="https://data.gov.uz/en">data.gov.uz</a> — Open Data Portal of the Republic of Uzbekistan<br>
+        <a href="https://query.wikidata.org/">Wikidata SPARQL</a> — metro station opening dates
+    </p>
+
+    <p class="site-note">
+        Map data © OpenStreetMap contributors, ODbL. Population data ©
+        WorldPop, CC BY 4.0. Distances computed in EPSG:32642 (UTM 42N);
+        walking times at 4.8 km/h along the OSM pedestrian network.
+    </p>
+
+    <a class="back-link" href="../">← Back to home</a>
+
+</body>
+
+</html>
