@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 6</title>
+    <title>Lab 6 &mdash; Hierarchical Data: Trees and Treemaps</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 6</h1>
+    <h1>Lab 6: Hierarchical Data Visualization</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,203 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
-    <p>
-        Lab 6 will be added here.
+    <p class="prose-lead">
+        The assignment comes first: one GDP hierarchy drawn as two treemaps that
+        differ only in how they cut up the rectangle. The in-lab exercises
+        (a collapsible tree and a zoomable treemap of twelve cities) follow in
+        <a href="#practice">Section 5</a>.
+    </p>
+
+    <h2>1. Dataset and hierarchy</h2>
+
+    <dl class="dataset-facts">
+        <dt>Source table &mdash; <a href="../data/lab6_assignment_gdp.csv">lab6_assignment_gdp.csv</a></dt>
+        <dd>27 countries, one row each, with <code>continent</code>,
+            <code>area</code>, <code>country</code>,
+            <code>gdp_billion_usd</code> and <code>gdp_status</code>
+            (Increase 15, Unchanged 7, Decrease 5). Synthetic, supplied for
+            visualization practice.</dd>
+
+        <dt>Hierarchy &mdash; <a href="../data/lab6_assignment_gdp.json">lab6_assignment_gdp.json</a></dt>
+        <dd>World &rarr; 6 continents &rarr; 15 areas &rarr; 27 countries,
+            built by <a href="convert_gdp.py">convert_gdp.py</a>, which groups
+            the flat rows one level at a time with pandas and recurses. Each
+            leaf keeps both attributes, <code>gdp</code> and
+            <code>status</code>; continent and area totals are not stored but
+            summed in the browser with <code>d3.hierarchy().sum()</code>.</dd>
+
+        <dt>Scale</dt>
+        <dd>World total $85,215 billion. North America ($31,730B) and Asia
+            ($30,385B) together are 73% of it; Africa ($1,260B) is 1.5%.</dd>
+    </dl>
+
+    <h2>2. Two treemaps of the same GDP hierarchy</h2>
+
+    <div class="viz-legend" id="gdp-legend"></div>
+
+    <div class="gdp-pair">
+
+        <section class="gdp-panel">
+            <h3>A. Squarified tiling <code>d3.treemapSquarify</code></h3>
+            <div class="viz-controls compact">
+                <span class="crumb" data-crumb></span>
+                <button type="button" class="ghost-button" data-zoom-out hidden>&larr; Back to World</button>
+            </div>
+            <figure class="viz-figure">
+                <div id="treemap-squarify" class="loading">Loading GDP data&hellip;</div>
+            </figure>
+        </section>
+
+        <section class="gdp-panel">
+            <h3>B. Slice-and-dice tiling <code>d3.treemapSliceDice</code></h3>
+            <div class="viz-controls compact">
+                <span class="crumb" data-crumb></span>
+                <button type="button" class="ghost-button" data-zoom-out hidden>&larr; Back to World</button>
+            </div>
+            <figure class="viz-figure">
+                <div id="treemap-slicedice" class="loading">Loading GDP data&hellip;</div>
+            </figure>
+        </section>
+
+    </div>
+
+    <p class="viz-caption">
+        Each coloured rectangle is one country; its area is proportional to GDP.
+        Countries sit inside a light frame for their area, which sits inside a
+        darker frame for their continent, each with its name in the header
+        strip. <strong>Hover</strong> a country for its exact values &mdash;
+        the same country is outlined in both treemaps so they can be compared.
+        <strong>Click</strong> anywhere to zoom both treemaps into that
+        continent, and click again (or use <em>Back to World</em>) to return.
+        Below treemap B the continents are also labelled as an axis, because
+        three of its columns are too narrow to carry their own names.
+    </p>
+
+    <details class="table-view">
+        <summary>Show all 27 countries as a table</summary>
+        <div class="table-scroll">
+            <table id="gdp-table" class="data-table gdp-table">
+                <thead></thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </details>
+
+    <h2>3. Design description</h2>
+
+    <div class="prose">
+
+        <p>
+            <strong>GDP amount is rectangle area</strong>, the channel a treemap
+            is built on, so part-to-whole reads directly: the United States and
+            China together fill over half of each picture.
+            <strong>GDP status is colour</strong> on a diverging scheme,
+            blue for Increase and red for Decrease, with neutral grey for
+            Unchanged, since &ldquo;no change&rdquo; should look like the
+            absence of a signal. Status is also printed as &#9650;/&#9679;/&#9660;
+            inside each labelled cell so it never relies on hue alone.
+            <strong>The hierarchy is containment</strong>: two tones of framed
+            header strip, continent and area, so structure never competes with
+            status for colour.
+        </p>
+
+        <p>
+            <strong>Squarify</strong> keeps rectangles close to square, which
+            makes areas easy to compare and leaves room for labels; the cost is
+            that position means nothing, and a continent's areas land wherever
+            they fit. <strong>Slice-and-dice</strong> alternates direction by
+            depth &mdash; continents are columns, areas are rows, countries are
+            columns again &mdash; so the hierarchy is readable at a glance and
+            order is stable, but small members become slivers (Africa is
+            14&nbsp;pixels wide). Zoom and tooltips recover what it squeezes out.
+        </p>
+
+    </div>
+
+    <h2>4. What the two views show</h2>
+
+    <div class="prose">
+        <p>
+            Growth is concentrated rather than spread: 15 of 27 countries
+            increased, but they carry 72% of all GDP ($61,290B) because the
+            United States, China and India are among them. The five decreases
+            are mid-to-large economies &mdash; Japan, Germany, Italy, Brazil
+            and Nigeria &mdash; so in treemap A the red cells are few but not
+            small. In treemap B the same fact is easier to locate: Europe's
+            column is the only one with two red cells, one in each of two
+            different areas.
+        </p>
+    </div>
+
+    <!-- ------------------------------------------------------------------ -->
+
+    <h2 id="practice">5. In-lab exercises (Tasks 1&ndash;15)</h2>
+
+    <p class="prose-lead">
+        Twelve cities in a World &rarr; continent &rarr; country &rarr; region
+        &rarr; city hierarchy, converted from
+        <a href="../data/lab6_small_hierarchy.csv">CSV</a> to
+        <a href="../data/lab6_small_hierarchy.json">nested JSON</a> by
+        <a href="convert_hierarchy.py">convert_hierarchy.py</a>. The
+        hierarchy object, its descendants and the summed root value
+        (<span id="root-value">&hellip;</span> thousand people) are also logged
+        to the browser console.
+    </p>
+
+    <h3>Node-link tree &mdash; <code>d3.tree()</code> (Tasks 6&ndash;9)</h3>
+
+    <div class="viz-controls compact">
+        <button type="button" class="ghost-button" id="tree-expand">Expand all</button>
+        <button type="button" class="ghost-button" id="tree-collapse">Collapse to countries</button>
+    </div>
+
+    <div class="viz-legend" id="tree-legend"></div>
+
+    <figure class="viz-figure">
+        <div id="tree" class="loading">Loading the hierarchy&hellip;</div>
+    </figure>
+
+    <p class="viz-caption">
+        <strong>Click</strong> any blue node to hide its children; the layout
+        is recomputed and the rest of the tree closes up around it. A collapsed
+        node is drawn larger, with the number of cities it hides.
+    </p>
+
+    <h3>Treemap &mdash; <code>d3.treemap()</code> (Tasks 10&ndash;15)</h3>
+
+    <div class="viz-controls">
+        <span class="control-label">Tiling</span>
+        <div class="button-set" id="tile-toggle" role="group" aria-label="Treemap tiling method">
+            <button type="button" data-tile="squarify" class="active">Squarify</button>
+            <button type="button" data-tile="binary">Binary</button>
+            <button type="button" data-tile="slice">Slice</button>
+            <button type="button" data-tile="dice">Dice</button>
+            <button type="button" data-tile="sliceDice">SliceDice</button>
+        </div>
+        <span class="crumb" id="practice-crumb"></span>
+        <button type="button" class="ghost-button" id="practice-zoom-out" hidden>&larr; Zoom out</button>
+    </div>
+
+    <div class="viz-legend" id="treemap-legend"></div>
+
+    <figure class="viz-figure">
+        <div id="treemap" class="loading">Loading the hierarchy&hellip;</div>
+    </figure>
+
+    <p class="viz-caption">
+        Area is population, colour is continent. <strong>Click</strong> a
+        city to zoom one level deeper (World &rarr; continent &rarr; country
+        &rarr; region); the x/y scales change and every rectangle is re-drawn
+        against the new domain. Switching the tiling keeps the same
+        values and the same zoom &mdash; only the cutting changes.
     </p>
 
     <a class="back-link" href="../">&larr; Back to home</a>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="lab6.js"></script>
 
 </body>
 
