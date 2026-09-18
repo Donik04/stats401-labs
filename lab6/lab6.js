@@ -55,6 +55,12 @@ const INK_SOFT = "#52514e";
 const CONTINENT_FRAME = "#e4e3dd";
 const AREA_FRAME = "#f4f3ef";
 
+// Header strips: near-black for continents (white text, 13.9:1) and a
+// mid-grey for areas (ink text, 10.8:1), so the two levels read as different
+// ranks at a glance and neither can be mistaken for a status colour.
+const CONTINENT_HEAD_FILL = "#3a3935";
+const AREA_HEAD_FILL = "#d3d1c9";
+
 const comma = d3.format(",");
 const pct = d3.format(".1%");
 const billions = v => `$${comma(v)}B`;
@@ -119,8 +125,8 @@ const AXIS_H = 70;
 
 // Header strip heights, by what the node is (not its absolute depth), so the
 // same rule holds when zoomed into one continent.
-const CONTINENT_HEAD = 20;
-const AREA_HEAD = 16;
+const CONTINENT_HEAD = 22;
+const AREA_HEAD = 17;
 
 const gdpState = {
     world: null,
@@ -264,10 +270,23 @@ function drawGdpTreemap(view) {
         .attr("rx", 3)
         .attr("fill", d => d.height === 2 ? CONTINENT_FRAME : AREA_FRAME);
 
+    // A solid header strip behind each name, so continent and area labels
+    // stand apart from the countries instead of blending into the frame.
+    frames.append("rect")
+        .attr("class", "frame-head")
+        .attr("width", d => d.x1 - d.x0)
+        .attr("height", d => d.height === 2 ? CONTINENT_HEAD - 1 : AREA_HEAD - 1)
+        .attr("rx", 3)
+        .attr("fill", d => d.height === 2 ? CONTINENT_HEAD_FILL : AREA_HEAD_FILL);
+
+    // Weight and fill are set as attributes as well as in CSS, so the text is
+    // measured for fitting at the weight it is finally drawn in.
     frames.append("text")
         .attr("class", d => d.height === 2 ? "frame-label continent" : "frame-label area")
-        .attr("x", 5)
-        .attr("y", d => d.height === 2 ? 14 : 11.5)
+        .attr("x", 6)
+        .attr("y", d => d.height === 2 ? 15 : 11.5)
+        .attr("font-weight", "bold")
+        .attr("fill", d => d.height === 2 ? "#ffffff" : INK)
         .each(function(d) {
             const width = d.x1 - d.x0 - 10;
             const full = d.height === 2
@@ -312,6 +331,7 @@ function drawGdpTreemap(view) {
         .attr("class", "leaf-name")
         .attr("x", 5)
         .attr("y", 15)
+        .attr("font-weight", "bold")
         .attr("fill", d => STATUS_INK[d.data.status])
         .each(function(d) {
             if (d.y1 - d.y0 >= 20) fitText(this, d.data.name, d.x1 - d.x0 - 9);
@@ -481,7 +501,7 @@ function drawGdpLegend() {
 
     const frameRows = frame.append("div").attr("class", "legend-rows");
 
-    [["Continent", CONTINENT_FRAME], ["Area within continent", AREA_FRAME]].forEach(([name, fill]) => {
+    [["Continent", CONTINENT_HEAD_FILL], ["Area within continent", AREA_HEAD_FILL]].forEach(([name, fill]) => {
         const row = frameRows.append("div").attr("class", "legend-swatch-row static");
         row.append("span")
             .attr("class", "frame-chip")

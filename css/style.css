@@ -1011,14 +1011,16 @@ p {
 }
 
 .frame-label.continent {
-    font-size: 12.5px;
+    font-size: 13px;
     font-weight: bold;
-    fill: #0b0b0b;
+    fill: #ffffff;
+    letter-spacing: 0.2px;
 }
 
 .frame-label.area {
-    font-size: 10.5px;
-    fill: #52514e;
+    font-size: 11px;
+    font-weight: bold;
+    fill: #0b0b0b;
 }
 
 .leaf-name,
