@@ -1098,3 +1098,408 @@ p {
 #treemap .cell {
     cursor: zoom-in;
 }
+
+/* ---------- Lab 7: temporal network and weather line chart ---------- */
+
+/*
+ * Region is the only categorical colour in the network (blue / orange / aqua,
+ * the palette's first three slots, validated all-pairs). Aqua measures 2.74:1
+ * on the page, below 3:1, so the relief rule applies: every node carries a
+ * printed company name and the page ships the relationship table. Neither the
+ * labels nor the table may be removed. Sector rides on shape and transaction
+ * type on dash pattern, so no second hue scale competes with region.
+ */
+
+/* Tooltip internals — value leads, label follows. */
+
+.tip-head {
+    font-weight: bold;
+    color: #0b0b0b;
+    margin-bottom: 4px;
+}
+
+.tip-row {
+    white-space: nowrap;
+}
+
+.tip-row strong {
+    font-variant-numeric: tabular-nums;
+}
+
+.tip-key {
+    color: #52514e;
+}
+
+.tip-note {
+    margin-top: 5px;
+    padding-top: 4px;
+    border-top: 1px solid #e1e0d9;
+    font-size: 12px;
+    color: #898781;
+}
+
+/* Grid lines outside the .viz-root scope Lab 4 introduced. The selector has to
+   out-specify the `.axis line` rule above, which would otherwise paint them at
+   tick-mark weight. */
+
+.axis line.grid-line,
+.grid-line {
+    stroke: #e1e0d9;
+    stroke-width: 1;
+}
+
+/* Controls */
+
+.viz-controls .transport {
+    display: flex;
+    gap: 6px;
+}
+
+.transport button.active {
+    background: steelblue;
+    border-color: steelblue;
+    color: white;
+}
+
+input[type="range"] {
+    flex: 1 1 240px;
+    min-width: 200px;
+    accent-color: steelblue;
+}
+
+.check-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: #52514e;
+}
+
+.date-field {
+    padding: 6px 8px;
+    border: 1px solid #c3c2b7;
+    border-radius: 4px;
+    font: inherit;
+    font-size: 13px;
+}
+
+select.date-field {
+    padding-right: 4px;
+}
+
+.readout {
+    font-size: 13px;
+    color: #52514e;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Day summary — a row of stat tiles above the animation, so the numbers are
+   readable at a specific day rather than only remembered from a frame. */
+
+.day-summary {
+    margin: 20px 0 6px;
+}
+
+.stat-rows {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.stat-row {
+    flex: 1 1 150px;
+    padding: 9px 12px 10px;
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+    background: #fdfdfc;
+}
+
+.stat-row .stat-key {
+    display: block;
+    font-size: 12px;
+    color: #52514e;
+}
+
+.stat-row .stat-val {
+    display: block;
+    margin-top: 2px;
+    font-size: 19px;
+    font-weight: bold;
+    color: #0b0b0b;
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-side {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 26px;
+    margin-top: 10px;
+    align-items: baseline;
+}
+
+.stat-note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.note-key {
+    color: #52514e;
+}
+
+.stat-note strong {
+    font-variant-numeric: tabular-nums;
+}
+
+.stat-changes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    width: 100%;
+}
+
+.change {
+    margin: 0;
+    font-size: 13px;
+}
+
+.change-tag {
+    display: inline-block;
+    padding: 1px 7px;
+    border-radius: 3px;
+    background: #0b0b0b;
+    color: #ffffff;
+    font-size: 11px;
+    letter-spacing: 0.3px;
+}
+
+.change.closes .change-tag {
+    background: none;
+    border: 1px solid #0b0b0b;
+    color: #0b0b0b;
+}
+
+.no-change {
+    margin: 0;
+    font-size: 13px;
+    color: #898781;
+}
+
+/* Network */
+
+.region-bands line {
+    stroke: #e1e0d9;
+    stroke-dasharray: 3 5;
+}
+
+.region-bands text {
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1.2px;
+}
+
+/* One group per cluster, at a single opacity so the overlapping circles and
+   fat strokes inside it flatten instead of compounding into darker patches. */
+.hulls .hull {
+    opacity: 0.075;
+    pointer-events: none;
+}
+
+.hulls .hull circle {
+    fill: #0b0b0b;
+}
+
+.hulls .hull line {
+    stroke: #0b0b0b;
+    stroke-width: 30px;
+    stroke-linecap: round;
+}
+
+.net-link .hit {
+    stroke: transparent;
+    cursor: pointer;
+}
+
+.net-link .wire {
+    pointer-events: none;
+}
+
+.net-link .event {
+    pointer-events: none;
+}
+
+.net-link:hover .wire {
+    stroke: #0b0b0b !important;
+    stroke-opacity: 1 !important;
+}
+
+.net-link.dim {
+    opacity: 0.18;
+}
+
+#network .net-node {
+    cursor: grab;
+    outline: none;
+}
+
+#network .net-node:active {
+    cursor: grabbing;
+}
+
+#network .net-label {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+#network .net-node.idle .net-label {
+    fill: #898781;
+    font-weight: normal;
+}
+
+#network .net-node:hover .glyph,
+#network .net-node:focus .glyph {
+    stroke: #0b0b0b;
+    stroke-width: 2.5;
+}
+
+.day-stamp {
+    font-size: 26px;
+    font-weight: bold;
+    fill: #0b0b0b;
+    font-variant-numeric: tabular-nums;
+}
+
+.date-stamp {
+    font-size: 13px;
+    fill: #52514e;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Overview strips */
+
+.strip-title {
+    font-size: 12px;
+    font-weight: bold;
+    fill: #0b0b0b;
+}
+
+.day-bar {
+    fill: #c9c8c2;
+}
+
+.day-bar.in-window {
+    fill: #86b6ef;
+}
+
+.day-bar.current {
+    fill: #184f95;
+}
+
+.day-cursor {
+    fill: #0b0b0b;
+    pointer-events: none;
+}
+
+.phase-mark line {
+    stroke: #898781;
+    stroke-dasharray: 2 4;
+}
+
+.phase-mark text {
+    font-size: 11px;
+    fill: #898781;
+}
+
+.scrub {
+    fill: transparent;
+    cursor: crosshair;
+}
+
+/* Relationship grid */
+
+.rel-name {
+    font-size: 10.5px;
+    fill: #0b0b0b;
+}
+
+.rel-dash {
+    stroke: #9a9892;
+    stroke-width: 2;
+}
+
+.rel-band {
+    fill: #f4f3ef;
+}
+
+.rel-cell {
+    cursor: pointer;
+}
+
+.rel-row:hover .rel-band,
+.rel-row.lit .rel-band {
+    fill: #eef4fb;
+}
+
+.rel-row.lit .rel-name {
+    font-weight: bold;
+}
+
+.rel-row:hover .rel-cell {
+    stroke: #0b0b0b;
+    stroke-width: 0.75;
+}
+
+.rel-cursor {
+    fill: none;
+    stroke: #0b0b0b;
+    stroke-width: 1.5;
+    pointer-events: none;
+}
+
+.legend-key {
+    color: #0b0b0b;
+}
+
+/* Weather line chart */
+
+#weather .city-line {
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.hairline {
+    stroke: #898781;
+    stroke-width: 1;
+    stroke-dasharray: 3 3;
+    pointer-events: none;
+}
+
+/* Direct labels at the line ends. The text wears the ink token and the short
+   stroke beside it carries the series colour, so identity never rests on
+   coloured text. */
+.end-label text {
+    font-size: 12px;
+    font-weight: bold;
+    fill: #0b0b0b;
+}
+
+.end-label line {
+    stroke-width: 2.5;
+    stroke-linecap: round;
+}
+
+#weather .marker {
+    stroke: #ffffff;
+    stroke-width: 2;
+    pointer-events: none;
+}
+
+#weather .brush .selection {
+    fill: #2a78d6;
+    fill-opacity: 0.1;
+    stroke: #184f95;
+}
+
+.grid .domain {
+    display: none;
+}
