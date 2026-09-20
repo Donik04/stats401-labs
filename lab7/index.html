@@ -28,13 +28,6 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
-    <p class="prose-lead">
-        The assignment comes first: a commercial network of twelve companies,
-        animated over 60 days, with two static overviews beside it so distant
-        days can still be compared. The in-lab exercises (180 days of weather
-        as a multi-series line chart with a metric switch, range filtering and
-        an animated marker) follow in <a href="#practice">Section 6</a>.
-    </p>
 
     <h2>1. Dataset</h2>
 
@@ -46,25 +39,11 @@
 
         <dt>Transactions &mdash; <a href="../data/lab7_assignment_transactions_60days.csv">lab7_assignment_transactions_60days.csv</a></dt>
         <dd>367 rows over days 1&ndash;60 (2026-01-01 to 2026-03-01), each a
-            day's commercial activity between two companies:
-            <code>amount_usd</code> ($7,330&ndash;$33,892),
-            <code>transaction_type</code> (goods, shipping, components,
-            materials, services) and <code>transaction_count</code>
-            (1&ndash;5). Source and target order varies between rows, so the
-            links are read as <strong>undirected</strong>: the 367 rows collapse
-            to <strong>27 distinct relationships</strong>, 3 to 10 of which are
-            active on any one day.</dd>
+            day's commercial activity between two companies.</dd>
 
         <dt>Rhythm</dt>
-        <dd>Every relationship recurs on a strict 2-, 3-, 4- or 5-day cycle, so
-            a pair being absent from one day usually means "not its turn", not
-            "over". What the picture treats as an event is therefore a
-            relationship's <strong>first</strong> and <strong>last</strong> day
-            across the whole period, not its day-to-day gaps.</dd>
+        <dd>Every relationship recurs on a strict 2-, 3-, 4- or 5-day cycle.
 
-        <dt>Caveat</dt>
-        <dd>The companies and transactions are fabricated for visualization
-            practice. Nothing here describes a real firm or a real trade.</dd>
     </dl>
 
     <h2>2. Animated temporal network</h2>
@@ -118,27 +97,12 @@
         <div id="network" class="loading">Loading the network&hellip;</div>
     </figure>
 
-    <p class="viz-caption">
-        One frame is one day. <strong>Press Play</strong>, or drag the slider to
-        inspect a single day; every other control below the transport row
-        re-renders the same frame. Nodes never move and never leave &mdash; a
-        company with no trade that day greys out and shrinks to its minimum, so
-        the reader tracks the same twelve positions for all 60 days.
-        <strong>Hover</strong> any node or link for its exact values,
-        <strong>click</strong> a link to pin it (it also lights up in the grid in
-        Section&nbsp;4), and <strong>drag</strong> a node if a label is covered.
-        The three dashed columns are regions, so a link that crosses a column is
-        a cross-regional relationship.
-    </p>
-
     <h2>3. The whole period at once</h2>
 
     <p class="prose-lead">
         Animation maps data time onto animation time, which means the viewer has
         to remember earlier frames to compare them. These two strips keep the
         shape of all 60 days on screen while one day is animated.
-        <strong>Click or drag anywhere on them</strong> to send the animation to
-        that day.
     </p>
 
     <figure class="viz-figure">
@@ -146,9 +110,7 @@
     </figure>
 
     <p class="viz-caption">
-        Both strips share the day axis; each is its own chart with its own
-        vertical scale, because relationship counts and dollars do not belong on
-        one axis. The dark bar and the caret above it are the current day; with
+  \     The dark bar and the caret above it are the current day; with
         a trailing window selected, the lighter blue bars are the other days in
         the frame.
     </p>
@@ -157,9 +119,7 @@
 
     <p class="prose-lead">
         The one thing the animation cannot hold still is <em>whether a
-        relationship exists at all</em>. All 27 are drawn here as rows, ordered
-        by the day they first appear, so onset, rhythm and close-out read off a
-        single picture. <strong>Click any cell</strong> to jump the animation to
+        relationship exists at all</em>.Click any cell to jump the animation to
         that day.
     </p>
 
@@ -169,10 +129,7 @@
 
     <p class="viz-caption">
         A filled cell means the two companies traded that day; darker means a
-        larger amount. The two dots on the left are the companies' regions
-        &mdash; two unlike colours is a cross-regional relationship &mdash; and
-        the short line is the dash pattern that identifies this relationship's
-        transaction type in the network above. The grey band spans each
+        larger amount. Meanwhile, the grey band spans each
         relationship's first to last day, and the black outline is the current
         frame.
     </p>
@@ -193,16 +150,7 @@
 
         <p>
             <strong>Region is the only categorical colour</strong> in the
-            network: blue for Asia, orange for Europe, aqua for North America
-            &mdash; the palette's first three slots, which validate all-pairs
-            (worst colour-blind &Delta;E&nbsp;9.2, worst normal-vision
-            &Delta;E&nbsp;24.0). Aqua measures 2.74:1 against the page, below
-            3:1, so the relief rule applies and is honoured twice over: every
-            node prints its company name, and Section&nbsp;4 ships a table view.
-            Region is <em>also</em> horizontal position, through a weak
-            <code>forceX</code> per region, which is what makes a cross-regional
-            relationship something you see as a line crossing a column rather
-            than something you work out from two hues.
+            network: blue for Asia, orange for Europe, aqua for North America,
         </p>
 
         <p>
@@ -211,20 +159,14 @@
             can grow and shrink over the 60 days without changing identity.
             Area, not radius, is proportional to the dollar value, and idle
             companies stop at a fixed floor rather than vanishing.
-            <strong>A company that opens a new relationship</strong> gets a dark
-            ring for that frame.
         </p>
 
         <p>
             On the links, <strong>amount is stroke width</strong> and
             <strong>transaction type is dash pattern</strong> &mdash; type is
-            deliberately not a second colour scale, because five more hues
+            deliberately not a second color scale, because five more hues
             competing with three region hues in the same picture is exactly how a
-            node-link diagram becomes unreadable. The temporal events sit on a
-            third channel again, a glyph at the link's midpoint: a
-            <strong>filled dot</strong> for the first day of a relationship
-            (with the line drawn in ink and a brief pulse on that dot) and a
-            <strong>hollow ring</strong> for its last. Day-to-day appearance and
+            node-link diagram becomes unreadable. In the visualization, day-to-day appearance and
             disappearance is carried by the D3 join itself, fading in on enter
             and out on exit over a duration tied to the playback speed.
         </p>
@@ -232,12 +174,9 @@
         <p>
             <strong>The mental map is preserved by taking positions out of the
             animation entirely.</strong> The force simulation runs once, on the
-            aggregate 60-day network &mdash; all 27 relationships, pulled
-            together in proportion to how often they trade &mdash; with a
-            collision radius set to the largest a node ever gets. Those
-            positions are then pinned, so a growing node can never push its
-            neighbours around and a company sits in the same place on day&nbsp;3
-            and day&nbsp;57. Because position is no longer available to show
+            aggregate 60-day network, including all 27 relationships, pulled
+            together in proportion to how often they trade with a
+            collision radius set to the largest a node ever gets. Because position is no longer available to show
             clustering, clusters are drawn <em>explicitly</em>: a soft blob
             behind each connected component, and a count in the summary row.
             <em>Re-settle layout</em> releases the pins and re-runs the
@@ -248,9 +187,7 @@
             <strong>Trailing 3 days</strong> and <strong>trailing 7 days</strong>
             exist because the relationships recur on 2- and 3-day cycles: a
             single day shows only a slice of the structure that is actually in
-            force. Three days is roughly the full current relationship set, and
-            it is the view that makes the phase changes at days 21 and 41
-            obvious. One day is the default, as the assignment specifies.
+            force.
         </p>
 
     </div>
@@ -276,16 +213,7 @@
                     link count grows by a third, so the later relationships are
                     also individually larger.
                 </p>
-                <p>
-                    On top of that trend sits a hard short cycle, which is what
-                    the upper strip actually shows: because every relationship
-                    recurs every 2 or 3 days, the days interleave into a
-                    repeating pattern. In the last 20 days it is exactly
-                    six-long &mdash; 5, 7, 9, 6, 6, 10 links &mdash; so day 51
-                    carries $202k and day 52 carries $113k with nothing having
-                    changed structurally. Any claim about "a busy day" has to
-                    say where in that cycle the day falls.
-                </p>
+
             </div>
         </div>
 
@@ -300,16 +228,14 @@
                 <p>
                     Centrality is handed on rather than accumulated, and it
                     happens in two steps that the grid dates precisely.
-                    <strong>Fusion Electronics</strong> (Technology, Asia) takes
+                    For example, for<strong>Fusion Electronics</strong> (Technology, Asia) takes
                     it first: on days 21 and 22 it opens three relationships at
                     once &mdash; with Harbor Shipping, Lumen Distribution and
                     Juniper Stores &mdash; and its volume jumps from $281k in
-                    days 1&ndash;15 to $623k in days 16&ndash;30. It ends the
-                    period with 8 of the 27 relationships, more than any other
-                    company, and is active on 53 of 60 days.
+                    days 1&ndash;15 to $623k in days 16&ndash;30.
                 </p>
                 <p>
-                    Then on days 41&ndash;42 the hub moves west.
+                    Then on days 41&ndash;42 the hub moves west. As such,
                     <strong>Cedar Retail</strong> opens three (Granite Wholesale,
                     Keystone Materials, Harbor Shipping) and
                     <strong>Ion Systems</strong> opens three (Delta Components,
@@ -319,9 +245,6 @@
                     &rarr; $333k &rarr; $838k, finishing as the single largest
                     node by volume &mdash; while Fusion, having lost four
                     partners on day 40, falls back to $427k.
-                    <strong>Evergreen Foods</strong> never joins in: two
-                    relationships, active on 27 of 60 days, $285k in total, and
-                    the smallest node in almost every frame.
                 </p>
             </div>
         </div>
@@ -334,25 +257,15 @@
             </div>
             <div class="finding-body">
                 <p>
-                    The network is <em>never</em> a single component on any of
-                    the 60 days &mdash; 2 to 4 separate clusters, every day. The
+                    The network is never a single component on any of
+                    the 60 days demonstrated. The
                     fragmentation is worst on the sparse days of the 3-day
                     rhythm: on days 1, 7 and 13 only three relationships are
                     active and they are three <em>disjoint pairs</em> (Cedar with
                     Evergreen, Ion with Lumen, Granite with Harbor), so the
                     largest cluster is two companies and half the network is
                     idle. Those days are also single-continent days: not one
-                    Asian company trades. The mirror case appears in the middle
-                    of the period &mdash; on days 24 and 36 a six-company
-                    Europe&ndash;Asia cluster is active and no North American
-                    company trades at all.
-                </p>
-                <p>
-                    Connectivity peaks on the last phase's big days (42, 48, 54,
-                    60), where the largest cluster reaches 8 of 12 companies
-                    &mdash; but even there it is still three clusters, because
-                    Granite with Keystone and Evergreen with Lumen sit off to
-                    the side on their own rhythm.
+                    Asian company trades. 
                 </p>
             </div>
         </div>
@@ -366,27 +279,14 @@
             </div>
             <div class="finding-body">
                 <p>
-                    Ten relationships span the whole period by first and last
-                    day &mdash; they start by day 3 and are still trading at day
-                    58&ndash;60. They are the backbone, and they are the cheap
-                    ones. Around that backbone there are two clean turnover
+                    They are the backbone, and they are the cheap ones.
+                    Around that backbone there are two clean turnover
                     events. <strong>Day 20</strong> closes three (BlueRiver with
                     Delta, Cedar with Fusion, Harbor with Keystone) and sends Ion
                     with Juniper dormant for exactly twenty days.
-                    <strong>Days 39&ndash;40</strong> close six more: four of
-                    them are Fusion's (with Granite, Harbor, Lumen and Juniper),
-                    and the other two are Granite with Harbor and Delta with
-                    Keystone. Granite loses two of its three partners in that
-                    one step and its volume drops 24% in the final quarter, even
-                    though Cedar opens a new line to it on day 41.
                 </p>
                 <p>
-                    Newer is bigger, consistently. The eight relationships that
-                    open on days 41&ndash;42 average $15k&ndash;$30k per
-                    trading day; Fusion with Ion averages $30,058 and Cedar with
-                    Keystone $28,230, against $8,874 for Cedar with Evergreen,
-                    which has been running since day 1. In the grid this shows
-                    as the lower rows being uniformly darker than the upper
+                    In the grid this shows as the lower rows being uniformly darker than the upper
                     ones. The backbone itself does not thicken: of the nine that
                     trade continuously, every one is within &plusmn;6% of its
                     own first-half average in the second half. The single
@@ -415,18 +315,7 @@
                     the late frames are visibly more diagonal than the early
                     ones.
                 </p>
-                <p>
-                    The sharper version of the same shift is which regions are
-                    present at all. In the first 40 days, <strong>10 days have a
-                    whole region sitting out</strong> &mdash; no Asian company
-                    trades on days 1, 7, 13 or 19; no North American company
-                    trades on days 24, 30 or 36. In the last 20 days that
-                    happens on <strong>none</strong>: all three regions trade on
-                    every single one. That is the real change, and it is a
-                    stronger statement than the percentage &mdash; not just more
-                    cross-border links, but no more days when a region is
-                    absent.
-                </p>
+
             </div>
         </div>
 
@@ -482,17 +371,6 @@
         <span class="readout" id="frame-readout"></span>
     </div>
 
-    <p class="viz-caption">
-        <strong>Hover the plot</strong> for a crosshair that snaps to a date and
-        reads out every selected city at once &mdash; the pointer never has to
-        land on a 2&nbsp;px line. <strong>Drag across the plot</strong> to zoom
-        into a date range (<code>d3.brushX</code>, with
-        <code>xScale.invert</code> turning the pixels back into dates), or type
-        one into the date fields. <strong>Play</strong> walks a marker along
-        every visible line; the slider scrubs it, and both are limited to the
-        range currently shown. Cities are toggled from the legend, and each line
-        is labelled at its right end so identity never rests on colour alone.
-    </p>
 
     <div class="prose">
         <p>
