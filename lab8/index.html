@@ -49,13 +49,6 @@
             subsection, heading and page &mdash;
             <a href="../data/lab8_bulletin_passages.csv">lab8_bulletin_passages.csv</a>.</dd>
 
-        <dt>Cleaning</dt>
-        <dd>Dropped the cover and table of contents (pp. 1&ndash;9), Part 12
-            (an e-mail directory), 391 page numbers, 188 repeated table headers,
-            11 footnotes, superscript markers, 12 fragments under 8 words, 4 tables
-            of figures, 122 exact and 28 near duplicates (cosine &ge; 0.97, the same
-            course list repeated under each track). Passages over 180 words were
-            split at sentence breaks so the model reads them whole.</dd>
     </dl>
 
     <h2>2. Corpus overview</h2>
@@ -170,14 +163,11 @@
             <h3>1. What are the major semantic topics?</h3>
             <div class="finding-body">
                 <p>
-                    Five are academic fields &mdash; Politics, Society &amp;
+                    Five are academic fields: Politics, Society &amp;
                     History (293 passages), Math, Computing &amp; Physics (220),
                     Arts, Media &amp; Literature (166), China, Chinese &amp;
                     Languages (126) and Life &amp; Environmental Sciences (116).
-                    Three are rules and services &mdash; Mission, Programs &amp;
-                    Support (125), Enrollment, Leave &amp; Withdrawal (106) and
-                    Credits, Grades &amp; Transfer (101). On the map the three
-                    policy topics form their own region, apart from the courses.
+                    Three are rules and services.
                 </p>
             </div>
         </div>
@@ -200,10 +190,9 @@
             <h3>3. Which sections are the most semantically diverse?</h3>
             <div class="finding-body">
                 <p>
-                    Course Descriptions (7 of 8 topics) and Majors (6) are
-                    expected. Among policy sections, <strong>Degree
+                    Course Descriptions (7 of 8 topics) and Majors (6). Among policy sections, <strong>Degree
                     Requirements</strong> in Part 3 has the most: 33 passages in 5
-                    topics (entropy 2.1 bits), because it discusses languages,
+                    topics, because it discusses languages,
                     credits, interdisciplinary majors and Signature Work together.
                     Estimated Expenses follows (4 topics). Refund and the Academic
                     Calendar each fall into one topic.
@@ -215,7 +204,7 @@
             <h3>4. Which passages from different sections are similar?</h3>
             <div class="finding-body">
                 <p>
-                    The closest pair across Parts (cosine 0.94) is a CR/NC rule in
+                    The closest pair across Parts is a CR/NC rule in
                     <em>Grading</em> (Part 6, p. 53) and a study-away rule
                     (Part 8, p. 75). Both say Duke courses may be taken
                     Satisfactory/Unsatisfactory. The 40-credit transfer limit
@@ -233,10 +222,7 @@
                     Admission and cost passages (Parts 4&ndash;5) land in China,
                     Chinese &amp; Languages because they compare Chinese and
                     international students. The model keys on the word
-                    &ldquo;Chinese&rdquo;, not on language teaching. The 27 physical
-                    education courses form a separate island at the edge of the
-                    map, but k-means puts 25 of them in Math, Computing &amp;
-                    Physics. There the 2-D map is more honest than the cluster.
+                    &ldquo;Chinese&rdquo;, not on language teaching.
                 </p>
             </div>
         </div>
