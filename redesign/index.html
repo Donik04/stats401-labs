@@ -8,11 +8,12 @@
     <title>Individual Project &mdash; Redesigning the World Happiness Rankings</title>
 
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="redesign.css">
 </head>
 
 <body class="wide">
 
-    <h1>Individual Project: Redesigning the World Happiness Rankings</h1>
+    <h1>Redesigning the World Happiness Rankings</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -30,11 +31,22 @@
         <a href="../redesign/" class="active">Redesign</a>
     </nav>
 
+
     <p class="description prose-lead">
         Every March, the headline &ldquo;Finland is the happiest country in the
-        world&rdquo; is written from one chart: Figure&nbsp;2.1 of the World
-        Happiness Report. This page takes that chart apart and rebuilds it in
-        D3, using the report&rsquo;s own published data.
+        world&rdquo; is written from one chart: Figure&nbsp;2.1 of the
+        <em>World Happiness Report 2026</em>. It ranks 147 countries by how their
+        residents rate their own lives, then splits each score into the parts that
+        six factors (income, social support, health, freedom, generosity and
+        corruption) explain. Below are the original chart and an interactive D3
+        redesign built from the report&rsquo;s own published data.
+    </p>
+
+    <p class="report-link">
+        The critique of the original and the reasoning behind each design decision
+        are in the separate
+        <a href="report.html">critique and redesign report</a>
+        (<a href="report.pdf">PDF</a>).
     </p>
 
     <!-- ------------------------------------------------------------------ -->
@@ -94,300 +106,29 @@
 
     <!-- ------------------------------------------------------------------ -->
 
-    <h2>2. What the figure is for</h2>
-
-    <div class="prose">
-        <h3>Intended message</h3>
-        <p>
-            First, <strong>where every country stands</strong>: Finland is alone
-            at the top with 7.76, Afghanistan is alone at the bottom with 1.45,
-            and the gap between them is more than six points on a ten-point
-            scale. Second, <strong>the ranking is uneven</strong>. The report&rsquo;s
-            own text points out that the top 20 countries sit within less than one
-            point of each other while the bottom 20 are spread three times as
-            widely, and that for several mid-table countries the 95% range of
-            possible ranks is wider than 25 places. Third, <strong>six measurable
-            things explain a large share of the differences</strong>: income,
-            having someone to count on, health, freedom, generosity and trust.
-            Whatever they do not explain is left over as a residual.
-        </p>
-
-        <h3>Audience</h3>
-        <p>
-            There are two groups of readers. The larger one is journalists,
-            policymakers and the general public. The figure is reproduced in news
-            coverage every year, and most of these readers come to it to find
-            their own country and its neighbours. They have not read Box&nbsp;2.3
-            or the Statistical Appendix. The smaller group is researchers and
-            analysts who care about the decomposition. A good design has to work
-            for the first group without misleading the second.
-        </p>
-
-        <h3>Tasks</h3>
-        <ol class="question-list">
-            <li><strong>T1 &middot; Look up</strong> a country&rsquo;s rank and score.</li>
-            <li><strong>T2 &middot; Compare</strong> two countries and judge whether
-                the difference between them is real or within the uncertainty.</li>
-            <li><strong>T3 &middot; See the distribution</strong>: where the
-                countries bunch together and where they spread out.</li>
-            <li><strong>T4 &middot; Compare one factor across countries</strong>:
-                which countries get the most out of social support, and where does
-                mine stand on health?</li>
-            <li><strong>T5 &middot; Read one country&rsquo;s profile</strong>:
-                which factors raise its score and which hold it back.</li>
-            <li><strong>T6 &middot; Find outliers</strong>: countries that are much
-                happier, or much unhappier, than the six factors predict.</li>
-            <li><strong>T7 &middot; Compare within a region</strong>, such as
-                Central Asia or Western Europe.</li>
-        </ol>
-    </div>
-
-    <!-- ------------------------------------------------------------------ -->
-
-    <h2>3. Critique</h2>
-
-    <h3 class="sub-head">Strengths</h3>
-
-    <div class="findings">
-        <div class="finding">
-            <h3>S1. A ranked list that doubles as a lookup table</h3>
-            <div class="finding-body">
-                <p>
-                    Countries are sorted by score, and every row prints the rank,
-                    the 95% rank range and the exact score beside the name, for
-                    example &ldquo;53 (43&ndash;65) Uzbekistan (6.283)&rdquo;. The
-                    task most readers come with (T1) needs no decoding at all, and
-                    the numbers are precise rather than estimated from bar
-                    lengths.
-                </p>
-            </div>
-        </div>
-
-        <div class="finding">
-            <h3>S2. Honest length on a common zero baseline</h3>
-            <div class="finding-body">
-                <p>
-                    Every bar starts at zero on a labelled 0&ndash;8 axis, so the
-                    total length is a faithful length encoding of the score for
-                    nearly every country. Length from a shared baseline is one of
-                    the most accurately judged visual channels, and nothing is
-                    exaggerated by a truncated axis. The 7.76 against 1.45 gap
-                    looks as large as it is.
-                </p>
-            </div>
-        </div>
-
-        <div class="finding">
-            <h3>S3. Uncertainty and explanation in the same chart</h3>
-            <div class="finding-body">
-                <p>
-                    Few league tables show uncertainty at all. This one prints
-                    confidence intervals for both score and rank, and it keeps the
-                    six-factor explanation next to the ranking instead of in a
-                    separate chart. The factor colours and their order stay the
-                    same on all three pages, so a reader who learns the legend
-                    once can use it everywhere.
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <h3 class="sub-head">Weaknesses and opportunities</h3>
-
-    <figure class="closeup">
-        <img src="img/whr26_fig2-1_closeup.png"
-            alt="Close-up of ranks 79 to 92 in the original. Venezuela's row has no dark-blue GDP segment. Tajikistan's row has no bars at all, only a whisker. Hong Kong's bars extend past its own confidence-interval whisker.">
-        <figcaption class="viz-caption">
-            Ranks 79&ndash;92 of the original, enlarged. Three of the problems
-            below show up in these fourteen rows: Venezuela has no GDP segment
-            (W3), Tajikistan has no bars at all (W4), and Hong Kong&rsquo;s bars
-            run past its own confidence whisker (W2).
-        </figcaption>
-    </figure>
-
-    <div class="findings">
-        <div class="finding">
-            <h3>W1. Stacked sub-bars make the factors impossible to compare across countries</h3>
-            <div class="finding-meta">
-                <span class="finding-tag">marks &amp; channels</span>
-                <span class="finding-tag">comparisons</span>
-                <span class="finding-tag view">T4 &middot; T5</span>
-            </div>
-            <dl class="pwi">
-                <dt>Problem</dt>
-                <dd>Only the first segment, GDP, sits on the common baseline. Every
-                    other segment starts wherever the one before it ended. To compare
-                    social support in Kazakhstan (rank 33) with Uzbekistan (rank 53),
-                    a reader has to compare two purple segments that begin at
-                    different x-positions, twenty rows apart.</dd>
-                <dt>Why it matters</dt>
-                <dd>The report says the sub-bars exist to explain why countries
-                    differ, but judging unaligned lengths is one of the least
-                    accurate visual judgements people make. In practice a reader
-                    can see the GDP segment and the total length, and very little
-                    else. T4 and T5 are not really possible with this design.</dd>
-                <dt>Improvement</dt>
-                <dd>Unstack the bar. Give each factor its own column with its own
-                    zero line, keep the same rows, and allow the table to be sorted
-                    by any column.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>W2. The loudest segment is a constant plus an error term, and it can make the bar wrong</h3>
-            <div class="finding-meta">
-                <span class="finding-tag">visual hierarchy</span>
-                <span class="finding-tag">colour</span>
-                <span class="finding-tag view">T1 &middot; T6</span>
-            </div>
-            <dl class="pwi">
-                <dt>Problem</dt>
-                <dd>The last, bright cyan sub-bar is &ldquo;Dystopia (1.16) +
-                    residual&rdquo;: the same 1.16 for every country plus the
-                    model&rsquo;s prediction error. It is the longest sub-bar for
-                    38 of the 147 countries (Costa Rica and Mexico, for example),
-                    and it is drawn in the most saturated colour on the page. A
-                    stacked bar also cannot go below zero. When the residual is
-                    below &minus;1.16, this segment disappears but the other six
-                    still stack, so the bar overshoots the country&rsquo;s actual
-                    score. Hong Kong&rsquo;s bars reach 5.87 although its score is
-                    5.57 and its confidence interval ends at 5.65. Sri Lanka&rsquo;s
-                    reach 4.24 against a score of 4.01.</dd>
-                <dt>Why it matters</dt>
-                <dd>The chart gives the most visual weight to the least meaningful
-                    quantity. The report&rsquo;s text says that &ldquo;the overall
-                    length of each country bar represents the average
-                    response&rdquo;, but for these rows it does not. The rows that
-                    are drawn wrongly are the most interesting ones for T6: countries
-                    far unhappier than their circumstances predict.</dd>
-                <dt>Improvement</dt>
-                <dd>Take the constant out of the marks and state it once. Show the
-                    residual in its own column as a bar that can go either side of
-                    zero. Draw the score as a separate mark, so that no decomposition
-                    can misstate it.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>W3. Every sub-bar is measured from an abstract and fragile zero point</h3>
-            <div class="finding-meta">
-                <span class="finding-tag">scales &amp; axes</span>
-                <span class="finding-tag">audience fit</span>
-                <span class="finding-tag view">T4 &middot; T5</span>
-            </div>
-            <dl class="pwi">
-                <dt>Problem</dt>
-                <dd>&ldquo;Explained by&rdquo; is measured relative to Dystopia,
-                    which takes the lowest national value of each factor. For GDP,
-                    the lowest value belongs to Venezuela. The Statistical Appendix
-                    (Figure&nbsp;24) lists Venezuela&rsquo;s GDP per capita at
-                    <strong>$89</strong>, while the next lowest country, Yemen, is at
-                    $917. A value that low is very likely a data problem. Because of
-                    it, Venezuela&rsquo;s GDP segment is exactly zero (its row begins
-                    with social support), its residual of +1.54 is the largest in the
-                    world, and the zero of every country&rsquo;s GDP segment is set
-                    at $89.</dd>
-                <dt>Why it matters</dt>
-                <dd>Readers naturally take segment length to mean &ldquo;how much
-                    income adds to happiness&rdquo;. In fact the length depends on
-                    which country happens to be at the bottom, and nothing on the
-                    chart shows that. &ldquo;Relative to a hypothetical
-                    Dystopia&rdquo; is also a concept that the main audience has to
-                    look up before they can use it.</dd>
-                <dt>Improvement</dt>
-                <dd>Measure each factor from <em>the average country</em> instead: a
-                    bar to the right raises the predicted score above average, and a
-                    bar to the left lowers it. A difference from the mean does not
-                    depend on the minimum, so Venezuela&rsquo;s anomaly then only
-                    affects Venezuela&rsquo;s own bar. The report&rsquo;s Dystopia
-                    view can stay one click away.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>W4. Missing data looks the same as zero</h3>
-            <div class="finding-meta">
-                <span class="finding-tag">labels</span>
-                <span class="finding-tag">honesty</span>
-                <span class="finding-tag view">T5</span>
-            </div>
-            <dl class="pwi">
-                <dt>Problem</dt>
-                <dd>Tajikistan (88) and the State of Palestine (109) have no bars at
-                    all, only a whisker, yet each is missing just one of the six
-                    factors (freedom and healthy life expectancy, respectively). The
-                    reason, that not every factor was available &ldquo;even after the
-                    imputation process&rdquo;, is only given in the Statistical
-                    Appendix, a separate 71-page document. Venezuela&rsquo;s missing
-                    GDP segment is drawn exactly like a zero.</dd>
-                <dt>Why it matters</dt>
-                <dd>An empty row looks like either a score of zero or a printing
-                    error. When &ldquo;no data&rdquo; and &ldquo;none&rdquo; look
-                    identical, the reader cannot tell which one they are seeing, and
-                    five known values per country are thrown away.</dd>
-                <dt>Improvement</dt>
-                <dd>Draw every factor that exists, write &ldquo;no data&rdquo; in
-                    the cells that are empty, and flag doubtful values where they
-                    appear instead of in an appendix.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>W5. Uncertainty and distribution are shown but not usable, and the list is cut into three pages</h3>
-            <div class="finding-meta">
-                <span class="finding-tag">clutter &amp; readability</span>
-                <span class="finding-tag">legends</span>
-                <span class="finding-tag view">T2 &middot; T3 &middot; T7</span>
-            </div>
-            <dl class="pwi">
-                <dt>Problem</dt>
-                <dd>The score intervals are whiskers a few pixels wide at the end of
-                    long bars, and the rank ranges are text in brackets. Two patterns
-                    the report&rsquo;s own text emphasises are therefore invisible:
-                    the rank range widens to 44 places in the middle of the table
-                    (Jamaica, 30&ndash;73), and the top 20 fit inside 0.94 points
-                    while the bottom 20 spread over 2.86. The bars simply form a
-                    smooth ramp. The list is also split into pages of 48, 48 and 51
-                    rows, each with its legend at the bottom, so countries on either
-                    side of a page break (48 and 49, 96 and 97) cannot be seen
-                    together, and there is no way to pull out a region. Seven hues
-                    have to be matched to a legend, and the generosity and corruption
-                    segments are often only 1&ndash;3&nbsp;px wide.</dd>
-                <dt>Why it matters</dt>
-                <dd>T2 and T3 fail. Readers treat rank 53 against rank 60 as a real
-                    difference, which is exactly what the headlines do, when the
-                    data cannot separate them. Regional comparison (T7) means
-                    searching for scattered rows across three pages.</dd>
-                <dt>Improvement</dt>
-                <dd>Draw the rank range as a line on a rank axis, so the widening in
-                    the middle becomes a visible shape. Add an overview of the whole
-                    distribution. Use one continuous list with column headers that
-                    stay on screen, plus search and a region filter. Let each
-                    factor&rsquo;s identity come from its column position, so the
-                    seven-colour legend is no longer needed.</dd>
-            </dl>
-        </div>
-    </div>
-
-    <!-- ------------------------------------------------------------------ -->
-
-    <h2 id="redesign">4. Redesign</h2>
+    <h2 id="redesign">2. The redesign</h2>
 
     <p class="prose-lead">
-        One continuous table for all 147 countries. The score, the plausible rank
-        and each of the six factors get their own aligned column. Every value is
-        read from
+        Four linked views replace the three pages of stacked bars. The overview
+        shows where every country stands. A waterfall explains one country&rsquo;s
+        score step by step, and a second country can be placed beside it. Strip
+        plots compare every country on each factor, and a ranked list is used for
+        looking countries up. Click a country in any view to make it
+        <strong>country&nbsp;A</strong>. Every value comes from
         <a href="../data/redesign_whr2026.csv">redesign_whr2026.csv</a>, which
-        <a href="build_data.py">build_data.py</a> builds from the report&rsquo;s
-        own spreadsheet. Hover over a row for its details and click to pin it; the
-        column titles sort the table.
+        <a href="build_data.py">build_data.py</a> builds from the report&rsquo;s own
+        spreadsheet.
     </p>
 
     <div class="viz-controls">
-        <label class="check-row" for="country-search">Find
-            <input type="search" id="country-search" class="date-field" list="country-list"
-                placeholder="a country&hellip;" autocomplete="off">
+        <label class="check-row" for="pick-a"><span class="pick-glyph a"></span>Country A
+            <input type="search" id="pick-a" class="date-field" list="country-list" autocomplete="off">
         </label>
+        <label class="check-row" for="pick-b"><span class="pick-glyph b"></span>Compare with B
+            <input type="search" id="pick-b" class="date-field" list="country-list" autocomplete="off"
+                placeholder="none">
+        </label>
+        <button type="button" class="ghost-button" id="swap">Swap A and B</button>
         <datalist id="country-list"></datalist>
 
         <label class="check-row" for="region-filter">Region
@@ -399,43 +140,63 @@
             <button type="button" data-mode="average" class="active">the average country</button>
             <button type="button" data-mode="dystopia">Dystopia (the report&rsquo;s choice)</button>
         </div>
-
-        <button type="button" class="ghost-button" id="clear-pins">Clear pinned</button>
-        <span class="readout" id="lens-readout"></span>
     </div>
 
-    <h3 class="sub-head">The whole distribution at once</h3>
+    <h3 class="sub-head">Where every country stands</h3>
+
+    <p class="equation" id="overview-summary"></p>
 
     <figure class="viz-figure">
         <div id="overview" class="loading">Loading the rankings&hellip;</div>
     </figure>
 
-    <h3 class="sub-head">Every country, every factor</h3>
+    <div class="explorer">
+        <div class="explorer-main">
+            <h3 class="sub-head">Why: the score, step by step</h3>
 
-    <p class="equation" id="equation"></p>
+            <p class="equation" id="equation"></p>
 
-    <ul class="key" id="lens-key"></ul>
+            <ul class="key" id="wf-key"></ul>
 
-    <!-- The wrapper bounds the sticky header: it stays on screen while the
-         rows scroll and leaves with the last row. -->
-    <div class="lens-wrap">
-        <div class="lens-head" id="lens-head"></div>
-        <figure class="viz-figure lens-figure">
-            <div id="lens" class="loading">Loading the table&hellip;</div>
-        </figure>
+            <figure class="viz-figure">
+                <div id="waterfall" class="loading">Loading the waterfall&hellip;</div>
+            </figure>
+
+            <h3 class="sub-head">Each factor, across all 147 countries</h3>
+
+            <p class="equation">
+                One dot per country, all on the same scale of ladder points, so a
+                wider cloud means the factor separates countries more. A is the
+                filled dot and B the ring. Hover over a dot for its value and click
+                to make that country A.
+            </p>
+
+            <figure class="viz-figure">
+                <div id="strips" class="loading">Loading the factors&hellip;</div>
+            </figure>
+        </div>
+
+        <aside class="ranked" aria-label="All 147 countries in rank order">
+            <h3 class="sub-head">All 147, ranked</h3>
+            <p class="readout" id="list-readout"></p>
+            <div class="rank-head" aria-hidden="true">
+                <span>#</span><span>Country</span><span>Score</span><span>Plausible rank</span>
+            </div>
+            <ol id="rank-list" class="rank-list"></ol>
+        </aside>
     </div>
 
     <p class="viz-caption">
         <strong>Notes.</strong> &dagger;&nbsp;Venezuela&rsquo;s GDP per capita is
         listed at $89 in the Statistical Appendix, against $917 for Yemen, the next
-        lowest. Its GDP bar and its large residual are drawn hatched because both
-        rest on that value. &ldquo;No data&rdquo; marks a factor that the report
-        could not supply even after imputation. The report then leaves the whole
-        row blank, but here the factors that do exist are still drawn. Rank ranges
+        lowest. Its GDP step and its large residual are hatched because both rest on
+        that value. When a factor has no data, as for Tajikistan (freedom) and the
+        State of Palestine (healthy life expectancy), the other five are still
+        drawn. The missing factor&rsquo;s effect then sits inside the final step,
+        which is hatched grey. The report leaves these two rows blank. Rank ranges
         are transcribed from the printed figure, because the spreadsheet does not
-        include them. Regions are the report&rsquo;s own ten-region grouping, taken
-        from the WHR&nbsp;2021 data; five countries not ranked in 2021 were
-        assigned by hand.
+        include them. Regions are the report&rsquo;s own ten-region grouping from
+        the WHR&nbsp;2021 data, with five newer countries assigned by hand.
     </p>
 
     <details class="table-view">
@@ -450,262 +211,35 @@
 
     <!-- ------------------------------------------------------------------ -->
 
-    <h2>5. Design decisions</h2>
-
-    <div class="findings">
-        <div class="finding">
-            <h3>D1. Unstack the bar into aligned factor columns on one shared scale</h3>
-            <div class="finding-meta">
-                <span class="finding-tag view">fixes W1</span>
-                <span class="finding-tag">T4 &middot; T5</span>
-            </div>
-            <dl class="pwi">
-                <dt>What changed</dt>
-                <dd>The seven stacked segments became six side-by-side columns plus
-                    a residual column, drawn in the same rows. Each column has its own
-                    zero line, and every column uses the same number of pixels per
-                    ladder point, so the width of a column shows how much that factor
-                    ranges across countries.</dd>
-                <dt>Why</dt>
-                <dd>Aligned position is judged far more accurately than unaligned
-                    length. With a shared scale the column widths make a point of
-                    their own: GDP spans 2.2 points and social support 1.7, while
-                    generosity spans only 0.3. This matches the report&rsquo;s own
-                    decomposition (Statistical Appendix, Table&nbsp;20), in which
-                    generosity accounts for 2% of the explained happiness, but the
-                    original chart never shows it.</dd>
-                <dt>Improvement</dt>
-                <dd>Answering &ldquo;who gets the most out of social support?&rdquo;
-                    now takes one click on the column title. Reading a country&rsquo;s
-                    profile means scanning one row: Uzbekistan&rsquo;s GDP bar points
-                    left (&minus;0.12) while social support (+0.33), freedom (+0.20)
-                    and health (+0.16) point right.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>D2. Measure the factors from the average country, with Dystopia one click away</h3>
-            <div class="finding-meta">
-                <span class="finding-tag view">fixes W3</span>
-                <span class="finding-tag">T5 &middot; audience</span>
-            </div>
-            <dl class="pwi">
-                <dt>What changed</dt>
-                <dd>By default each bar shows the factor&rsquo;s contribution minus
-                    its average across countries, drawn to the right in blue when it
-                    raises the predicted score and to the left in red when it lowers
-                    it. The toggle switches back to the report&rsquo;s Dystopia
-                    benchmark. Only the zero line moves; the end of every bar stays
-                    where it is, which shows that the two views describe the same
-                    data.</dd>
-                <dt>Why</dt>
-                <dd>&ldquo;Above or below a typical country&rdquo; is how a general
-                    reader already thinks, and a two-sided bar shows a country&rsquo;s
-                    weak points, which Dystopia hides by making every bar positive.
-                    Centring on the mean also takes away the dependence on the single
-                    lowest value, so the $89 Venezuelan figure no longer sets the
-                    zero point for every other country.</dd>
-                <dt>Improvement</dt>
-                <dd>China&rsquo;s profile, for example, reads immediately: social
-                    support is below average (&minus;0.24) and health is above
-                    (+0.29). In the original, both appear as positive segments of
-                    similar length.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>D3. Separate the score from its explanation</h3>
-            <div class="finding-meta">
-                <span class="finding-tag view">fixes W2</span>
-                <span class="finding-tag">T1 &middot; T6</span>
-            </div>
-            <dl class="pwi">
-                <dt>What changed</dt>
-                <dd>The life evaluation is now a dot with its 95% interval on its
-                    own axis, with the exact score printed beside it. The 1.16
-                    constant is removed from every row and stated once, in the line
-                    above the table. The residual has its own column as a two-sided
-                    bar.</dd>
-                <dt>Why</dt>
-                <dd>The score is what the ranking is based on, so it should be the
-                    most prominent mark rather than the tip of a stack. The residual
-                    is a real and interesting quantity, but only once it is shown as
-                    a residual that can be negative, not mixed into a constant.</dd>
-                <dt>Improvement</dt>
-                <dd>No row can overshoot its score any more. Sorting the residual
-                    column answers T6 directly: Venezuela (hatched, because of the
-                    GDP value), Guatemala, Costa Rica, Mozambique and Mexico sit well
-                    above their prediction, while Hong Kong (&minus;1.46), Sri Lanka and Botswana
-                    sit far below it.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>D4. Show uncertainty and distribution as shapes, not as bracketed text</h3>
-            <div class="finding-meta">
-                <span class="finding-tag view">fixes W5</span>
-                <span class="finding-tag">T2 &middot; T3</span>
-            </div>
-            <dl class="pwi">
-                <dt>What changed</dt>
-                <dd>A &ldquo;plausible rank&rdquo; column draws each country&rsquo;s
-                    rank range as a line on a 1&ndash;147 axis. Hovering over a row
-                    shades every row whose rank falls inside that range, meaning the
-                    countries it could plausibly trade places with. Above the table,
-                    a beeswarm places all 147 scores on one axis, with brackets
-                    measuring the top 20 and the bottom 20.</dd>
-                <dt>Why</dt>
-                <dd>The report&rsquo;s point about uncertainty is about a shape: ranges
-                    that are narrow at both ends of the table and wide in the middle.
-                    A shape should be drawn, not left for the reader to work out from
-                    147 bracketed numbers.</dd>
-                <dt>Improvement</dt>
-                <dd>The rank lines are short at both ends of the table (a median of
-                    5&ndash;6 places among the top and bottom fifteen) and about 20
-                    places long through the middle, and that shape is now visible.
-                    Hovering over Uzbekistan highlights the 23 rows from rank 43 to
-                    65, which is a direct answer to &ldquo;is 53rd really different
-                    from 60th?&rdquo;. The beeswarm shows at a glance that
-                    the top is crowded and the bottom is spread out.</dd>
-            </dl>
-        </div>
-
-        <div class="finding">
-            <h3>D5. One continuous, navigable view with two colours instead of seven</h3>
-            <div class="finding-meta">
-                <span class="finding-tag view">fixes W4 &middot; W5</span>
-                <span class="finding-tag">T1 &middot; T7</span>
-            </div>
-            <dl class="pwi">
-                <dt>What changed</dt>
-                <dd>All 147 rows are in one list, with column headers that stay on
-                    screen while scrolling, a faint band every five rows to guide the
-                    eye across the wide layout, a search box, a region filter and
-                    pinning. Colour now has one job, direction (blue raises, red
-                    lowers), because the column already tells the reader which factor
-                    they are looking at. Missing cells say &ldquo;no data&rdquo;, and
-                    doubtful values are hatched and footnoted.</dd>
-                <dt>Why</dt>
-                <dd>Seven categorical hues that must be matched to a legend at the
-                    bottom of the page are a memory task, and page breaks cut the
-                    comparisons people actually want to make. Tajikistan&rsquo;s five
-                    known factors are real information and should not be dropped
-                    because a sixth is missing.</dd>
-                <dt>Improvement</dt>
-                <dd>Choosing &ldquo;Commonwealth of Independent States&rdquo; puts
-                    Kazakhstan, Uzbekistan, Kyrgyzstan and Tajikistan on one screen
-                    with their global ranks kept. Two colours pass the colour-vision
-                    deficiency check (worst-case &Delta;E&nbsp;21.6).</dd>
-            </dl>
-        </div>
-    </div>
-
-    <h3 class="sub-head">Original versus redesign</h3>
-
-    <div class="table-scroll compare-scroll">
-        <table class="data-table compare-table">
-            <thead>
-                <tr><th>Task</th><th>In the original</th><th>In the redesign</th></tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>T1 Look up</td>
-                    <td>Easy: rank and score are printed in every row.</td>
-                    <td>Just as easy. The rank and score are still printed, and
-                        search jumps straight to a country.</td>
-                </tr>
-                <tr>
-                    <td>T2 Is a gap real?</td>
-                    <td>Only by reading two bracketed ranges and comparing them in
-                        your head.</td>
-                    <td>Hover over a row: the countries it could trade places with
-                        are shaded.</td>
-                </tr>
-                <tr>
-                    <td>T3 Distribution</td>
-                    <td>Hidden. The bars form a smooth ramp across three pages.</td>
-                    <td>The beeswarm shows the crowded top and the long bottom tail,
-                        with the spreads measured.</td>
-                </tr>
-                <tr>
-                    <td>T4 One factor across countries</td>
-                    <td>Only GDP is readable; the other segments do not share a
-                        baseline.</td>
-                    <td>Every factor is an aligned column, and each can be sorted.</td>
-                </tr>
-                <tr>
-                    <td>T5 One country&rsquo;s profile</td>
-                    <td>Seven colours to decode, every segment positive, and missing
-                        factors shown as blanks.</td>
-                    <td>Bars point left or right of average, and gaps say
-                        &ldquo;no data&rdquo;.</td>
-                </tr>
-                <tr>
-                    <td>T6 Outliers</td>
-                    <td>The residual is hidden inside &ldquo;Dystopia +
-                        residual&rdquo;, and negative residuals make the bar
-                        overshoot.</td>
-                    <td>Residual is its own two-sided column. Sort it to see both
-                        ends.</td>
-                </tr>
-                <tr>
-                    <td>T7 Within a region</td>
-                    <td>Not supported; the rows are scattered across three pages.</td>
-                    <td>The region filter keeps global ranks and shows the region in
-                        the beeswarm.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-
-    <h3 class="sub-head">Trade-offs and limitations</h3>
-
-    <div class="prose">
-        <ul class="question-list">
-            <li><strong>The parts no longer visibly add up to the whole.</strong>
-                A stacked bar shows that the pieces sum to the score just by its
-                length. Here that sum is written as an equation above the table. I
-                think this is the right trade, because the stacked sum was the thing
-                that broke for Hong Kong and Sri Lanka, but it does ask more of the
-                reader.</li>
-            <li><strong>The default view differs from the report&rsquo;s
-                numbers.</strong> A reader checking a value against the PDF has to
-                switch to Dystopia mode first. The table view always shows the
-                report&rsquo;s own values.</li>
-            <li><strong>The shared scale makes some columns thin.</strong> The
-                generosity bars span only about 12&nbsp;px. That is honest, because
-                generosity really does vary very little, but comparing two similar
-                countries on it depends on sorting or the tooltip rather than on
-                bar length alone.</li>
-            <li><strong>It is built for a screen.</strong> The layout is about
-                1,150&nbsp;px wide and scales down on phones. Hover, pinning and
-                sorting do not survive printing, and a print version would need
-                small multiples by region.</li>
-            <li><strong>The data has limits the chart cannot fix.</strong> The
-                &ldquo;explained by&rdquo; values are regression contributions, not
-                causal effects, even when the bars are labelled &ldquo;raises&rdquo;
-                and &ldquo;lowers&rdquo;. Rank ranges were read from the PDF, and
-                regions come from the 2021 classification. The view also covers one
-                period only, 2023&ndash;2025, so change over time is not shown.</li>
-        </ul>
-    </div>
-
-    <h2>Sources</h2>
+    <h2>3. Data sources and references</h2>
 
     <ul class="link-list">
         <li>Helliwell, J. F., Layard, R., Sachs, J. D., De Neve, J.-E., Aknin, L. B.,
             &amp; Wang, S. (Eds.). (2026). <em>World Happiness Report 2026</em>.
             Wellbeing Research Centre, University of Oxford.
-            <a href="https://files.worldhappiness.report/WHR26.pdf">PDF</a></li>
-        <li>Data for Figure 2.1, WHR 2026:
-            <a href="https://files.worldhappiness.report/WHR26_Data_Figure_2.1.xlsx">WHR26_Data_Figure_2.1.xlsx</a></li>
-        <li>Statistical Appendix for Chapter 2, WHR 2026 (Figures 10&ndash;12 and 24, Section 3):
-            <a href="https://files.worldhappiness.report/WHR26_Statistical_Appendix.pdf">PDF</a></li>
-        <li>Regional grouping, Data for Figure 2.1, WHR 2021:
-            <a href="https://files.worldhappiness.report/WHR21_Data_Figure_2.1.xls">WHR21_Data_Figure_2.1.xls</a></li>
+            <a href="https://files.worldhappiness.report/WHR26.pdf">PDF</a>
+            &mdash; the original Figure&nbsp;2.1, pp.&nbsp;21&ndash;23.</li>
+        <li>World Happiness Report. (2026). <em>Data for Figure 2.1</em> [Data set]:
+            <a href="https://files.worldhappiness.report/WHR26_Data_Figure_2.1.xlsx">WHR26_Data_Figure_2.1.xlsx</a>
+            &mdash; scores, confidence intervals and the six factor contributions.</li>
+        <li>Helliwell, J. F., Aknin, L. B., Huang, H., Rojas, M., Wang, S., Guerra, V.,
+            &amp; Danyluk, A. (2026). <em>Statistical Appendix for Chapter 2 of World
+            Happiness Report 2026</em>:
+            <a href="https://files.worldhappiness.report/WHR26_Statistical_Appendix.pdf">PDF</a>
+            &mdash; missing-data rules (Section&nbsp;3) and Venezuela&rsquo;s GDP value
+            (Figure&nbsp;24).</li>
+        <li>World Happiness Report. (2021). <em>Data for Figure 2.1</em> [Data set]:
+            <a href="https://files.worldhappiness.report/WHR21_Data_Figure_2.1.xls">WHR21_Data_Figure_2.1.xls</a>
+            &mdash; the report&rsquo;s ten-region grouping.</li>
         <li>Cleveland, W. S., &amp; McGill, R. (1984). Graphical perception: Theory,
             experimentation, and application to the development of graphical methods.
             <em>Journal of the American Statistical Association, 79</em>(387), 531&ndash;554.</li>
+        <li>Bostock, M. (2011&ndash;2026). <em>D3.js</em> (version&nbsp;7)
+            [Software]. <a href="https://d3js.org">d3js.org</a></li>
+        <li>Processed data for this page:
+            <a href="../data/redesign_whr2026.csv">redesign_whr2026.csv</a>, built by
+            <a href="build_data.py">build_data.py</a>, which also reads the rank
+            ranges from the printed figure and renders the screenshots above.</li>
     </ul>
 
     <a class="back-link" href="../">&larr; Back to home</a>

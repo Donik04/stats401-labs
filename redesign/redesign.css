@@ -1,0 +1,321 @@
+/*
+ * Individual project: World Happiness Report redesign.
+ *
+ * Page-specific styles, loaded after the shared css/style.css. The charts
+ * themselves set their SVG colours and type as attributes in redesign.js, so
+ * this file only styles the HTML around them: the introduction, the controls
+ * and the ranked list. The report (report.html) carries its own print styles.
+ *
+ * Colour does one job in the charts, direction (blue raises, red lowers),
+ * validated as a pair (CVD ΔE 21.6). Country A is a filled ink dot and
+ * country B a hollow ring, everywhere, including the controls and the list.
+ */
+
+body.wide {
+    max-width: 1240px;
+}
+
+.sub-head {
+    margin: 26px 0 10px;
+    font-size: 17px;
+}
+
+.prose h3 {
+    margin: 22px 0 6px;
+    font-size: 16px;
+}
+
+/* ---------- The original, three pages side by side ---------- */
+
+.original-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 14px;
+    margin: 10px 0 6px;
+}
+
+.original-grid img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1px solid #e1e0d9;
+    border-radius: 4px;
+}
+
+.original-grid a:hover img {
+    border-color: steelblue;
+}
+
+
+/* ---------- The link to the separate report ---------- */
+
+.report-link {
+    max-width: 68ch;
+    margin: 0 0 8px;
+    padding: 10px 14px;
+    border-left: 3px solid steelblue;
+    background: #f5f8fc;
+    font-size: 15px;
+}
+
+.report-link a {
+    color: steelblue;
+    font-weight: bold;
+}
+
+/* ---------- The redesign: controls and reading lines ---------- */
+
+.pick-glyph {
+    display: inline-block;
+    flex: none;
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    box-sizing: border-box;
+    border: 2px solid #0b0b0b;
+}
+
+.pick-glyph.a {
+    background: #0b0b0b;
+}
+
+.pick-glyph.b {
+    background: #ffffff;
+}
+
+#pick-a,
+#pick-b {
+    width: 170px;
+}
+
+.equation {
+    max-width: 90ch;
+    margin: 4px 0 10px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: #52514e;
+}
+
+.equation strong {
+    color: #0b0b0b;
+}
+
+#wf-key {
+    gap: 6px 20px;
+    margin-bottom: 4px;
+}
+
+.key .swatch.hatch {
+    background: repeating-linear-gradient(135deg, #898781 0 2px, #e4e3de 2px 4px);
+}
+
+.viz-figure svg {
+    overflow: visible;
+}
+
+/* ---------- The explorer: charts beside the ranked list ---------- */
+
+.explorer {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 316px;
+    gap: 0 28px;
+    align-items: start;
+}
+
+/* The list stays beside the charts while the page scrolls past them. */
+.ranked {
+    position: sticky;
+    top: 12px;
+}
+
+.ranked .readout {
+    display: block;
+    min-height: 18px;
+    margin: -4px 0 6px;
+}
+
+.rank-head,
+.rank-row {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr) 40px 56px;
+    gap: 7px;
+    align-items: center;
+}
+
+.rank-head {
+    padding: 0 10px 4px;
+    font-size: 11px;
+    color: #898781;
+}
+
+.rank-head span:first-child,
+.rank-head span:nth-child(3) {
+    text-align: right;
+}
+
+.rank-list {
+    position: relative;
+    max-height: calc(100vh - 130px);
+    margin: 0;
+    padding: 0;
+    overflow-y: auto;
+    list-style: none;
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+}
+
+.rank-list li.hidden {
+    display: none;
+}
+
+.rank-row {
+    width: 100%;
+    padding: 3px 10px;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-size: 13px;
+    color: #0b0b0b;
+    text-align: left;
+    cursor: pointer;
+}
+
+.rank-row:hover {
+    background: #f1f1f1;
+}
+
+.rank-row:focus-visible {
+    outline: 2px solid #184f95;
+    outline-offset: -2px;
+}
+
+.r-rank,
+.r-score {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: #52514e;
+}
+
+.r-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* The plausible-rank track: a 1–147 axis, the range as a bar, the rank as a dot. */
+.r-track {
+    position: relative;
+    height: 12px;
+}
+
+.r-track::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 5.5px;
+    height: 1px;
+    background: #e1e0d9;
+}
+
+.r-track i {
+    position: absolute;
+    top: 4px;
+    height: 4px;
+    min-width: 1px;
+    border-radius: 2px;
+    background: #b4b2a9;
+}
+
+.r-track b {
+    position: absolute;
+    top: 3px;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    border-radius: 50%;
+    background: #0b0b0b;
+}
+
+/* Countries A could trade places with — the same blue as in the beeswarm. */
+.rank-list li.is-peer .rank-row {
+    background: #e3eefb;
+}
+
+.rank-list li.is-a .rank-row {
+    background: #0b0b0b;
+    color: #ffffff;
+    font-weight: bold;
+}
+
+.rank-list li.is-a .r-rank,
+.rank-list li.is-a .r-score {
+    color: #ffffff;
+}
+
+.rank-list li.is-a .r-track i {
+    background: rgba(255, 255, 255, 0.55);
+}
+
+.rank-list li.is-a .r-track b {
+    background: #ffffff;
+}
+
+.rank-list li.is-b .rank-row {
+    box-shadow: inset 0 0 0 2px #0b0b0b;
+    font-weight: bold;
+}
+
+@media (max-width: 980px) {
+    .explorer {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ranked {
+        position: static;
+    }
+
+    .rank-list {
+        max-height: 420px;
+    }
+}
+
+/* ---------- Tooltip ---------- */
+
+/* The shared tooltip has no width limit, and this page's notes are long. */
+.wide .tooltip {
+    max-width: 380px;
+}
+
+.wide .tip-note {
+    white-space: normal;
+}
+
+/* Short line key in a tooltip row, carrying the value's direction colour. */
+.tip-line {
+    display: inline-block;
+    width: 10px;
+    height: 3px;
+    margin-right: 6px;
+    border-radius: 2px;
+    vertical-align: 3px;
+}
+
+/* ---------- Table view ---------- */
+
+.whr-table {
+    font-size: 13px;
+}
+
+.whr-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    white-space: nowrap;
+}
+
+.whr-table .num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}

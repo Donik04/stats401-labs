@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Critique and Redesign Report &mdash; World Happiness Rankings</title>
+
+    <!--
+        The report is a standalone document: it is read on screen and printed to
+        report.pdf for submission, so it carries its own print styles rather than
+        the site's stylesheet.
+    -->
+    <style>
+        @page {
+            size: A4;
+            margin: 16mm 17mm 16mm;
+        }
+
+        body {
+            max-width: 780px;
+            margin: 32px auto;
+            padding: 0 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 15px;
+            line-height: 1.55;
+            color: #1d1d1b;
+            background: #ffffff;
+        }
+
+        .back {
+            font-size: 13px;
+            color: steelblue;
+        }
+
+        h1 {
+            margin: 18px 0 4px;
+            font-size: 25px;
+            line-height: 1.25;
+        }
+
+        .subtitle {
+            margin: 0 0 10px;
+            font-size: 15px;
+            color: #52514e;
+        }
+
+        .meta {
+            margin: 0 0 22px;
+            padding: 8px 0;
+            border-top: 1px solid #c3c2b7;
+            border-bottom: 1px solid #c3c2b7;
+            font-size: 12.5px;
+            line-height: 1.6;
+            color: #52514e;
+        }
+
+        .meta a {
+            color: steelblue;
+        }
+
+        h2 {
+            margin: 26px 0 8px;
+            font-size: 18px;
+            break-after: avoid;
+        }
+
+        p {
+            margin: 0 0 10px;
+        }
+
+        ul.points {
+            margin: 0 0 10px;
+            padding-left: 18px;
+        }
+
+        ul.points li {
+            margin-bottom: 6px;
+        }
+
+        figure {
+            margin: 14px 0 18px;
+            break-inside: avoid;
+        }
+
+        figure img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+            border: 1px solid #e1e0d9;
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 36%;
+            gap: 0 22px;
+            align-items: start;
+        }
+
+        .intro-grid figure {
+            margin-top: 34px;
+        }
+
+        @media (max-width: 640px) {
+            .intro-grid {
+                grid-template-columns: minmax(0, 1fr);
+            }
+        }
+
+        figcaption {
+            margin-top: 6px;
+            font-size: 12.5px;
+            line-height: 1.45;
+            color: #52514e;
+        }
+
+        figcaption strong {
+            color: #1d1d1b;
+        }
+
+        .refs {
+            padding-left: 0;
+            list-style: none;
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .refs li {
+            margin-bottom: 6px;
+            padding-left: 22px;
+            text-indent: -22px;
+        }
+
+        .refs a {
+            color: steelblue;
+            word-break: break-all;
+        }
+
+        @media print {
+            body {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+                font-size: 10.5pt;
+            }
+
+            .back {
+                display: none;
+            }
+
+            h1 {
+                margin-top: 0;
+            }
+
+            a {
+                color: #1d1d1b;
+                text-decoration: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <a class="back" href="./">&larr; Back to the interactive visualization</a>
+
+    <h1>Redesigning the World Happiness Report&rsquo;s Country Rankings</h1>
+    <p class="subtitle">Visualization critique and redesign report</p>
+
+    <p class="meta">
+        Doniyor Erkinov &middot; STATS&nbsp;401: Data Acquisition and Visualization
+        &middot; Individual project &middot; 28&nbsp;September&nbsp;2026<br>
+        Interactive redesign:
+        <a href="https://donik04.github.io/stats401-labs/redesign/">donik04.github.io/stats401-labs/redesign/</a><br>
+        Word count: <span id="word-count">782</span> (sections 1&ndash;4, excluding
+        figure captions and references)
+    </p>
+
+    <!-- ------------------------------------------------------------------ -->
+
+    <!-- Section 1 sits beside the tall original page, so neither leaves a
+         half-empty page behind it in print. -->
+    <div class="intro-grid">
+    <section class="counted">
+        <h2>1. The original visualization and its context</h2>
+
+        <p>
+            Figure&nbsp;2.1 of the <em>World Happiness Report 2026</em> (Helliwell
+            et&nbsp;al., 2026, pp.&nbsp;21&ndash;23) ranks 147 countries by their
+            average answer to the Cantril ladder question, from 0 (worst possible
+            life) to 10 (best), using Gallup World Poll data for 2023&ndash;2025
+            (Figure&nbsp;1). Each country is a horizontal bar labelled with its rank,
+            95% rank range and score. The bar is split into seven coloured
+            segments: six are the contributions a regression attributes to GDP per
+            capita, social support, healthy life expectancy, freedom, generosity
+            and perceived corruption, measured from &ldquo;Dystopia&rdquo;, an
+            imaginary country with the world&rsquo;s lowest value of every factor;
+            the seventh is &ldquo;Dystopia (1.16) + residual&rdquo;.
+        </p>
+
+        <p>
+            The figure shows where each country stands, that the ranking is
+            uneven (a crowded top, a long bottom tail, uncertain mid-table ranks),
+            and that six measurable factors explain much of the gap. Its main audience is journalists, policymakers and the
+            public looking up their own country. Readers should be able to
+            look up a country (T1), judge whether a gap is real (T2), see the
+            distribution (T3), compare one factor across countries (T4), read one
+            country&rsquo;s profile (T5) and find over- and under-performers
+            (T6).
+        </p>
+    </section>
+
+    <figure>
+        <img src="img/whr26_fig2-1_part2.png"
+            alt="The original Figure 2.1, part 2: ranks 49 to 96 as horizontal bars stacked from seven coloured segments.">
+        <figcaption><strong>Figure 1.</strong> The original Figure&nbsp;2.1, part 2
+            of 3 (ranks 49&ndash;96), <em>World Happiness Report 2026</em>,
+            p.&nbsp;22. Source: Helliwell et&nbsp;al. (2026).</figcaption>
+    </figure>
+    </div>
+
+    <!-- ------------------------------------------------------------------ -->
+
+    <section class="counted">
+        <h2>2. Critique</h2>
+
+        <p>
+            <strong>Strengths.</strong> The rows are sorted and print the exact
+            rank, rank range and score, so lookup (T1) is precise.
+            And every bar starts at zero on a labelled axis, so total length
+            faithfully encodes the score.
+        </p>
+
+        <p><strong>Weaknesses.</strong></p>
+
+        <ul class="points">
+            <li><strong>W1. Stacking defeats comparison.</strong> Only the first
+                segment shares a baseline. The others require comparing unaligned
+                lengths, one of the least accurate perceptual tasks (Cleveland
+                &amp; McGill, 1984), so T4 and T5, the purpose of the decomposition,
+                are effectively impossible.</li>
+            <li><strong>W2. The loudest segment is a constant plus an error term,
+                and it breaks the bar.</strong> The saturated cyan segment is the
+                longest for 38 countries. Because a stack cannot go below zero, a
+                residual below &minus;1.16 makes the bar overshoot: Hong
+                Kong&rsquo;s reaches 5.87 although its score is 5.57
+                (Figure&nbsp;2).</li>
+            <li><strong>W3. The zero point is abstract and fragile.</strong>
+                Dystopia&rsquo;s GDP comes from Venezuela, listed in the Statistical
+                Appendix at $89 per person (Yemen, next lowest, is at $917). Every
+                GDP segment is measured from that value, and Venezuela gets the
+                world&rsquo;s largest residual.</li>
+            <li><strong>W4. Gaps and uncertainty are hidden.</strong> Tajikistan and
+                Palestine get empty rows although each lacks only one factor. Rank
+                ranges are bracketed text, so the report&rsquo;s own point that
+                mid-table ranges span 20&ndash;44 places is invisible, and the list
+                is split across three pages.</li>
+        </ul>
+    </section>
+
+    <figure>
+        <img src="img/whr26_fig2-1_closeup.png"
+            alt="Close-up of ranks 79 to 92 of the original: Venezuela has no GDP segment, Tajikistan has no bars, and Hong Kong's bar extends past its confidence whisker.">
+        <figcaption><strong>Figure 2.</strong> Ranks 79&ndash;92 of the original,
+            enlarged. Venezuela has no GDP segment (W3), Tajikistan&rsquo;s row is
+            empty (W4), and Hong Kong&rsquo;s bar runs past its own confidence
+            whisker (W2).</figcaption>
+    </figure>
+
+    <!-- ------------------------------------------------------------------ -->
+
+    <section class="counted">
+        <h2>3. Redesign rationale</h2>
+
+        <p>
+            The redesign uses the report&rsquo;s own data in four linked views;
+            clicking a country in any view selects it (Figure&nbsp;3).
+        </p>
+
+        <p>
+            <strong>D1. A waterfall from the average country (W2, W3; T5,
+            T6).</strong> A country&rsquo;s pieces become steps on separate rows,
+            running from the average country&rsquo;s predicted score (5.65) to the
+            actual score: blue where a factor raises the prediction, red where it
+            lowers it, and the residual as the final step. A waterfall keeps the
+            stack&rsquo;s one real virtue, parts that add up to the whole, while
+            allowing negative parts. The average country is a benchmark readers
+            understand and, unlike Dystopia, it ignores the $89 value. Hong Kong&rsquo;s factors
+            now climb to 7.03 before the unexplained step visibly drops it to 5.57
+            (Figure&nbsp;4). A toggle restores the report&rsquo;s baseline.
+        </p>
+    </section>
+
+    <figure>
+        <img src="img/redesign_interface.png"
+            alt="The redesign: controls, a beeswarm of all 147 scores with Uzbekistan's plausible rank peers in blue, waterfalls for Uzbekistan and China, and the ranked list.">
+        <figcaption><strong>Figure 3.</strong> The redesign, with Uzbekistan as
+            country A and China as B: the controls, the beeswarm overview (the
+            countries Uzbekistan could plausibly trade places with are blue), the
+            two waterfalls and the ranked list.</figcaption>
+    </figure>
+
+    <figure>
+        <img src="img/redesign_waterfall_hk_tj.png"
+            alt="Waterfalls for Hong Kong and Tajikistan: Hong Kong's factors rise to about 7.0 before a large unexplained drop to 5.57; Tajikistan's missing freedom factor is absorbed by a hatched grey final step.">
+        <figcaption><strong>Figure 4.</strong> Hong Kong&rsquo;s unexplained drop,
+            which the original drew as an overshoot, and Tajikistan&rsquo;s missing
+            freedom factor, shown as &ldquo;no data&rdquo; and absorbed by a hatched
+            final step.</figcaption>
+    </figure>
+
+    <section class="counted">
+        <p>
+            <strong>D2. Strip plots on one shared scale (W1; T4, T6).</strong> Each
+            factor gets its own axis with all 147 countries, so comparisons use
+            aligned position. The shared scale also shows how much each factor
+            matters: GDP spans 2.2 points, but generosity spans only 0.3
+            (Figure&nbsp;5).
+        </p>
+
+        <p>
+            <strong>D3. Uncertainty as a group, distribution as a shape (W4; T2,
+            T3).</strong> A beeswarm puts every score on one axis and measures the
+            spread of the top and bottom 20; the countries inside the selected
+            country&rsquo;s rank range turn blue.
+        </p>
+
+        <p>
+            <strong>D4. Honest gaps and one navigable list (W1, W4; T1).</strong>
+            Missing factors say &ldquo;no data&rdquo; and their effect becomes a
+            hatched final step; doubtful values are hatched and footnoted. One ranked list with search and a region filter replaces the
+            three pages, and colour encodes only direction.
+        </p>
+    </section>
+
+    <figure>
+        <img src="img/redesign_strips.png"
+            alt="Strip plots of all 147 countries for each factor on one shared scale, with Uzbekistan as a filled dot and China as a ring.">
+        <figcaption><strong>Figure 5.</strong> Every country on each factor, on one
+            shared scale in ladder points relative to the average country.
+            Uzbekistan is the filled dot and China the ring.</figcaption>
+    </figure>
+
+    <!-- ------------------------------------------------------------------ -->
+
+    <section class="counted">
+        <h2>4. Original versus redesign</h2>
+
+        <p>
+            Tasks the original blocked are now direct. Comparing Uzbekistan (6.28)
+            with China (6.07) shows why one outranks the other: social support adds
+            0.33 for Uzbekistan and subtracts 0.24 for China. Outliers, rank
+            uncertainty and regional comparison each take one click, and lookup is
+            as easy as before.
+        </p>
+
+        <p>
+            The costs: only two countries are explained at a time, where the
+            original shows all 147 at once. Waterfall steps float between panels,
+            so their values are printed. Measuring from the average departs from
+            the report&rsquo;s numbers. The design also needs a screen, and the decomposition
+            stays correlational, not causal.
+        </p>
+    </section>
+
+    <!-- ------------------------------------------------------------------ -->
+
+    <h2>References</h2>
+
+    <ul class="refs">
+        <li>Bostock, M. (2026). <em>D3.js</em> (Version 7) [Computer software].
+            <a href="https://d3js.org">https://d3js.org</a></li>
+        <li>Cleveland, W. S., &amp; McGill, R. (1984). Graphical perception:
+            Theory, experimentation, and application to the development of
+            graphical methods. <em>Journal of the American Statistical Association,
+            79</em>(387), 531&ndash;554.
+            <a href="https://doi.org/10.1080/01621459.1984.10478080">https://doi.org/10.1080/01621459.1984.10478080</a></li>
+        <li>Helliwell, J. F., Aknin, L. B., Huang, H., Rojas, M., Wang, S., Guerra,
+            V., &amp; Danyluk, A. (2026). <em>Statistical appendix for
+            &ldquo;International evidence on happiness and social media,&rdquo;
+            Chapter 2 of World Happiness Report 2026</em>.
+            <a href="https://files.worldhappiness.report/WHR26_Statistical_Appendix.pdf">https://files.worldhappiness.report/WHR26_Statistical_Appendix.pdf</a></li>
+        <li>Helliwell, J. F., Layard, R., Sachs, J. D., De Neve, J.-E., Aknin, L. B.,
+            &amp; Wang, S. (Eds.). (2026). <em>World happiness report 2026</em>.
+            Wellbeing Research Centre, University of Oxford.
+            <a href="https://files.worldhappiness.report/WHR26.pdf">https://files.worldhappiness.report/WHR26.pdf</a></li>
+        <li>World Happiness Report. (2021). <em>Data for Figure 2.1</em> [Data set;
+            used for the regional grouping].
+            <a href="https://files.worldhappiness.report/WHR21_Data_Figure_2.1.xls">https://files.worldhappiness.report/WHR21_Data_Figure_2.1.xls</a></li>
+        <li>World Happiness Report. (2026). <em>Data for Figure 2.1</em> [Data set].
+            <a href="https://files.worldhappiness.report/WHR26_Data_Figure_2.1.xlsx">https://files.worldhappiness.report/WHR26_Data_Figure_2.1.xlsx</a></li>
+    </ul>
+
+</body>
+
+</html>
