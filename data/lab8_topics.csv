@@ -1,0 +1,9 @@
+cluster,cluster_name,passages,top_terms,examples
+0,"Arts, Media & Literature",166,"media, mediart, cultural, lit, art, digital, culture, literature, writing, seminar",p1019|p0997|p0538
+1,"China, Chinese & Languages",126,"chinese, language, advanced, continuation, placement, skills, eap, history, equivalent, basis",p0655|p0663|p0664
+2,Life & Environmental Sciences,116,"biol, environmental, biology, molecular, envir, chemistry, chem, econ, biological, science",p0452|p0556|p0555
+3,"Math, Computing & Physics",220,"math, science, compsci, data, stats, phys, analysis, calculus, physics, methods",p0379|p0982|p0373
+4,"Credits, Grades & Transfer",101,"term, grade, academic, requirements, nc, grades, cr, taken, section, earned",p0140|p0130|p0141
+5,"Mission, Programs & Support",125,"education, academic, programs, office, undergraduate, program, career, opportunities, services, campus",p0009|p0005|p0008
+6,"Politics, Society & History",293,"political, polsci, world, social, global, politics, china, pubpol, economic, history",p0586|p0522|p0585
+7,"Enrollment, Leave & Withdrawal",106,"leave, absence, term, classes, academic, undergraduate, week, withdrawal, grade, withdraw",p0248|p0150|p0195

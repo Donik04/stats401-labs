@@ -1,0 +1,83 @@
+chapter,section,passages,mean_words,topics,topic_entropy,dispersion
+Part 10: Majors and Courses,Course Descriptions,669,89.7,7,2.308,0.569
+Part 10: Majors and Courses,Majors,209,69.5,6,2.026,0.48
+Part 10: Majors and Courses,Requirements for All Majors,9,25.6,3,1.352,0.361
+Part 11: Academic Calendar 2021-22,Academic Calendar 2021-22,14,50.8,1,-0.0,0.188
+Part 1: General Information,Duke Kunshan University Community Standard,1,136.0,1,-0.0,0.0
+Part 1: General Information,Introduction,4,50.2,2,1.0,0.31
+Part 1: General Information,Mission Statement,1,141.0,1,-0.0,0.0
+Part 1: General Information,Partners,6,84.3,3,1.252,0.357
+Part 1: General Information,Statement on Diversity and Inclusion,1,146.0,1,-0.0,0.0
+Part 1: General Information,Who We Are,5,118.0,1,-0.0,0.137
+Part 2: A Liberal Arts Education at Duke Kunshan University,A 21st Century Curriculum,1,119.0,1,-0.0,0.0
+Part 2: A Liberal Arts Education at Duke Kunshan University,A Liberal Arts College Experience,1,153.0,1,-0.0,-0.0
+Part 2: A Liberal Arts Education at Duke Kunshan University,Animating Principles,4,66.0,2,0.811,0.291
+Part 2: A Liberal Arts Education at Duke Kunshan University,Dual Degrees,1,92.0,1,-0.0,-0.0
+Part 3: The Curriculum,Degree Requirements,33,70.7,5,2.144,0.385
+Part 3: The Curriculum,Key Components,7,77.7,3,1.557,0.267
+Part 3: The Curriculum,Overview,5,115.6,2,0.971,0.234
+"Part 4: Admission, Scholarships and Financial Aid",Application Requirements,6,36.7,3,1.252,0.24
+"Part 4: Admission, Scholarships and Financial Aid",Application Timelines,6,39.5,3,1.459,0.232
+"Part 4: Admission, Scholarships and Financial Aid",How to Apply,1,11.0,1,-0.0,-0.0
+"Part 4: Admission, Scholarships and Financial Aid",Notification and Responses,1,13.0,1,-0.0,0.0
+"Part 4: Admission, Scholarships and Financial Aid",Principles of Selection,2,61.5,1,-0.0,0.099
+"Part 4: Admission, Scholarships and Financial Aid",Scholarships and Financial Aid,4,56.2,2,0.811,0.175
+Part 5: Financial Information,Estimated Expenses,14,62.9,4,1.809,0.311
+Part 5: Financial Information,Refund,11,34.2,1,-0.0,0.207
+Part 5: Financial Information,Tuition and Fees,2,67.5,1,-0.0,0.125
+Part 6: Academic Procedures and Information,Academic Integrity,5,103.2,2,0.971,0.25
+Part 6: Academic Procedures and Information,Academic Recognition and Honors,4,105.0,1,-0.0,0.183
+Part 6: Academic Procedures and Information,"Academic Warning, Probation, and Suspension for Students in the Class of 2025 and Beyond",7,68.4,2,0.592,0.228
+Part 6: Academic Procedures and Information,"Academic Warning, Probation, and Suspension for Students in the Classes of 2022-2024",12,86.0,2,0.98,0.256
+Part 6: Academic Procedures and Information,Changes in Status,14,92.6,3,0.946,0.247
+Part 6: Academic Procedures and Information,Class Attendance and Missed Work,3,97.7,1,-0.0,0.141
+Part 6: Academic Procedures and Information,Class Scheduling,1,46.0,1,-0.0,0.0
+Part 6: Academic Procedures and Information,Compliance with Academic Regulations,1,79.0,1,-0.0,0.0
+Part 6: Academic Procedures and Information,Course Audit,1,206.0,1,-0.0,-0.0
+Part 6: Academic Procedures and Information,Course Repeat,6,98.5,2,0.65,0.188
+Part 6: Academic Procedures and Information,Declaration of Major,2,132.5,1,-0.0,0.075
+Part 6: Academic Procedures and Information,Education Records,4,55.5,2,0.811,0.129
+Part 6: Academic Procedures and Information,Eligibility for Courses,4,88.0,4,2.0,0.227
+Part 6: Academic Procedures and Information,Entrance Credit and Placement,15,80.3,3,1.566,0.248
+Part 6: Academic Procedures and Information,Exclusion of Disruptive Students from a Course,2,57.5,1,-0.0,0.058
+Part 6: Academic Procedures and Information,Final Examinations,3,115.7,1,-0.0,0.119
+Part 6: Academic Procedures and Information,Grade Review Procedure,5,94.8,2,0.971,0.164
+Part 6: Academic Procedures and Information,Grading and Grade Requirements,19,94.7,3,0.774,0.26
+Part 6: Academic Procedures and Information,Graduation and Commencement,1,84.0,1,-0.0,-0.0
+Part 6: Academic Procedures and Information,Incomplete Coursework and Excused Absence from Final Exam,3,168.7,1,-0.0,0.101
+Part 6: Academic Procedures and Information,Independent Studies,2,116.0,2,1.0,0.053
+Part 6: Academic Procedures and Information,Notification of Intention to Graduate,1,116.0,1,-0.0,0.0
+Part 6: Academic Procedures and Information,Procedure for Resolution of Students' Academic Concerns,5,83.4,2,0.722,0.181
+Part 6: Academic Procedures and Information,Progress toward Degree,6,63.2,1,-0.0,0.186
+Part 6: Academic Procedures and Information,Registration,7,87.7,2,0.592,0.258
+Part 6: Academic Procedures and Information,Religious Holidays,1,107.0,1,-0.0,0.0
+Part 6: Academic Procedures and Information,Submission of Term Paper,1,41.0,1,-0.0,0.0
+Part 6: Academic Procedures and Information,The Provision of Academic Information to Parents and Guardians,1,68.0,1,-0.0,-0.0
+Part 6: Academic Procedures and Information,Time Limit for Completing Undergraduate Degree,1,73.0,1,-0.0,0.0
+Part 6: Academic Procedures and Information,Transfer of Work Taken Elsewhere,7,117.6,2,0.985,0.119
+Part 6: Academic Procedures and Information,Two-Credit Writing Courses,1,120.0,1,-0.0,0.0
+Part 6: Academic Procedures and Information,Undergraduate Course Load,19,74.7,2,0.998,0.272
+Part 7: Academic Advising and Support,Academic Advising,4,104.2,1,-0.0,0.092
+Part 7: Academic Advising and Support,Academic Resource Center,4,82.5,1,-0.0,0.213
+Part 7: Academic Advising and Support,Introduction,1,83.0,1,-0.0,0.0
+Part 7: Academic Advising and Support,Seven Principles of Duke Kunshan University Academic Advising,2,80.0,1,-0.0,0.027
+"Part 8: Career Services, Study Away, and Research Opportunities",Career Services,7,68.4,2,0.592,0.205
+"Part 8: Career Services, Study Away, and Research Opportunities",Office of Global Education and Study Away,19,87.5,3,1.312,0.266
+"Part 8: Career Services, Study Away, and Research Opportunities",Student Research Opportunities,2,83.0,1,-0.0,0.066
+Part 9: Student Affairs and Campus Life,Accommodations,3,80.3,2,0.918,0.17
+Part 9: Student Affairs and Campus Life,Arts and Culture,1,113.0,1,-0.0,-0.0
+Part 9: Student Affairs and Campus Life,Athletics & University Sports,5,48.4,2,0.722,0.228
+Part 9: Student Affairs and Campus Life,Blue Oasis Student Center,2,59.0,1,-0.0,0.078
+Part 9: Student Affairs and Campus Life,Campus Engagement,1,53.0,1,-0.0,-0.0
+Part 9: Student Affairs and Campus Life,Campus Health Clinic,1,157.0,1,-0.0,-0.0
+Part 9: Student Affairs and Campus Life,Campus Programs,2,135.5,1,-0.0,0.098
+Part 9: Student Affairs and Campus Life,Chinese Student Services and Student Mobility,2,102.0,1,-0.0,0.151
+Part 9: Student Affairs and Campus Life,Counseling and Psychological Services (CAPS),2,98.5,2,1.0,0.102
+Part 9: Student Affairs and Campus Life,Host Family Program,1,45.0,1,-0.0,0.0
+Part 9: Student Affairs and Campus Life,International Student Services,2,47.5,1,-0.0,0.128
+Part 9: Student Affairs and Campus Life,Leadership Development,1,89.0,1,-0.0,0.0
+Part 9: Student Affairs and Campus Life,Residence Life,1,175.0,1,-0.0,-0.0
+Part 9: Student Affairs and Campus Life,Student Affairs,2,32.0,1,-0.0,0.161
+Part 9: Student Affairs and Campus Life,Student Affairs Conceptual Framework,2,86.0,2,1.0,0.195
+Part 9: Student Affairs and Campus Life,Student Clubs and Organizations,1,115.0,1,-0.0,0.0
+Part 9: Student Affairs and Campus Life,Student Conduct,3,60.7,2,0.918,0.197

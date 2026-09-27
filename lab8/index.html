@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 8</title>
+    <title>Lab 8 &mdash; Web Text Data: Exploring the DKU Bulletin</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 8</h1>
+    <h1>Lab 8: Exploring a 400-Page Bulletin</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,277 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
-    <p>
-        Lab 8 will be added here.
+    <h2>1. Bulletin and corpus</h2>
+
+    <dl class="dataset-facts">
+        <dt>Document</dt>
+        <dd><em>Bulletin of Duke Kunshan University Undergraduate Instruction
+            2021&ndash;2022</em> (July 2021 edition, 400 pages), from
+            <a href="https://dku-web-admissions.s3.cn-north-1.amazonaws.com.cn/dkumain/files/V2021-22_DKU_UG_Bulletin.pdf">DKU
+            Admissions</a>. Accessed 27 September 2026.</dd>
+
+        <dt>Passages &mdash; <a href="build_corpus.py">build_corpus.py</a></dt>
+        <dd>1,419 raw passages &rarr; 1,281 after cleaning &rarr; <strong>1,253</strong>
+            after removing 28 near-duplicates. Mean length <strong>83 words</strong>
+            (median 84). One passage is a paragraph, a list, a course-requirement
+            table or one course description.</dd>
+
+        <dt>Structure</dt>
+        <dd><strong>11 Parts</strong> (chapters) and <strong>82 sections</strong>, taken
+            from the PDF's own bookmarks; each passage also keeps its
+            subsection, heading and page &mdash;
+            <a href="../data/lab8_bulletin_passages.csv">lab8_bulletin_passages.csv</a>.</dd>
+
+        <dt>Cleaning</dt>
+        <dd>Dropped the cover and table of contents (pp. 1&ndash;9), Part 12
+            (an e-mail directory), 391 page numbers, 188 repeated table headers,
+            11 footnotes, superscript markers, 12 fragments under 8 words, 4 tables
+            of figures, 122 exact and 28 near duplicates (cosine &ge; 0.97, the same
+            course list repeated under each track). Passages over 180 words were
+            split at sentence breaks so the model reads them whole.</dd>
+    </dl>
+
+    <h2>2. Corpus overview</h2>
+
+    <div class="l8-summary-grid">
+        <figure class="viz-figure">
+            <h3>Passages and mean length by Part</h3>
+            <div id="part-summary" class="loading">Loading&hellip;</div>
+        </figure>
+        <figure class="viz-figure">
+            <h3>Top 20 TF-IDF terms <span class="l8-word-count">(number = passages containing it)</span></h3>
+            <div id="top-terms" class="loading">Loading&hellip;</div>
+        </figure>
+    </div>
+
+    <p class="viz-caption">
+        Part 10 (majors and course descriptions) holds 71% of all passages; the
+        policy and service text of Parts 1&ndash;9 holds 28%.
     </p>
 
+    <h3>Semantic topics</h3>
+
+    <div class="table-scroll">
+        <table id="topic-table" class="data-table">
+            <thead>
+                <tr><th>Topic</th><th class="num">Passages</th><th>Top TF-IDF terms</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <details class="method l8-methods">
+        <summary>Method (Part C)</summary>
+        <div class="prose">
+            <p>
+                <strong>Embeddings:</strong> <code>all-MiniLM-L6-v2</code>
+                (sentence-transformers, 384 dimensions, normalised).
+                <strong>Projection:</strong> UMAP, <code>n_neighbors=15</code>,
+                <code>min_dist=0.15</code>, cosine metric, <code>random_state=401</code>.
+                <strong>Clustering:</strong> k-means on the 384-d vectors (not on
+                the 2-D map), <code>k=8</code>, <code>random_state=401</code>.
+                Cosine silhouette stayed between 0.09 and 0.13 for k = 6&ndash;14, so
+                k was chosen for readable topics and to stay inside the eight-colour
+                palette. <strong>Labels:</strong> written by hand from each cluster's
+                top TF-IDF terms and the three passages nearest its centroid
+                (<a href="semantic_topics.py">semantic_topics.py</a>).
+            </p>
+        </div>
+    </details>
+
+    <h2>3. Semantic embedding map</h2>
+
+    <div class="viz-controls">
+        <input type="text" id="search" class="l8-search" placeholder="Search bulletin&hellip; (e.g. credit)"
+            aria-label="Search passages">
+        <select id="section-filter" class="date-field l8-select" aria-label="Section filter"></select>
+        <select id="topic-filter" class="date-field l8-select" aria-label="Topic filter"></select>
+        <button type="button" class="ghost-button" id="zoom-reset">Reset zoom</button>
+        <button type="button" class="ghost-button" id="reset-map">Clear all</button>
+    </div>
+
+    <div class="viz-controls compact">
+        <span class="l8-chip" id="cell-chip"><span></span><button type="button" aria-label="Clear matrix cell">&times;</button></span>
+        <span class="readout" id="map-readout"></span>
+    </div>
+
+    <div class="l8-topic-legend" id="topic-legend"></div>
+    <div class="viz-controls compact">
+        <span class="control-label">Circle area = passage length</span>
+        <span id="size-legend"></span>
+    </div>
+
+    <div class="l8-map-grid">
+        <figure class="viz-figure">
+            <div id="semantic-map" class="loading">Loading the map&hellip;</div>
+        </figure>
+        <aside id="detail-panel" class="l8-panel" aria-live="polite"></aside>
+    </div>
+
+    <p class="viz-caption">
+        Nearby points have similar meaning; the axes themselves mean nothing.
+        Click a point for its passage, and its five nearest neighbours (by cosine
+        similarity in 384-d) are ringed and joined by dashed lines.
+    </p>
+
+    <h2>4. Topic &times; Bulletin Section matrix</h2>
+
+    <div class="viz-controls compact">
+        <button type="button" class="ghost-button" id="expand-all">Expand all Parts</button>
+        <button type="button" class="ghost-button" id="collapse-all">Collapse all</button>
+        <span class="control-label">Share of the row</span>
+        <span id="matrix-legend"></span>
+        <span class="readout" id="matrix-readout"></span>
+    </div>
+
+    <figure class="viz-figure">
+        <div id="matrix" class="loading">Loading the matrix&hellip;</div>
+    </figure>
+
+    <p class="viz-caption">
+        Click a Part to open its sections. Click a cell to show only those
+        passages on the map; a selected passage outlines its cells here. The
+        search box also filters the matrix counts.
+        (<a href="../data/lab8_topic_section_matrix.csv">lab8_topic_section_matrix.csv</a>)
+    </p>
+
+    <h2>5. Findings</h2>
+
+    <div class="findings">
+
+        <div class="finding">
+            <h3>1. What are the major semantic topics?</h3>
+            <div class="finding-body">
+                <p>
+                    Five are academic fields &mdash; Politics, Society &amp;
+                    History (293 passages), Math, Computing &amp; Physics (220),
+                    Arts, Media &amp; Literature (166), China, Chinese &amp;
+                    Languages (126) and Life &amp; Environmental Sciences (116).
+                    Three are rules and services &mdash; Mission, Programs &amp;
+                    Support (125), Enrollment, Leave &amp; Withdrawal (106) and
+                    Credits, Grades &amp; Transfer (101). On the map the three
+                    policy topics form their own region, apart from the courses.
+                </p>
+            </div>
+        </div>
+
+        <div class="finding">
+            <h3>2. Which topics appear across multiple formal sections?</h3>
+            <div class="finding-body">
+                <p>
+                    Mission, Programs &amp; Support spreads the widest: 56 sections
+                    in 10 of the 11 Parts. Enrollment (30 sections) and Credits
+                    (25 sections) each reach 6 Parts, and so does China, Chinese
+                    &amp; Languages. The field topics barely leave Part
+                    10: Life &amp; Environmental Sciences sits entirely inside it and
+                    Politics 99%.
+                </p>
+            </div>
+        </div>
+
+        <div class="finding">
+            <h3>3. Which sections are the most semantically diverse?</h3>
+            <div class="finding-body">
+                <p>
+                    Course Descriptions (7 of 8 topics) and Majors (6) are
+                    expected. Among policy sections, <strong>Degree
+                    Requirements</strong> in Part 3 has the most: 33 passages in 5
+                    topics (entropy 2.1 bits), because it discusses languages,
+                    credits, interdisciplinary majors and Signature Work together.
+                    Estimated Expenses follows (4 topics). Refund and the Academic
+                    Calendar each fall into one topic.
+                </p>
+            </div>
+        </div>
+
+        <div class="finding">
+            <h3>4. Which passages from different sections are similar?</h3>
+            <div class="finding-body">
+                <p>
+                    The closest pair across Parts (cosine 0.94) is a CR/NC rule in
+                    <em>Grading</em> (Part 6, p. 53) and a study-away rule
+                    (Part 8, p. 75). Both say Duke courses may be taken
+                    Satisfactory/Unsatisfactory. The 40-credit transfer limit
+                    appears in <em>Transfer of Work</em> (p. 39) and again under
+                    Study Away (0.92). The <em>Independent Studies</em> policy
+                    (p. 48) matches the INDSTU 391 course description (p. 304, 0.84).
+                </p>
+            </div>
+        </div>
+
+        <div class="finding">
+            <h3>5. Which passages look unusual for their section?</h3>
+            <div class="finding-body">
+                <p>
+                    Admission and cost passages (Parts 4&ndash;5) land in China,
+                    Chinese &amp; Languages because they compare Chinese and
+                    international students. The model keys on the word
+                    &ldquo;Chinese&rdquo;, not on language teaching. The 27 physical
+                    education courses form a separate island at the edge of the
+                    map, but k-means puts 25 of them in Math, Computing &amp;
+                    Physics. There the 2-D map is more honest than the cluster.
+                </p>
+            </div>
+        </div>
+
+        <div class="finding">
+            <h3>6. Does a concept occupy one region or several?</h3>
+            <div class="finding-body">
+                <p>
+                    <code>registration</code> matches 9 passages, 7 of them in
+                    Enrollment, Leave &amp; Withdrawal: one region.
+                    <code>graduation</code> (32) stays in the three policy topics.
+                    <code>credit</code> matches 766 passages across all 8 topics,
+                    but mainly because every course title says &ldquo;(4
+                    credits)&rdquo;. Credit rules themselves sit in Credits, Grades
+                    &amp; Transfer. <code>academic integrity</code> appears in only 3
+                    passages; the concept is thin in the text.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    <h2>6. Design description</h2>
+
+    <div class="prose">
+        <p>
+            Each passage was embedded with <code>all-MiniLM-L6-v2</code> into a
+            384-dimensional vector, and UMAP (15 neighbours, cosine) projected those
+            vectors to 2-D for drawing only. Topics come from k-means (k = 8) on the
+            full vectors. Each was named after its top TF-IDF terms and the three
+            passages nearest its centroid, so TF-IDF explains clusters but does not
+            form them.
+        </p>
+        <p>
+            On the map, position is meaning, fill colour is topic, and circle area
+            is passage length, so long policy blocks stand out from short course
+            lists. Eight hues cannot all stay distinct for colour-blind readers in
+            a scatterplot, so every topic is also labelled at its centre. The matrix
+            answers the question the map cannot: where in the bulletin each topic
+            lives. Rows are the 11 Parts, which open into their 82 sections. Cell
+            shade is the topic's share of the row and the count is printed, so
+            small sections are comparable with Part 10.
+        </p>
+        <p>
+            The two views share one state. Clicking a matrix cell filters the map
+            to those passages; selecting a point outlines its Part and section
+            cells; the search box filters both at once, so a query like
+            &ldquo;credit&rdquo; shows where it sits semantically and formally.
+            The detail panel adds the full text and five nearest neighbours,
+            flagging neighbours from another Part, which is how cross-section
+            matches such as the duplicated study-away rules were found. A section-fit
+            score (similarity to the section centroid) flags passages that are
+            unusual for where they appear.
+        </p>
+    </div>
+
     <a class="back-link" href="../">&larr; Back to home</a>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="lab8.js"></script>
 
 </body>
 

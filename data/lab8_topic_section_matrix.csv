@@ -1,0 +1,143 @@
+chapter,section,cluster_name,count,proportion
+Part 1: General Information,Introduction,"Mission, Programs & Support",2,0.5
+Part 1: General Information,Introduction,"Politics, Society & History",2,0.5
+Part 1: General Information,Mission Statement,"Mission, Programs & Support",1,1.0
+Part 1: General Information,Statement on Diversity and Inclusion,"Mission, Programs & Support",1,1.0
+Part 1: General Information,Who We Are,"Mission, Programs & Support",5,1.0
+Part 1: General Information,Partners,"Mission, Programs & Support",4,0.6667
+Part 1: General Information,Partners,"China, Chinese & Languages",1,0.1667
+Part 1: General Information,Partners,"Arts, Media & Literature",1,0.1667
+Part 1: General Information,Duke Kunshan University Community Standard,"Mission, Programs & Support",1,1.0
+Part 2: A Liberal Arts Education at Duke Kunshan University,A 21st Century Curriculum,"Mission, Programs & Support",1,1.0
+Part 2: A Liberal Arts Education at Duke Kunshan University,A Liberal Arts College Experience,"Mission, Programs & Support",1,1.0
+Part 2: A Liberal Arts Education at Duke Kunshan University,Dual Degrees,"Mission, Programs & Support",1,1.0
+Part 2: A Liberal Arts Education at Duke Kunshan University,Animating Principles,"Mission, Programs & Support",1,0.25
+Part 2: A Liberal Arts Education at Duke Kunshan University,Animating Principles,"Arts, Media & Literature",3,0.75
+Part 3: The Curriculum,Overview,"Mission, Programs & Support",3,0.6
+Part 3: The Curriculum,Overview,"Arts, Media & Literature",2,0.4
+Part 3: The Curriculum,Key Components,"Mission, Programs & Support",2,0.2857
+Part 3: The Curriculum,Key Components,"China, Chinese & Languages",3,0.4286
+Part 3: The Curriculum,Key Components,"Credits, Grades & Transfer",2,0.2857
+Part 3: The Curriculum,Degree Requirements,"Arts, Media & Literature",5,0.1515
+Part 3: The Curriculum,Degree Requirements,"Credits, Grades & Transfer",11,0.3333
+Part 3: The Curriculum,Degree Requirements,"Math, Computing & Physics",2,0.0606
+Part 3: The Curriculum,Degree Requirements,"China, Chinese & Languages",6,0.1818
+Part 3: The Curriculum,Degree Requirements,"Mission, Programs & Support",9,0.2727
+"Part 4: Admission, Scholarships and Financial Aid",Principles of Selection,"Mission, Programs & Support",2,1.0
+"Part 4: Admission, Scholarships and Financial Aid",How to Apply,"Mission, Programs & Support",1,1.0
+"Part 4: Admission, Scholarships and Financial Aid",Application Timelines,"China, Chinese & Languages",1,0.1667
+"Part 4: Admission, Scholarships and Financial Aid",Application Timelines,"Enrollment, Leave & Withdrawal",3,0.5
+"Part 4: Admission, Scholarships and Financial Aid",Application Timelines,"Mission, Programs & Support",2,0.3333
+"Part 4: Admission, Scholarships and Financial Aid",Application Requirements,"Credits, Grades & Transfer",1,0.1667
+"Part 4: Admission, Scholarships and Financial Aid",Application Requirements,"China, Chinese & Languages",4,0.6667
+"Part 4: Admission, Scholarships and Financial Aid",Application Requirements,"Enrollment, Leave & Withdrawal",1,0.1667
+"Part 4: Admission, Scholarships and Financial Aid",Scholarships and Financial Aid,"Mission, Programs & Support",3,0.75
+"Part 4: Admission, Scholarships and Financial Aid",Scholarships and Financial Aid,"Credits, Grades & Transfer",1,0.25
+"Part 4: Admission, Scholarships and Financial Aid",Notification and Responses,"Credits, Grades & Transfer",1,1.0
+Part 5: Financial Information,Tuition and Fees,"Mission, Programs & Support",2,1.0
+Part 5: Financial Information,Estimated Expenses,"Credits, Grades & Transfer",1,0.0714
+Part 5: Financial Information,Estimated Expenses,"China, Chinese & Languages",5,0.3571
+Part 5: Financial Information,Estimated Expenses,"Mission, Programs & Support",3,0.2143
+Part 5: Financial Information,Estimated Expenses,"Enrollment, Leave & Withdrawal",5,0.3571
+Part 5: Financial Information,Refund,"Enrollment, Leave & Withdrawal",11,1.0
+Part 6: Academic Procedures and Information,Academic Integrity,"Mission, Programs & Support",2,0.4
+Part 6: Academic Procedures and Information,Academic Integrity,"Enrollment, Leave & Withdrawal",3,0.6
+Part 6: Academic Procedures and Information,Entrance Credit and Placement,"Mission, Programs & Support",4,0.2667
+Part 6: Academic Procedures and Information,Entrance Credit and Placement,"Credits, Grades & Transfer",5,0.3333
+Part 6: Academic Procedures and Information,Entrance Credit and Placement,"China, Chinese & Languages",6,0.4
+Part 6: Academic Procedures and Information,Transfer of Work Taken Elsewhere,"Credits, Grades & Transfer",4,0.5714
+Part 6: Academic Procedures and Information,Transfer of Work Taken Elsewhere,"Mission, Programs & Support",3,0.4286
+Part 6: Academic Procedures and Information,Time Limit for Completing Undergraduate Degree,"Mission, Programs & Support",1,1.0
+Part 6: Academic Procedures and Information,Registration,"Enrollment, Leave & Withdrawal",6,0.8571
+Part 6: Academic Procedures and Information,Registration,"Credits, Grades & Transfer",1,0.1429
+Part 6: Academic Procedures and Information,Undergraduate Course Load,"Credits, Grades & Transfer",9,0.4737
+Part 6: Academic Procedures and Information,Undergraduate Course Load,"Enrollment, Leave & Withdrawal",10,0.5263
+Part 6: Academic Procedures and Information,Eligibility for Courses,"Mission, Programs & Support",1,0.25
+Part 6: Academic Procedures and Information,Eligibility for Courses,"China, Chinese & Languages",1,0.25
+Part 6: Academic Procedures and Information,Eligibility for Courses,"Enrollment, Leave & Withdrawal",1,0.25
+Part 6: Academic Procedures and Information,Eligibility for Courses,"Credits, Grades & Transfer",1,0.25
+Part 6: Academic Procedures and Information,Course Repeat,"Mission, Programs & Support",1,0.1667
+Part 6: Academic Procedures and Information,Course Repeat,"Credits, Grades & Transfer",5,0.8333
+Part 6: Academic Procedures and Information,Course Audit,"Credits, Grades & Transfer",1,1.0
+Part 6: Academic Procedures and Information,Two-Credit Writing Courses,"China, Chinese & Languages",1,1.0
+Part 6: Academic Procedures and Information,Independent Studies,"Mission, Programs & Support",1,0.5
+Part 6: Academic Procedures and Information,Independent Studies,"Credits, Grades & Transfer",1,0.5
+Part 6: Academic Procedures and Information,Submission of Term Paper,"Credits, Grades & Transfer",1,1.0
+Part 6: Academic Procedures and Information,Declaration of Major,"Mission, Programs & Support",2,1.0
+Part 6: Academic Procedures and Information,Class Attendance and Missed Work,"Enrollment, Leave & Withdrawal",3,1.0
+Part 6: Academic Procedures and Information,Class Scheduling,"Enrollment, Leave & Withdrawal",1,1.0
+Part 6: Academic Procedures and Information,Incomplete Coursework and Excused Absence from Final Exam,"Enrollment, Leave & Withdrawal",3,1.0
+Part 6: Academic Procedures and Information,Final Examinations,"Enrollment, Leave & Withdrawal",3,1.0
+Part 6: Academic Procedures and Information,Grading and Grade Requirements,"Enrollment, Leave & Withdrawal",2,0.1053
+Part 6: Academic Procedures and Information,Grading and Grade Requirements,"Credits, Grades & Transfer",16,0.8421
+Part 6: Academic Procedures and Information,Grading and Grade Requirements,"China, Chinese & Languages",1,0.0526
+Part 6: Academic Procedures and Information,Progress toward Degree,"Credits, Grades & Transfer",6,1.0
+Part 6: Academic Procedures and Information,"Academic Warning, Probation, and Suspension for Students in the Classes of 2022-2024","Enrollment, Leave & Withdrawal",5,0.4167
+Part 6: Academic Procedures and Information,"Academic Warning, Probation, and Suspension for Students in the Classes of 2022-2024","Credits, Grades & Transfer",7,0.5833
+Part 6: Academic Procedures and Information,"Academic Warning, Probation, and Suspension for Students in the Class of 2025 and Beyond","Credits, Grades & Transfer",6,0.8571
+Part 6: Academic Procedures and Information,"Academic Warning, Probation, and Suspension for Students in the Class of 2025 and Beyond","Enrollment, Leave & Withdrawal",1,0.1429
+Part 6: Academic Procedures and Information,Changes in Status,"Enrollment, Leave & Withdrawal",11,0.7857
+Part 6: Academic Procedures and Information,Changes in Status,"Credits, Grades & Transfer",2,0.1429
+Part 6: Academic Procedures and Information,Changes in Status,"Mission, Programs & Support",1,0.0714
+Part 6: Academic Procedures and Information,Academic Recognition and Honors,"Credits, Grades & Transfer",4,1.0
+Part 6: Academic Procedures and Information,Notification of Intention to Graduate,"Mission, Programs & Support",1,1.0
+Part 6: Academic Procedures and Information,Graduation and Commencement,"Enrollment, Leave & Withdrawal",1,1.0
+Part 6: Academic Procedures and Information,Education Records,"Mission, Programs & Support",3,0.75
+Part 6: Academic Procedures and Information,Education Records,"Enrollment, Leave & Withdrawal",1,0.25
+Part 6: Academic Procedures and Information,The Provision of Academic Information to Parents and Guardians,"Enrollment, Leave & Withdrawal",1,1.0
+Part 6: Academic Procedures and Information,Procedure for Resolution of Students' Academic Concerns,"Mission, Programs & Support",1,0.2
+Part 6: Academic Procedures and Information,Procedure for Resolution of Students' Academic Concerns,"Enrollment, Leave & Withdrawal",4,0.8
+Part 6: Academic Procedures and Information,Grade Review Procedure,"Credits, Grades & Transfer",2,0.4
+Part 6: Academic Procedures and Information,Grade Review Procedure,"Enrollment, Leave & Withdrawal",3,0.6
+Part 6: Academic Procedures and Information,Exclusion of Disruptive Students from a Course,"Enrollment, Leave & Withdrawal",2,1.0
+Part 6: Academic Procedures and Information,Compliance with Academic Regulations,"Enrollment, Leave & Withdrawal",1,1.0
+Part 6: Academic Procedures and Information,Religious Holidays,"Mission, Programs & Support",1,1.0
+Part 7: Academic Advising and Support,Introduction,"Mission, Programs & Support",1,1.0
+Part 7: Academic Advising and Support,Academic Advising,"Mission, Programs & Support",4,1.0
+Part 7: Academic Advising and Support,Academic Resource Center,"Mission, Programs & Support",4,1.0
+Part 7: Academic Advising and Support,Seven Principles of Duke Kunshan University Academic Advising,"Mission, Programs & Support",2,1.0
+"Part 8: Career Services, Study Away, and Research Opportunities",Career Services,"Mission, Programs & Support",6,0.8571
+"Part 8: Career Services, Study Away, and Research Opportunities",Career Services,"Enrollment, Leave & Withdrawal",1,0.1429
+"Part 8: Career Services, Study Away, and Research Opportunities",Student Research Opportunities,"Mission, Programs & Support",2,1.0
+"Part 8: Career Services, Study Away, and Research Opportunities",Office of Global Education and Study Away,"Mission, Programs & Support",12,0.6316
+"Part 8: Career Services, Study Away, and Research Opportunities",Office of Global Education and Study Away,"Enrollment, Leave & Withdrawal",3,0.1579
+"Part 8: Career Services, Study Away, and Research Opportunities",Office of Global Education and Study Away,"Credits, Grades & Transfer",4,0.2105
+Part 9: Student Affairs and Campus Life,Student Affairs,"Mission, Programs & Support",2,1.0
+Part 9: Student Affairs and Campus Life,Student Affairs Conceptual Framework,"Mission, Programs & Support",1,0.5
+Part 9: Student Affairs and Campus Life,Student Affairs Conceptual Framework,"Politics, Society & History",1,0.5
+Part 9: Student Affairs and Campus Life,Residence Life,"Mission, Programs & Support",1,1.0
+Part 9: Student Affairs and Campus Life,Accommodations,"Enrollment, Leave & Withdrawal",2,0.6667
+Part 9: Student Affairs and Campus Life,Accommodations,"Mission, Programs & Support",1,0.3333
+Part 9: Student Affairs and Campus Life,Leadership Development,"Mission, Programs & Support",1,1.0
+Part 9: Student Affairs and Campus Life,Campus Engagement,"Mission, Programs & Support",1,1.0
+Part 9: Student Affairs and Campus Life,Arts and Culture,"Mission, Programs & Support",1,1.0
+Part 9: Student Affairs and Campus Life,Blue Oasis Student Center,"Mission, Programs & Support",2,1.0
+Part 9: Student Affairs and Campus Life,Campus Programs,"Mission, Programs & Support",2,1.0
+Part 9: Student Affairs and Campus Life,Student Clubs and Organizations,"Mission, Programs & Support",1,1.0
+Part 9: Student Affairs and Campus Life,Athletics & University Sports,"Mission, Programs & Support",4,0.8
+Part 9: Student Affairs and Campus Life,Athletics & University Sports,"Math, Computing & Physics",1,0.2
+Part 9: Student Affairs and Campus Life,Counseling and Psychological Services (CAPS),"Mission, Programs & Support",1,0.5
+Part 9: Student Affairs and Campus Life,Counseling and Psychological Services (CAPS),"Enrollment, Leave & Withdrawal",1,0.5
+Part 9: Student Affairs and Campus Life,Campus Health Clinic,"Enrollment, Leave & Withdrawal",1,1.0
+Part 9: Student Affairs and Campus Life,Chinese Student Services and Student Mobility,"Mission, Programs & Support",2,1.0
+Part 9: Student Affairs and Campus Life,International Student Services,"Mission, Programs & Support",2,1.0
+Part 9: Student Affairs and Campus Life,Host Family Program,"Mission, Programs & Support",1,1.0
+Part 9: Student Affairs and Campus Life,Student Conduct,"Mission, Programs & Support",1,0.3333
+Part 9: Student Affairs and Campus Life,Student Conduct,"Enrollment, Leave & Withdrawal",2,0.6667
+Part 10: Majors and Courses,Requirements for All Majors,"Credits, Grades & Transfer",3,0.3333
+Part 10: Majors and Courses,Requirements for All Majors,"Politics, Society & History",1,0.1111
+Part 10: Majors and Courses,Requirements for All Majors,"China, Chinese & Languages",5,0.5556
+Part 10: Majors and Courses,Majors,"Math, Computing & Physics",60,0.2871
+Part 10: Majors and Courses,Majors,"Politics, Society & History",83,0.3971
+Part 10: Majors and Courses,Majors,"Mission, Programs & Support",1,0.0048
+Part 10: Majors and Courses,Majors,"Arts, Media & Literature",22,0.1053
+Part 10: Majors and Courses,Majors,Life & Environmental Sciences,36,0.1722
+Part 10: Majors and Courses,Majors,"China, Chinese & Languages",7,0.0335
+Part 10: Majors and Courses,Course Descriptions,"Math, Computing & Physics",157,0.2347
+Part 10: Majors and Courses,Course Descriptions,"China, Chinese & Languages",85,0.1271
+Part 10: Majors and Courses,Course Descriptions,"Arts, Media & Literature",133,0.1988
+Part 10: Majors and Courses,Course Descriptions,"Politics, Society & History",206,0.3079
+Part 10: Majors and Courses,Course Descriptions,Life & Environmental Sciences,80,0.1196
+Part 10: Majors and Courses,Course Descriptions,"Credits, Grades & Transfer",6,0.009
+Part 10: Majors and Courses,Course Descriptions,"Mission, Programs & Support",2,0.003
+Part 11: Academic Calendar 2021-22,Academic Calendar 2021-22,"Enrollment, Leave & Withdrawal",14,1.0

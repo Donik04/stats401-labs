@@ -7,6 +7,9 @@ lab4/.cache/
 # and does not need it.
 lab4/fetch_tweets.py
 
+# Lab 8 downloads the 3 MB bulletin PDF here; build_corpus.py re-fetches it.
+lab8/.cache/
+
 __pycache__/
 *.pyc
 .DS_Store
