@@ -13,3 +13,7 @@ lab8/.cache/
 __pycache__/
 *.pyc
 .DS_Store
+
+# Downloaded sources for the individual project (the 36 MB report PDF and the
+# WHR spreadsheets). build_data.py fetches them again on first run.
+redesign/.cache/
