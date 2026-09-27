@@ -11,7 +11,7 @@ Sources  : WHR26_Data_Figure_2.1.xlsx  -- the figure's own data, published by
            WHR21_Data_Figure_2.1.xls -- the report's own ten-region grouping
            ("Regional indicator"), which the 2026 files no longer include
 Outputs  : data/redesign_whr2026.csv    one row per ranked country (147)
-           redesign/img/whr26_fig2-1_part{1,2,3}.png   the original figure
+           individual-project/img/whr26_fig2-1_part{1,2,3}.png   the original figure
 
 The six "Explained by" columns are each factor's contribution to the ladder
 score measured from Dystopia, a hypothetical country with the world's lowest

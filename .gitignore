@@ -16,4 +16,4 @@ __pycache__/
 
 # Downloaded sources for the individual project (the 36 MB report PDF and the
 # WHR spreadsheets). build_data.py fetches them again on first run.
-redesign/.cache/
+individual-project/.cache/
