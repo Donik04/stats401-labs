@@ -28,12 +28,6 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
-    <p class="prose-lead">
-        The 50 largest economies of 2025 drawn twice from the same numbers: a
-        choropleth that keeps the map and puts GDP in colour, and a cartogram
-        that gives up the map's shapes so that area itself is GDP. Hovering or
-        clicking a country in either map highlights it in both.
-    </p>
 
     <h2>1. Dataset description</h2>
 
@@ -47,17 +41,6 @@
             (Kazakhstan) to <strong>$30.6 trillion</strong> (United States), a
             100-fold range; together they total <strong>$109.7 trillion</strong>,
             and the U.S. and China alone hold 46% of it.</dd>
-
-        <dt>Boundaries &mdash; <a href="../data/lab9_world_countries.geojson">lab9_world_countries.geojson</a></dt>
-        <dd>Natural Earth 1:50m Admin&nbsp;0 countries (public domain), reduced by
-            <a href="build_world.py">build_world.py</a> to 241 features with a
-            <code>name</code> and an <code>iso3</code> property. The 1:50m scale is
-            needed because the coarser 1:110m file has no Singapore or Hong Kong.
-            Borders are simplified as one coverage so that neighbours keep sharing
-            edges, and Antarctica is dropped.</dd>
-
-        <dt>Join on ISO-3</dt>
-        <dd id="join-check">Checking&hellip;</dd>
 
         <dt>Missing data</dt>
         <dd>The 191 features outside the top 50 have <strong>no GDP value</strong>
@@ -92,13 +75,9 @@
         </figure>
 
         <p class="viz-caption" id="scale-caption">
-            Colour = 2025 GDP, in six classes whose limits roughly double (500,
-            1,000, 2,000, 5,000, 10,000 billion USD). GDP is so skewed that equal
-            linear classes put 47 of the 50 economies in the palest class and leave
-            two of the six classes empty; switch to <em>Linear</em> to see it.
             On the log-spaced classes every class is used and economies an order of
             magnitude apart look different, at the cost that each step means
-            &ldquo;about twice as much&rdquo; rather than &ldquo;5 trillion more&rdquo;.
+            about twice as much; rather than &ldquo;5 trillion more&rdquo;.
             Scroll or pinch to zoom, drag to pan, click to keep a country selected.
         </p>
 
@@ -123,14 +102,11 @@
         </figure>
 
         <p class="viz-caption">
-            A contiguous diffusion cartogram (Gastner &amp; Newman, 2004),
-            precomputed by <a href="build_cartogram.py">build_cartogram.py</a>; every
+            A contiguous diffusion cartogram (Gastner &amp; Newman, 2004) where every
             economy is within 4.2% of its target area and 46 of 50 are within 1%.
             Hatched countries have no GDP value: they are kept so the map stays
             connected and together hold a fixed placeholder 10% of the area, split
-            by land area, so <strong>their size is not GDP</strong>. Drag the slider
-            or press <em>Play</em> to watch the countries move from their land area
-            to their GDP area.
+            by land area, so their size is not GDP.
         </p>
 
         <details class="table-view">
@@ -187,8 +163,7 @@
             Germany alone (4.1% of the map) outweighs Brazil, Argentina, Colombia,
             Chile and Peru together (3.3%). Moving GDP from colour to area turns it
             from a label on the land into the land itself; concentration becomes
-            visible, at the cost of recognisability, which the linked highlighting
-            restores.
+            visible, at the cost of recognisability.
         </p>
     </div>
 
@@ -205,22 +180,15 @@
                 coordinates are already planar, so it is drawn with
                 <code>d3.geoPath()</code> and a fitted <code>d3.geoIdentity()</code>.
             </p>
-            <p>
-                <strong>Join.</strong> Natural Earth stores <code>ISO_A3 = -99</code>
-                for France and Norway (overseas territories and Svalbard), so a plain
-                join silently drops two top-10 economies. <code>build_world.py</code>
-                falls back to Natural Earth's own <code>ADM0_A3</code> code, which
-                equals the ISO code for both, and asserts that no code repeats. The
-                page counts the matches again in the browser (Section 1).
-            </p>
+          
+
             <p>
                 <strong>Cartogram.</strong> GDP is spread over a 1024&times;512 grid as
                 a density and allowed to diffuse until it is uniform; every vertex
-                moves with the flow, so borders never cross. Eight passes bring every
-                economy within 4.2% of its target area. A first attempt with the
+                moves with the flow, to ensure borders never cross with each other.
+                Eight passes bring every economy within 4.2% of its target area. A first attempt with the
                 rubber-sheet algorithm of Dougenik et&nbsp;al. (1985), which topogram
-                uses, left France at 13% of its target, crushed between six fast-growing
-                neighbours. The cartogram file keeps every vertex of the original,
+                uses, left France at 13% of its target. The cartogram file keeps every vertex of the original,
                 which is what makes the land-to-GDP morph possible.
             </p>
             <p>
