@@ -1785,3 +1785,268 @@ select.date-field {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 }
+
+/* ---------- Lab 9: GDP choropleth and cartogram ---------- */
+
+/*
+ * GDP is the only data colour: a one-hue blue ramp (steps 150 → 700) on the
+ * choropleth, one flat step (250) on the cartogram so area is its only GDP
+ * channel. "No data" is a hatched neutral in both, never a ramp step, so a
+ * missing country cannot be read as the smallest class.
+ */
+
+.l9-linked {
+    position: relative;
+}
+
+/* The selection bar stays in view while the reader scrolls between the two
+   maps, so the linked country is named even when the other map is off screen. */
+.l9-selection {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 12px;
+    margin: 24px 0 0;
+    padding: 9px 12px;
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+    background: rgba(253, 253, 252, 0.96);
+    box-shadow: 0 2px 6px rgba(11, 11, 11, 0.06);
+}
+
+.l9-readout {
+    flex: 1 1 320px;
+    font-size: 13px;
+    color: #0b0b0b;
+    font-variant-numeric: tabular-nums;
+}
+
+.l9-hint {
+    color: #898781;
+}
+
+.l9-map svg {
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+    cursor: grab;
+    touch-action: none;
+}
+
+.l9-map svg:active {
+    cursor: grabbing;
+}
+
+.l9-ocean {
+    fill: #fcfcfb;
+}
+
+.l9-graticule {
+    fill: none;
+    stroke: #ecebe6;
+    stroke-width: 0.5;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}
+
+.l9-map .country {
+    stroke: #ffffff;
+    stroke-width: 0.5;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+    cursor: pointer;
+    transition: opacity 0.15s;
+}
+
+.l9-map .country:hover,
+.l9-map .country.lit {
+    stroke: #0b0b0b;
+    stroke-width: 2;
+}
+
+.l9-map .country.faded {
+    opacity: 0.45;
+}
+
+/* Choropleth legend: six class chips with counts, the limits beneath. */
+
+.l9-legend {
+    display: grid;
+    grid-template-columns: auto;
+    gap: 4px;
+    margin: 14px 0 4px;
+}
+
+.l9-steps,
+.l9-ticks {
+    display: grid;
+    grid-template-columns: repeat(6, 64px);
+    gap: 2px;
+}
+
+.l9-step {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.l9-chip {
+    display: inline-block;
+    height: 14px;
+    border-radius: 2px;
+}
+
+.l9-step .l9-chip {
+    width: 100%;
+}
+
+.l9-count {
+    font-size: 11px;
+    color: #52514e;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.l9-step.empty .l9-count {
+    color: #898781;
+    font-style: italic;
+}
+
+/* Limits sit under the boundaries between chips, so each label is shifted
+   left by half its own width and the grid has one more column than chips. */
+.l9-ticks {
+    grid-template-columns: repeat(7, 64px);
+    margin-left: -32px;
+}
+
+.l9-ticks span {
+    font-size: 11px;
+    color: #52514e;
+    text-align: center;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.l9-nodata {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 4px;
+    font-size: 12px;
+    color: #52514e;
+}
+
+.l9-chip.hatched {
+    width: 22px;
+    border: 1px solid #e1e0d9;
+    background: repeating-linear-gradient(45deg, #f1f0ec 0 2px, #c9c7bf 2px 3.5px);
+}
+
+/* Cartogram */
+
+.l9-morph-end {
+    font-size: 12px;
+    color: #52514e;
+}
+
+#morph {
+    flex: 0 1 220px;
+    min-width: 140px;
+}
+
+.l9-area-note {
+    max-width: 68ch;
+    margin: 0 0 6px;
+    padding: 8px 12px;
+    border-left: 3px solid #2a78d6;
+    background: #eef4fb;
+    font-size: 14px;
+}
+
+.l9-area-note.off {
+    opacity: 0.4;
+}
+
+.l9-labels text {
+    fill: #0b0b0b;
+    stroke: #ffffff;
+    stroke-linejoin: round;
+    paint-order: stroke;
+    text-anchor: middle;
+    pointer-events: none;
+    font-weight: bold;
+}
+
+.l9-labels text.lit {
+    font-size: 13px;
+}
+
+.l9-key-bg {
+    fill: rgba(252, 252, 251, 0.92);
+    stroke: #e1e0d9;
+    rx: 4;
+}
+
+.l9-key-square {
+    fill: #86b6ef;
+    stroke: #184f95;
+    stroke-width: 1;
+}
+
+.l9-key-text {
+    font-size: 12px;
+    fill: #0b0b0b;
+}
+
+/* Table view */
+
+.l9-table {
+    width: 100%;
+    margin: 0;
+    font-size: 13px;
+}
+
+.l9-table th {
+    position: sticky;
+    top: 0;
+}
+
+.l9-table th.num,
+.l9-table td.num {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.l9-table tbody tr {
+    cursor: pointer;
+}
+
+.l9-table tbody tr:hover,
+.l9-table tbody tr.lit {
+    background: #eef4fb;
+}
+
+@media (max-width: 640px) {
+    .l9-steps {
+        grid-template-columns: repeat(6, 44px);
+    }
+
+    .l9-ticks {
+        grid-template-columns: repeat(7, 44px);
+        margin-left: -22px;
+    }
+
+    .l9-ticks span {
+        font-size: 10px;
+    }
+}
+
+.l9-locator {
+    fill: none;
+    stroke: #0b0b0b;
+    stroke-width: 1.5;
+    vector-effect: non-scaling-stroke;
+    pointer-events: none;
+}

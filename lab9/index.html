@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 9</title>
+    <title>Lab 9 &mdash; Geospatial Visualization: 2025 GDP</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 9</h1>
+    <h1>Lab 9: Geospatial Visualization</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,217 @@
         <a href="../lab10/">Lab 10</a>
     </nav>
 
-    <p>
-        Lab 9 will be added here.
+    <p class="prose-lead">
+        The 50 largest economies of 2025 drawn twice from the same numbers: a
+        choropleth that keeps the map and puts GDP in colour, and a cartogram
+        that gives up the map's shapes so that area itself is GDP. Hovering or
+        clicking a country in either map highlights it in both.
     </p>
 
+    <h2>1. Dataset description</h2>
+
+    <dl class="dataset-facts">
+        <dt>GDP &mdash; <a href="../data/lab9_gdp_2025_top50.csv">lab9_gdp_2025_top50.csv</a></dt>
+        <dd>The <strong>50 largest economies</strong> by 2025 nominal GDP in current
+            U.S. dollars, from the IMF <em>World Economic Outlook</em>, October 2025
+            (some values are IMF staff estimates and may be revised). Columns
+            <code>iso3</code>, <code>country</code>, <code>gdp_2025_billion_usd</code>,
+            <code>rank</code>. Values run from <strong>$300 billion</strong>
+            (Kazakhstan) to <strong>$30.6 trillion</strong> (United States), a
+            100-fold range; together they total <strong>$109.7 trillion</strong>,
+            and the U.S. and China alone hold 46% of it.</dd>
+
+        <dt>Boundaries &mdash; <a href="../data/lab9_world_countries.geojson">lab9_world_countries.geojson</a></dt>
+        <dd>Natural Earth 1:50m Admin&nbsp;0 countries (public domain), reduced by
+            <a href="build_world.py">build_world.py</a> to 241 features with a
+            <code>name</code> and an <code>iso3</code> property. The 1:50m scale is
+            needed because the coarser 1:110m file has no Singapore or Hong Kong.
+            Borders are simplified as one coverage so that neighbours keep sharing
+            edges, and Antarctica is dropped.</dd>
+
+        <dt>Join on ISO-3</dt>
+        <dd id="join-check">Checking&hellip;</dd>
+
+        <dt>Missing data</dt>
+        <dd>The 191 features outside the top 50 have <strong>no GDP value</strong>
+            in this file. They are drawn hatched grey in both maps and never as
+            zero.</dd>
+    </dl>
+
+    <div class="l9-linked">
+
+        <div class="l9-selection" id="selection-bar">
+            <label class="control-label" for="economy-select">Economy</label>
+            <select id="economy-select" class="date-field"></select>
+            <span class="l9-readout" id="selection-readout" aria-live="polite"></span>
+            <button type="button" class="ghost-button" id="clear-selection" hidden>Clear</button>
+        </div>
+
+        <h2>2. 2025 GDP Choropleth</h2>
+
+        <div class="viz-controls compact">
+            <span class="control-label">Colour classes</span>
+            <div class="button-set" id="scale-buttons">
+                <button type="button" data-scale="log" class="active">Log-spaced</button>
+                <button type="button" data-scale="linear">Linear</button>
+            </div>
+            <button type="button" class="ghost-button" id="choropleth-reset">Reset zoom</button>
+        </div>
+
+        <div class="l9-legend" id="choropleth-legend"></div>
+
+        <figure class="viz-figure l9-map">
+            <div id="choropleth" class="loading">Loading the map&hellip;</div>
+        </figure>
+
+        <p class="viz-caption" id="scale-caption">
+            Colour = 2025 GDP, in six classes whose limits roughly double (500,
+            1,000, 2,000, 5,000, 10,000 billion USD). GDP is so skewed that equal
+            linear classes put 47 of the 50 economies in the palest class and leave
+            two of the six classes empty; switch to <em>Linear</em> to see it.
+            On the log-spaced classes every class is used and economies an order of
+            magnitude apart look different, at the cost that each step means
+            &ldquo;about twice as much&rdquo; rather than &ldquo;5 trillion more&rdquo;.
+            Scroll or pinch to zoom, drag to pan, click to keep a country selected.
+        </p>
+
+        <h2>3. 2025 GDP Cartogram</h2>
+
+        <div class="viz-controls compact">
+            <span class="control-label">Area</span>
+            <span class="l9-morph-end">Land</span>
+            <input type="range" id="morph" min="0" max="100" value="100" aria-label="Morph between land area and GDP area">
+            <span class="l9-morph-end">GDP</span>
+            <button type="button" class="ghost-button" id="morph-play">&#9654; Play morph</button>
+            <button type="button" class="ghost-button" id="cartogram-reset">Reset zoom</button>
+        </div>
+
+        <p class="l9-area-note" id="area-note">
+            <strong>Area represents GDP.</strong> Each of the 50 economies covers a
+            share of the map equal to its share of their combined $109.7 trillion.
+        </p>
+
+        <figure class="viz-figure l9-map">
+            <div id="cartogram" class="loading">Loading the cartogram&hellip;</div>
+        </figure>
+
+        <p class="viz-caption">
+            A contiguous diffusion cartogram (Gastner &amp; Newman, 2004),
+            precomputed by <a href="build_cartogram.py">build_cartogram.py</a>; every
+            economy is within 4.2% of its target area and 46 of 50 are within 1%.
+            Hatched countries have no GDP value: they are kept so the map stays
+            connected and together hold a fixed placeholder 10% of the area, split
+            by land area, so <strong>their size is not GDP</strong>. Drag the slider
+            or press <em>Play</em> to watch the countries move from their land area
+            to their GDP area.
+        </p>
+
+        <details class="table-view">
+            <summary>Table view: GDP, land share and cartogram share for all 50 economies</summary>
+            <div class="table-scroll">
+                <table id="gdp-table" class="data-table l9-table">
+                    <thead>
+                        <tr>
+                            <th class="num">Rank</th>
+                            <th>Economy</th>
+                            <th class="num">GDP ($B)</th>
+                            <th class="num">Share of top-50 GDP</th>
+                            <th class="num">Share of land</th>
+                            <th class="num">Share of cartogram</th>
+                            <th class="num">Cartogram &divide; land</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </details>
+
+    </div>
+
+    <h2>4. Design and comparison</h2>
+
+    <div class="prose" id="comparison">
+        <p>
+            On the choropleth the eye goes first to land: Russia and Canada cover
+            more of the map than the dark United States and China, Brazil and
+            Australia nearly as much, though Russia's economy is a twelfth of
+            America's. On
+            the cartogram the U.S. (25% of the area) and China (16%) dominate,
+            followed by Germany, Japan, India and the United Kingdom.
+        </p>
+        <p>
+            Small, rich economies grow most: the Netherlands &times;40, Taiwan and
+            Switzerland &times;27, South Korea &times;21, Britain &times;18, and
+            Singapore, invisible on the choropleth, ends up larger than Malaysia.
+            Kazakhstan (&times;0.1), Russia (&times;0.2), Canada, Australia and Brazil
+            (&times;0.3) shrink.
+        </p>
+        <p>
+            The choropleth preserves position, shape, size and adjacency, so it suits
+            locating a country, seeing regional patterns (dense mid-blue across
+            Europe and East Asia, almost all of Africa without data) and reading a
+            value class. But colour is read only coarsely: $2.3 and $2.5 trillion look
+            identical, and big pale countries outweigh small dark ones.
+        </p>
+        <p>
+            The cartogram keeps neighbours and rough position but distorts shape,
+            size and distance: Africa and Central Asia nearly vanish while Europe
+            swells. It suits magnitude tasks, such as comparing totals or seeing that
+            Germany alone (4.1% of the map) outweighs Brazil, Argentina, Colombia,
+            Chile and Peru together (3.3%). Moving GDP from colour to area turns it
+            from a label on the land into the land itself; concentration becomes
+            visible, at the cost of recognisability, which the linked highlighting
+            restores.
+        </p>
+    </div>
+
+    <details class="method">
+        <summary>Method and design choices</summary>
+        <div class="prose">
+            <p>
+                <strong>Projection.</strong> Both maps use Equal Earth
+                (<code>d3.geoEqualEarth</code>), an equal-area projection, so on the
+                choropleth a country's size is its true land area, and the cartogram
+                starts from true areas rather than Mercator's inflated Canada and
+                Russia. The choropleth is drawn with
+                <code>d3.geoPath().projection(projection)</code>; the cartogram's
+                coordinates are already planar, so it is drawn with
+                <code>d3.geoPath()</code> and a fitted <code>d3.geoIdentity()</code>.
+            </p>
+            <p>
+                <strong>Join.</strong> Natural Earth stores <code>ISO_A3 = -99</code>
+                for France and Norway (overseas territories and Svalbard), so a plain
+                join silently drops two top-10 economies. <code>build_world.py</code>
+                falls back to Natural Earth's own <code>ADM0_A3</code> code, which
+                equals the ISO code for both, and asserts that no code repeats. The
+                page counts the matches again in the browser (Section 1).
+            </p>
+            <p>
+                <strong>Cartogram.</strong> GDP is spread over a 1024&times;512 grid as
+                a density and allowed to diffuse until it is uniform; every vertex
+                moves with the flow, so borders never cross. Eight passes bring every
+                economy within 4.2% of its target area. A first attempt with the
+                rubber-sheet algorithm of Dougenik et&nbsp;al. (1985), which topogram
+                uses, left France at 13% of its target, crushed between six fast-growing
+                neighbours. The cartogram file keeps every vertex of the original,
+                which is what makes the land-to-GDP morph possible.
+            </p>
+            <p>
+                <strong>Colour.</strong> One blue sequential ramp, light to dark, for
+                GDP on the choropleth. The cartogram uses a single flat blue so that
+                area is its only GDP channel, with names printed where they fit.
+                Missing data is a hatched neutral grey in both maps, so it cannot be
+                read as the lightest GDP class.
+            </p>
+        </div>
+    </details>
+
     <a class="back-link" href="../">&larr; Back to home</a>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="lab9.js"></script>
 
 </body>
 

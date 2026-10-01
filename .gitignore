@@ -17,3 +17,7 @@ __pycache__/
 # Downloaded sources for the individual project (the 36 MB report PDF and the
 # WHR spreadsheets). build_data.py fetches them again on first run.
 individual-project/.cache/
+
+# Lab 9 downloads the 3 MB Natural Earth 1:50m countries file here;
+# build_world.py re-fetches it.
+lab9/.cache/
