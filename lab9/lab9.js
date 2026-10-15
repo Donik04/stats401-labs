@@ -41,6 +41,10 @@ const listeners = [];
 const update = () => listeners.forEach(fn => fn());
 const focus = () => state.hover || state.pinned;
 
+// Handles for pages that extend these maps: Lab 10 drives them by voice,
+// gesture and gaze. Lab 9 itself never reads them.
+const hooks = { ready: null, views: {} };
+
 function setHover(iso3) {
     if (state.hover === iso3) return;
     state.hover = iso3;
@@ -96,7 +100,7 @@ function addLocator(mapGroup) {
 
 // ------------------------------------------------------------------- load --
 
-Promise.all([
+hooks.ready = Promise.all([
     d3.json("../data/lab9_world_countries.geojson"),
     d3.json("../data/lab9_gdp_cartogram.geojson"),
     d3.csv("../data/lab9_gdp_2025_top50.csv", d => ({
@@ -133,6 +137,7 @@ Promise.all([
     drawCartogram(ctx);
     fillTable(ctx);
     update();
+    return ctx;
 });
 
 function reportJoin(stats, geoData, featureById) {
@@ -258,6 +263,7 @@ function drawChoropleth({ geoData, stats }) {
             locate(countries.filter(".lit").node(), k);
         });
     svg.call(zoom);
+    hooks.views.choropleth = { svg, zoom, path, height: H };
     d3.select("#choropleth-reset").on("click", () =>
         svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity));
 
@@ -443,6 +449,7 @@ function drawCartogram({ geoData, cartoData, statById }) {
             locate(countries.filter(".lit").node(), k);
         });
     svg.call(zoom);
+    hooks.views.cartogram = { svg, zoom, path, height: H, shapeAt };
     d3.select("#cartogram-reset").on("click", () =>
         svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity));
 

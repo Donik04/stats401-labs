@@ -1833,6 +1833,8 @@ select.date-field {
     border-radius: 6px;
     cursor: grab;
     touch-action: none;
+    /* .viz-figure svg lets content spill; a zoomed map must stay in its frame. */
+    overflow: hidden;
 }
 
 .l9-map svg:active {
@@ -2049,4 +2051,491 @@ select.date-field {
     stroke-width: 1.5;
     vector-effect: non-scaling-stroke;
     pointer-events: none;
+}
+
+/* ---------- Lab 10: voice, gesture and gaze on the Lab 9 maps ---------- */
+
+/*
+ * Lab 10 reuses every Lab 9 style for the maps. What it adds is feedback:
+ * three input panels, an action log, a toast that follows the reader down
+ * the page, a corner dock that shows which sensors are on (with the camera
+ * view for gestures), the gaze ring and the calibration screen.
+ */
+
+.l10-task-table,
+.l10-command-table {
+    width: 100%;
+    margin: 0;
+    font-size: 13px;
+}
+
+.l10-task-table td,
+.l10-command-table td {
+    vertical-align: top;
+    line-height: 1.45;
+}
+
+.l10-command-table td:first-child {
+    white-space: nowrap;
+    font-weight: bold;
+    color: #0b0b0b;
+}
+
+.l10-howto {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+    gap: 10px 28px;
+}
+
+.l10-howto h3 {
+    margin: 14px 0 8px;
+    font-size: 16px;
+}
+
+.l10-steps {
+    margin: 0;
+    padding-left: 20px;
+    font-size: 14px;
+    line-height: 1.55;
+}
+
+.l10-note {
+    max-width: 75ch;
+    font-size: 13px;
+    color: #52514e;
+}
+
+.l10-privacy {
+    max-width: 75ch;
+    padding: 8px 12px;
+    border-left: 3px solid #c3c2b7;
+    background: #f6f6f3;
+    font-size: 14px;
+}
+
+kbd {
+    display: inline-block;
+    min-width: 1.4em;
+    padding: 0 5px;
+    border: 1px solid #c3c2b7;
+    border-bottom-width: 2px;
+    border-radius: 4px;
+    background: #fcfcfb;
+    font: 12px/1.6 Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+/* Input panels */
+
+.l10-panels {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 14px 0;
+}
+
+.l10-panel {
+    position: relative;
+    padding: 12px 14px 18px;
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+    background: #fcfcfb;
+}
+
+.l10-panel h3 {
+    margin: 0 0 10px;
+    font-size: 16px;
+}
+
+.l10-panel-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.l10-start {
+    padding: 7px 13px;
+    border: 1px solid steelblue;
+    border-radius: 5px;
+    background: steelblue;
+    color: white;
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.l10-start:hover {
+    background: #3a6d96;
+}
+
+.l10-start.on {
+    border-color: #c0392b;
+    background: #fff;
+    color: #c0392b;
+}
+
+.l10-start:disabled,
+.ghost-button:disabled,
+.button-set button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+
+.l10-status {
+    min-height: 2.9em;
+    margin: 10px 0 6px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #52514e;
+}
+
+.l10-status[data-mode="on"]::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: #c0392b;
+    vertical-align: 1px;
+}
+
+.l10-status[data-mode="error"] {
+    color: #b03a2e;
+}
+
+.l10-status[data-mode="off"] {
+    color: #898781;
+    font-style: italic;
+}
+
+.l10-feedback {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px 10px;
+    margin: 0;
+    font-size: 13px;
+}
+
+.l10-feedback dt {
+    color: #898781;
+}
+
+.l10-feedback dd {
+    margin: 0;
+    color: #0b0b0b;
+    overflow-wrap: anywhere;
+}
+
+.l10-feedback dd.l10-fail {
+    color: #b03a2e;
+}
+
+/* How long the current hand pose has been held, out of the time it needs. */
+.l10-hold {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 8px;
+    height: 3px;
+    border-radius: 2px;
+    background: #ecebe6;
+    overflow: hidden;
+}
+
+.l10-hold span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: #2a78d6;
+}
+
+/* Typed commands and the action log */
+
+.l10-typed {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+    margin: 4px 0 12px;
+}
+
+.l10-typed input {
+    flex: 1 1 260px;
+    max-width: 420px;
+}
+
+.l10-log {
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13px;
+}
+
+.l10-log li {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 8px;
+    padding: 5px 0;
+    border-bottom: 1px solid #ecebe6;
+}
+
+.l10-log .l10-log-empty {
+    color: #898781;
+    font-style: italic;
+}
+
+.l10-time {
+    color: #898781;
+    font-variant-numeric: tabular-nums;
+}
+
+.l10-source {
+    padding: 0 6px;
+    border-radius: 3px;
+    background: #eef4fb;
+    color: #1c5cab;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1.6;
+}
+
+.l10-input {
+    color: #0b0b0b;
+}
+
+.l10-arrow {
+    color: #898781;
+}
+
+.l10-log li.l10-fail .l10-result {
+    color: #b03a2e;
+}
+
+/* The Lab 9 selection bar gains a row of fallback controls above its readout. */
+
+.l10-selection {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+/* Lab 9's readout grows along a row; in this column it must not grow tall. */
+.l10-selection .l9-readout {
+    flex: none;
+}
+
+.l10-bar-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 10px;
+}
+
+.l10-bar-buttons button {
+    padding: 6px 10px;
+}
+
+/* Outside the region shown, the cartogram fades its countries. The rule
+   comes after Lab 9's .faded so it wins when both apply. */
+.l9-map .country.l10-outside {
+    opacity: 0.22;
+}
+
+/* Floating feedback: the toast (bottom right) and the sensor dock (bottom left). */
+
+.l10-toast {
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    max-width: min(380px, calc(100vw - 32px));
+    padding: 10px 14px;
+    border: 1px solid #e1e0d9;
+    border-left: 4px solid #2a78d6;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 6px 18px rgba(11, 11, 11, 0.12);
+    font-size: 13px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+}
+
+.l10-toast.show {
+    opacity: 1;
+    transform: none;
+}
+
+.l10-toast.l10-fail {
+    border-left-color: #b03a2e;
+}
+
+.l10-toast .l10-source {
+    align-self: flex-start;
+}
+
+.l10-toast .l10-input {
+    font-weight: bold;
+}
+
+.l10-dock {
+    position: fixed;
+    left: 16px;
+    bottom: 16px;
+    z-index: 20;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 8px;
+    border: 1px solid #e1e0d9;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 6px 18px rgba(11, 11, 11, 0.12);
+}
+
+.l10-dock[hidden],
+.l10-camera[hidden],
+.l10-gaze-cursor[hidden],
+.l10-calibration[hidden] {
+    display: none;
+}
+
+.l10-indicators {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+    font-weight: bold;
+    color: #c0392b;
+}
+
+.l10-indicators li::before {
+    content: "";
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: #c0392b;
+    animation: l10-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes l10-pulse {
+    50% { opacity: 0.35; }
+}
+
+.l10-camera {
+    position: relative;
+    width: 224px;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 4px;
+    background: #0b0b0b;
+}
+
+/* Shown mirrored, so a hand moving right moves right on screen. The overlay
+   is mirrored with it so the landmarks stay on the hand. */
+.l10-camera video,
+.l10-camera canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transform: scaleX(-1);
+}
+
+.l10-camera-label {
+    position: absolute;
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: rgba(11, 11, 11, 0.6);
+    color: #fff;
+    font-size: 12px;
+}
+
+.l10-camera-label:empty {
+    display: none;
+}
+
+/* The gaze estimate: a ring that fills clockwise as the dwell runs. */
+.l10-gaze-cursor {
+    --p: 0;
+    position: fixed;
+    z-index: 30;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: conic-gradient(rgba(42, 120, 214, 0.85) calc(var(--p) * 360deg), rgba(42, 120, 214, 0.18) 0);
+    -webkit-mask: radial-gradient(circle, transparent 15px, #000 16px);
+    mask: radial-gradient(circle, transparent 15px, #000 16px);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    transition: left 0.08s linear, top 0.08s linear;
+}
+
+/* Calibration screen. WebGazer's own camera preview sits above it, moved
+   off the dots into the upper-left quarter. */
+.l10-calibration {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(252, 252, 251, 0.97);
+}
+
+.l10-calibration-text {
+    position: absolute;
+    left: 72%;
+    top: 28%;
+    width: min(300px, 40vw);
+    transform: translate(-50%, -50%);
+    font-size: 14px;
+}
+
+.l10-calibration-text p {
+    margin: 6px 0 10px;
+}
+
+.l10-dot {
+    --done: 0;
+    position: absolute;
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 2px solid #1c5cab;
+    border-radius: 50%;
+    background: conic-gradient(#2a78d6 calc(var(--done) * 360deg), #fff 0);
+    transform: translate(-50%, -50%);
+    cursor: crosshair;
+}
+
+.l10-dot.done {
+    background: #2a78d6;
+    border-color: #0d366b;
+}
+
+#webgazerVideoContainer {
+    z-index: 1001 !important;
+    top: 25% !important;
+    left: 25% !important;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 760px) {
+    .l10-howto,
+    .l10-panels {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .l10-camera {
+        width: 160px;
+    }
 }

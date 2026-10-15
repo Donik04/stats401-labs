@@ -5,14 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Lab 10</title>
+    <title>Lab 10 &mdash; Novel Interaction: Voice, Gesture and Gaze</title>
 
     <link rel="stylesheet" href="../css/style.css">
 </head>
 
 <body>
 
-    <h1>Lab 10</h1>
+    <h1>Lab 10: Novel Interaction</h1>
 
     <nav class="lab-nav">
         <a href="../">Home</a>
@@ -28,11 +28,401 @@
         <a href="../lab10/" class="active">Lab 10</a>
     </nav>
 
-    <p>
-        Lab 10 will be added here.
+    <p class="prose-lead">
+        The two maps of <a href="../lab9/">Lab 9</a>, a choropleth and a GDP
+        cartogram of the 50 largest economies of 2025, extended with three new
+        inputs: <strong>voice commands</strong>, <strong>hand gestures</strong> seen
+        by the webcam, and <strong>webcam eye gaze</strong>. The maps are not
+        rebuilt. This page loads Lab 9's own <a href="../lab9/lab9.js">lab9.js</a>,
+        and <a href="lab10.js">lab10.js</a> only adds inputs. Every input ends in the
+        same few map actions that the mouse, the buttons and the keyboard also
+        reach, so each novel input has a conventional fallback.
     </p>
 
+    <h2>1. Which task each input serves</h2>
+
+    <div class="table-scroll">
+        <table class="data-table l10-task-table">
+            <thead>
+                <tr>
+                    <th>Input</th>
+                    <th>Visualization task</th>
+                    <th>Why this input fits it</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Voice</strong></td>
+                    <td>Locate an economy by name; filter to a continent</td>
+                    <td>Singapore and Hong Kong are a few pixels on the land map; with a
+                        mouse they have to be found and zoomed to before they can be
+                        clicked. Saying the name skips both. A continent is also a name
+                        rather than a place to point at.</td>
+                </tr>
+                <tr>
+                    <td><strong>Hand gesture</strong></td>
+                    <td>Step through the ranking; zoom in and out</td>
+                    <td>&ldquo;Next economy&rdquo; is a coarse command repeated many times,
+                        which suits a swipe. It works away from the keyboard, for example
+                        when presenting the maps on a projector.</td>
+                </tr>
+                <tr>
+                    <td><strong>Eye gaze</strong></td>
+                    <td>Indicate the country being looked at</td>
+                    <td>The eyes are already on the target. Webcam gaze is noisy, so it
+                        only <em>indicates</em> after a dwell; voice or Space
+                        <em>confirms</em>. It works best on the cartogram, where
+                        economies are large.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <h2>2. How to use</h2>
+
+    <p class="l10-privacy">
+        <strong>Nothing listens or watches until you press its button.</strong> The
+        browser then asks for permission, a red indicator stays in the bottom-left
+        corner while a device is on, and Stop releases it. Camera frames are processed
+        inside this page (MediaPipe and WebGazer) and are never stored or uploaded.
+        Speech is different: Chrome and Edge send the audio to their speech service to
+        transcribe it. Voice needs Chrome, Edge or Safari; Firefox has no speech
+        recognition. The camera needs <code>https</code> or
+        <code>http://localhost</code>.
+    </p>
+
+    <div class="l10-howto">
+        <div>
+            <h3>Voice</h3>
+            <table class="data-table l10-command-table">
+                <thead>
+                    <tr><th>Say</th><th>What happens</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>&ldquo;Show Asia&rdquo;</td><td>Zoom both maps to Asia and grey out the rest; &ldquo;next&rdquo; and &ldquo;previous&rdquo; stay inside it. Also Europe, Africa, North America, South America and Oceania</td></tr>
+                    <tr><td>&ldquo;Highlight Japan&rdquo;</td><td>Select an economy in both maps (any of the 50 names, and short forms like &ldquo;UK&rdquo;, &ldquo;UAE&rdquo;, &ldquo;South Korea&rdquo;)</td></tr>
+                    <tr><td>&ldquo;Where is Singapore&rdquo;</td><td>Select it and zoom to it</td></tr>
+                    <tr><td>&ldquo;Next&rdquo; / &ldquo;Previous&rdquo;</td><td>Step to the next smaller / next larger economy by GDP rank</td></tr>
+                    <tr><td>&ldquo;Zoom in&rdquo; / &ldquo;Zoom out&rdquo;</td><td>Zoom to the selection / back to the whole world</td></tr>
+                    <tr><td>&ldquo;Land&rdquo; / &ldquo;GDP&rdquo; / &ldquo;Play&rdquo;</td><td>Morph the cartogram to land area / to GDP area / play the morph</td></tr>
+                    <tr><td>&ldquo;Log scale&rdquo; / &ldquo;Linear scale&rdquo;</td><td>Switch the choropleth colour classes</td></tr>
+                    <tr><td>&ldquo;Select&rdquo;</td><td>Select the country your gaze is indicating</td></tr>
+                    <tr><td>&ldquo;Clear&rdquo; / &ldquo;Reset&rdquo;</td><td>Clear the selection / reset everything</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h3>Hand gesture</h3>
+            <table class="data-table l10-command-table">
+                <thead>
+                    <tr><th>Show the camera</th><th>What happens</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>Swipe right &rarr;</td><td>Next economy (smaller)</td></tr>
+                    <tr><td>Swipe left &larr;</td><td>Previous economy (larger)</td></tr>
+                    <tr><td>Thumb up &#128077;</td><td>Zoom to the selected economy</td></tr>
+                    <tr><td>Thumb down &#128078;</td><td>Zoom out to the whole world</td></tr>
+                    <tr><td>V sign &#9996;&#65039;</td><td>Switch the cartogram between land and GDP area</td></tr>
+                    <tr><td>Open palm &#9995;, held still</td><td>Reset everything</td></tr>
+                </tbody>
+            </table>
+            <p class="l10-note">
+                Swipe across most of the camera frame in about half a second.
+                Hold a pose still for about half a second; it fires once, so
+                change pose to repeat it. Commands are at least one second apart.
+            </p>
+
+            <h3>Eye gaze</h3>
+            <ol class="l10-steps">
+                <li>Press <em>Start eye gaze</em> and allow the camera.</li>
+                <li>Calibrate: click each of the nine dots five times while looking
+                    at it. Keep your head still afterwards.</li>
+                <li>Look at a country for 0.8&nbsp;s: the ring around the gaze
+                    point fills and the country is highlighted.</li>
+                <li>Say &ldquo;select&rdquo; or press <kbd>Space</kbd> to select it.</li>
+            </ol>
+        </div>
+    </div>
+
+    <p class="l10-note">
+        <strong>Fallback.</strong> Everything above also works without a microphone or
+        camera: the mouse works as in Lab 9 (hover, click, drag, scroll to zoom), the
+        bar above the maps has buttons for every action, the keyboard has
+        <kbd>&larr;</kbd>&nbsp;<kbd>&rarr;</kbd> previous / next, <kbd>Z</kbd> zoom
+        to the selection, <kbd>Esc</kbd> reset and <kbd>V</kbd> to start listening,
+        and voice commands can be typed into the box below.
+    </p>
+
+    <h2>3. Input controls</h2>
+
+    <div class="l10-panels">
+
+        <section class="l10-panel" id="voice-panel">
+            <h3>Voice</h3>
+            <div class="l10-panel-controls">
+                <button type="button" class="l10-start" id="voice-button">Start voice control</button>
+                <label class="check-row" for="voice-keep">
+                    <input type="checkbox" id="voice-keep" checked> Keep listening
+                </label>
+            </div>
+            <p class="l10-status" id="voice-status">Voice control inactive</p>
+            <dl class="l10-feedback">
+                <dt>Heard</dt>
+                <dd id="voice-heard">&mdash;</dd>
+                <dt>Action</dt>
+                <dd id="voice-action" aria-live="polite">&mdash;</dd>
+            </dl>
+        </section>
+
+        <section class="l10-panel" id="gesture-panel">
+            <h3>Hand gesture</h3>
+            <div class="l10-panel-controls">
+                <button type="button" class="l10-start" id="gesture-button">Start camera</button>
+            </div>
+            <p class="l10-status" id="gesture-status">Camera off</p>
+            <dl class="l10-feedback">
+                <dt>Detected</dt>
+                <dd id="gesture-detected">&mdash;</dd>
+                <dt>Action</dt>
+                <dd id="gesture-action" aria-live="polite">&mdash;</dd>
+            </dl>
+            <div class="l10-hold" aria-hidden="true"><span id="gesture-hold"></span></div>
+        </section>
+
+        <section class="l10-panel" id="gaze-panel">
+            <h3>Eye gaze</h3>
+            <div class="l10-panel-controls">
+                <button type="button" class="l10-start" id="gaze-button">Start eye gaze</button>
+                <button type="button" class="ghost-button" id="gaze-calibrate" disabled>Calibrate</button>
+                <button type="button" class="ghost-button" id="gaze-select" disabled>Select target</button>
+            </div>
+            <p class="l10-status" id="gaze-status">Eye gaze off</p>
+            <dl class="l10-feedback">
+                <dt>Looking at</dt>
+                <dd id="gaze-target">&mdash;</dd>
+                <dt>Action</dt>
+                <dd id="gaze-action" aria-live="polite">&mdash;</dd>
+            </dl>
+        </section>
+
+    </div>
+
+    <div class="l10-typed-row">
+        <form id="typed-form" class="l10-typed">
+            <label class="control-label" for="typed-command">Type a command</label>
+            <input type="text" id="typed-command" class="date-field" autocomplete="off"
+                placeholder="e.g. show europe, highlight japan, next">
+            <button type="button" class="ghost-button" id="typed-run">Run</button>
+        </form>
+    </div>
+
+    <details class="table-view l10-log-wrap" open>
+        <summary>Action log: what each input was recognised as, and what it did</summary>
+        <ol class="l10-log" id="action-log">
+            <li class="l10-log-empty">Nothing yet. Every command from every input is listed here.</li>
+        </ol>
+    </details>
+
+    <div class="l9-linked">
+
+        <div class="l9-selection l10-selection" id="selection-bar">
+            <div class="l10-bar-row">
+                <label class="control-label" for="economy-select">Economy</label>
+                <select id="economy-select" class="date-field"></select>
+                <label class="control-label" for="region-select">Region</label>
+                <select id="region-select" class="date-field">
+                    <option value="">Whole world</option>
+                </select>
+                <div class="button-set l10-bar-buttons">
+                    <button type="button" id="prev-button" title="Previous economy (&larr;)">&#9664; Previous</button>
+                    <button type="button" id="next-button" title="Next economy (&rarr;)">Next &#9654;</button>
+                    <button type="button" id="zoom-button" title="Zoom to the selection (Z)">Zoom to selection</button>
+                    <button type="button" id="reset-button" title="Reset everything (Esc)">Reset all</button>
+                </div>
+                <button type="button" class="ghost-button" id="clear-selection" hidden>Clear</button>
+            </div>
+            <span class="l9-readout" id="selection-readout" aria-live="polite"></span>
+        </div>
+
+        <h2>4. 2025 GDP Choropleth</h2>
+
+        <div class="viz-controls compact">
+            <span class="control-label">Colour classes</span>
+            <div class="button-set" id="scale-buttons">
+                <button type="button" data-scale="log" class="active">Log-spaced</button>
+                <button type="button" data-scale="linear">Linear</button>
+            </div>
+            <button type="button" class="ghost-button" id="choropleth-reset">Reset zoom</button>
+        </div>
+
+        <div class="l9-legend" id="choropleth-legend"></div>
+
+        <figure class="viz-figure l9-map">
+            <div id="choropleth" class="loading">Loading the map&hellip;</div>
+        </figure>
+
+        <p class="viz-caption">
+            Colour is GDP in six log-spaced classes; hatched countries are outside the
+            top 50. When a region is shown, countries outside it turn grey of the
+            same lightness, so their GDP class stays readable but they no longer look
+            selected.
+        </p>
+
+        <h2>5. 2025 GDP Cartogram</h2>
+
+        <div class="viz-controls compact">
+            <span class="control-label">Area</span>
+            <span class="l9-morph-end">Land</span>
+            <input type="range" id="morph" min="0" max="100" value="100" aria-label="Morph between land area and GDP area">
+            <span class="l9-morph-end">GDP</span>
+            <button type="button" class="ghost-button" id="morph-play">&#9654; Play morph</button>
+            <button type="button" class="ghost-button" id="cartogram-reset">Reset zoom</button>
+        </div>
+
+        <p class="l9-area-note" id="area-note">
+            <strong>Area represents GDP.</strong> Each of the 50 economies covers a
+            share of the map equal to its share of their combined $109.7 trillion.
+        </p>
+
+        <figure class="viz-figure l9-map">
+            <div id="cartogram" class="loading">Loading the cartogram&hellip;</div>
+        </figure>
+
+        <p class="viz-caption">
+            The cartogram is the better target for gaze: the United States, China,
+            Japan and the large European economies are several times the size they
+            are on the land map, so a noisy gaze estimate still lands inside them.
+        </p>
+
+        <details class="table-view">
+            <summary>Table view: GDP, land share and cartogram share for all 50 economies</summary>
+            <div class="table-scroll">
+                <table id="gdp-table" class="data-table l9-table">
+                    <thead>
+                        <tr>
+                            <th class="num">Rank</th>
+                            <th>Economy</th>
+                            <th class="num">GDP ($B)</th>
+                            <th class="num">Share of top-50 GDP</th>
+                            <th class="num">Share of land</th>
+                            <th class="num">Share of cartogram</th>
+                            <th class="num">Cartogram &divide; land</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </details>
+
+    </div>
+
+    <h2>6. Design reflection</h2>
+
+    <div class="prose">
+        <p>
+            I extended the Lab 9 GDP choropleth and cartogram with voice, hand-gesture
+            and eye-gaze input. Voice serves locating and filtering: &ldquo;Show
+            Asia&rdquo; scopes both maps to a continent, and &ldquo;Highlight
+            Singapore&rdquo; finds a country that is a few pixels wide on the land
+            map, which the mouse reaches only after zooming. Gestures serve sequential
+            browsing: a swipe steps to the next or previous economy by rank, so the
+            ranking can be walked through like slides, and only six gestures keep
+            recognition reliable. Gaze only indicates: a 0.8-second dwell highlights a
+            country and &ldquo;select&rdquo; or Space confirms, which avoids the Midas
+            touch problem. The limits are recognition errors. Short names are easily
+            misheard (&ldquo;Chile&rdquo; as &ldquo;chilly&rdquo;), so the parser
+            tries the recogniser's alternative transcripts and refuses near misses
+            that fit two countries. An open palm at the start of a swipe can look like
+            &ldquo;reset&rdquo;, so a pose must be held still before it fires. Webcam
+            gaze is off by roughly 100&ndash;200 pixels and drifts when the head
+            moves, so it works on the large cartogram shapes but not on small European
+            countries on the choropleth.
+        </p>
+    </div>
+
+    <details class="method">
+        <summary>Implementation notes</summary>
+        <div class="prose">
+            <p>
+                <strong>One action layer.</strong> Each input follows the lab's
+                pipeline (input &rarr; recognition &rarr; interpretation &rarr; command
+                &rarr; D3 update &rarr; feedback), and they meet at the command
+                object. <a href="commands.js">commands.js</a> parses a transcript into a
+                command such as <code>{type: "region", region: "Asia"}</code>; a
+                gesture label maps to a fixed command; every command runs through one
+                function in <a href="lab10.js">lab10.js</a> that changes Lab 9's shared
+                state and reports what it did to the panel, the action log and the
+                toast. Lab 9's file gained only one handle object, so zooms can be
+                started from outside it; its own page is unchanged.
+            </p>
+            <p>
+                <strong>Voice</strong> uses the Web Speech API (<code>en-US</code>,
+                one utterance per recognition, interim results shown while you speak,
+                three alternatives). The first alternative that parses wins. Country
+                names come from the dataset plus common short forms, and a near miss of
+                one or two letters is accepted only when it fits exactly one country.
+            </p>
+            <p>
+                <strong>Gestures</strong> use MediaPipe's Gesture Recognizer in the
+                browser (one hand, GPU when available). The six poses come from its
+                built-in classifier; swipes are added from the 21 hand landmarks: the
+                palm centre must move across 22% of the frame within 0.6&nbsp;s, at
+                least twice as far horizontally as vertically. The camera image is not
+                mirrored, so movement to the user's right is leftward in the image. A
+                pose fires after 0.45&nbsp;s held still and then latches until the hand
+                changes, and a 1-second cooldown separates any two gesture commands.
+            </p>
+            <p>
+                <strong>Gaze</strong> uses WebGazer.js with ridge regression and its
+                Kalman filter, trained by the calibration clicks; calibration data is
+                not saved between visits. The page averages the last six estimates,
+                shows them as the gaze ring, and hit-tests nine points in a 24-pixel
+                radius around it; the economy that gets at least three of the nine
+                hits is the candidate. Countries without GDP data are ignored.
+            </p>
+            <p>
+                <strong>Regions</strong> come from Natural Earth's continent field,
+                written to <a href="../data/lab10_regions.csv">lab10_regions.csv</a> by
+                <a href="build_regions.py">build_regions.py</a>, so Russia counts as
+                Europe and Turkey as Asia. Each continent has a longitude&ndash;latitude
+                view box; the choropleth zooms to the land inside it, and the cartogram
+                to where those same vertices ended up after the GDP distortion.
+            </p>
+        </div>
+    </details>
+
     <a class="back-link" href="../">&larr; Back to home</a>
+
+    <!-- Floating feedback, visible wherever the page is scrolled to. -->
+    <aside class="l10-dock" id="sensor-dock" hidden>
+        <ul class="l10-indicators" id="indicators"></ul>
+        <div class="l10-camera" id="camera-box" hidden>
+            <video id="camera" autoplay playsinline muted></video>
+            <canvas id="camera-overlay"></canvas>
+            <span class="l10-camera-label" id="camera-label"></span>
+        </div>
+    </aside>
+
+    <div class="l10-toast" id="toast" role="status" aria-live="polite"></div>
+
+    <div class="l10-gaze-cursor" id="gaze-cursor" hidden></div>
+
+    <div class="l10-calibration" id="calibration" hidden>
+        <div class="l10-calibration-text">
+            <strong>Calibration</strong>
+            <p>Click each dot five times while looking straight at it. Each dot turns
+                blue when it is done. Then keep your head still.</p>
+            <button type="button" class="ghost-button" id="calibration-skip">Skip</button>
+        </div>
+    </div>
+
+    <div id="tooltip" class="tooltip"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="../lab9/lab9.js"></script>
+    <script src="commands.js"></script>
+    <script src="lab10.js"></script>
 
 </body>
 
