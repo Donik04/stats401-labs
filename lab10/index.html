@@ -28,16 +28,6 @@
         <a href="../lab10/" class="active">Lab 10</a>
     </nav>
 
-    <p class="prose-lead">
-        The two maps of <a href="../lab9/">Lab 9</a>, a choropleth and a GDP
-        cartogram of the 50 largest economies of 2025, extended with three new
-        inputs: <strong>voice commands</strong>, <strong>hand gestures</strong> seen
-        by the webcam, and <strong>webcam eye gaze</strong>. The maps are not
-        rebuilt. This page loads Lab 9's own <a href="../lab9/lab9.js">lab9.js</a>,
-        and <a href="lab10.js">lab10.js</a> only adds inputs. Every input ends in the
-        same few map actions that the mouse, the buttons and the keyboard also
-        reach, so each novel input has a conventional fallback.
-    </p>
 
     <h2>1. Which task each input serves</h2>
 
@@ -70,8 +60,7 @@
                     <td><strong>Eye gaze</strong></td>
                     <td>Indicate the country being looked at</td>
                     <td>The eyes are already on the target. Webcam gaze is noisy, so it
-                        only <em>indicates</em> after a dwell; voice or Space
-                        <em>confirms</em>. It works best on the cartogram, where
+                        only <em>indicates</em> after a dwell. It works best on the cartogram, where
                         economies are large.</td>
                 </tr>
             </tbody>
@@ -83,13 +72,7 @@
     <p class="l10-privacy">
         <strong>Nothing listens or watches until you press its button.</strong> The
         browser then asks for permission, a red indicator stays in the bottom-left
-        corner while a device is on, and Stop releases it. Camera frames are processed
-        inside this page (MediaPipe and WebGazer) and are never stored or uploaded.
-        Speech is different: Chrome and Edge send the audio to their speech service to
-        transcribe it. Voice needs Chrome, Edge or Safari; Firefox has no speech
-        recognition. The camera needs <code>https</code> or
-        <code>http://localhost</code>.
-    </p>
+        corner while a device is on, and Stop releases it. </p>
 
     <div class="l10-howto">
         <div>
@@ -263,8 +246,7 @@
         </figure>
 
         <p class="viz-caption">
-            Colour is GDP in six log-spaced classes; hatched countries are outside the
-            top 50. When a region is shown, countries outside it turn grey of the
+            When a region is shown, countries outside it turn grey of the
             same lightness, so their GDP class stays readable but they no longer look
             selected.
         </p>
@@ -322,22 +304,17 @@
     <div class="prose">
         <p>
             I extended the Lab 9 GDP choropleth and cartogram with voice, hand-gesture
-            and eye-gaze input. Voice serves locating and filtering: &ldquo;Show
+            and eye-gaze input. Voice serves locating and filtering, as such &ldquo;Show
             Asia&rdquo; scopes both maps to a continent, and &ldquo;Highlight
             Singapore&rdquo; finds a country that is a few pixels wide on the land
             map, which the mouse reaches only after zooming. Gestures serve sequential
             browsing: a swipe steps to the next or previous economy by rank, so the
             ranking can be walked through like slides, and only six gestures keep
-            recognition reliable. Gaze only indicates: a 0.8-second dwell highlights a
-            country and &ldquo;select&rdquo; or Space confirms, which avoids the Midas
-            touch problem. The limits are recognition errors. Short names are easily
+            recognition reliable. The limits are recognition errors. Short names are easily
             misheard (&ldquo;Chile&rdquo; as &ldquo;chilly&rdquo;), so the parser
             tries the recogniser's alternative transcripts and refuses near misses
             that fit two countries. An open palm at the start of a swipe can look like
-            &ldquo;reset&rdquo;, so a pose must be held still before it fires. Webcam
-            gaze is off by roughly 100&ndash;200 pixels and drifts when the head
-            moves, so it works on the large cartogram shapes but not on small European
-            countries on the choropleth.
+            &ldquo;reset&rdquo;, so a pose must be held still before it fires. 
         </p>
     </div>
 
@@ -350,36 +327,24 @@
                 &rarr; D3 update &rarr; feedback), and they meet at the command
                 object. <a href="commands.js">commands.js</a> parses a transcript into a
                 command such as <code>{type: "region", region: "Asia"}</code>; a
-                gesture label maps to a fixed command; every command runs through one
-                function in <a href="lab10.js">lab10.js</a> that changes Lab 9's shared
-                state and reports what it did to the panel, the action log and the
-                toast. Lab 9's file gained only one handle object, so zooms can be
-                started from outside it; its own page is unchanged.
+                gesture label maps to a fixed command.
             </p>
             <p>
                 <strong>Voice</strong> uses the Web Speech API (<code>en-US</code>,
-                one utterance per recognition, interim results shown while you speak,
-                three alternatives). The first alternative that parses wins. Country
-                names come from the dataset plus common short forms, and a near miss of
+                one utterance per recognition, interim results shown while you speak).
+                Country names come from the dataset plus common short forms, and a near miss of
                 one or two letters is accepted only when it fits exactly one country.
             </p>
             <p>
                 <strong>Gestures</strong> use MediaPipe's Gesture Recognizer in the
                 browser (one hand, GPU when available). The six poses come from its
-                built-in classifier; swipes are added from the 21 hand landmarks: the
-                palm centre must move across 22% of the frame within 0.6&nbsp;s, at
-                least twice as far horizontally as vertically. The camera image is not
-                mirrored, so movement to the user's right is leftward in the image. A
-                pose fires after 0.45&nbsp;s held still and then latches until the hand
-                changes, and a 1-second cooldown separates any two gesture commands.
+                built-in classifier; swipes are added from the 21 hand landmarks.
+                The camera image is not
+                mirrored, so movement to the user's right is leftward in the image. 
             </p>
             <p>
                 <strong>Gaze</strong> uses WebGazer.js with ridge regression and its
-                Kalman filter, trained by the calibration clicks; calibration data is
-                not saved between visits. The page averages the last six estimates,
-                shows them as the gaze ring, and hit-tests nine points in a 24-pixel
-                radius around it; the economy that gets at least three of the nine
-                hits is the candidate. Countries without GDP data are ignored.
+                Kalman filter, trained by the calibration clicks. Countries without GDP data are ignored.
             </p>
             <p>
                 <strong>Regions</strong> come from Natural Earth's continent field,
